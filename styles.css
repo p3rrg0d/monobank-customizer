@@ -377,3 +377,8 @@ body {
     flex-direction: column-reverse;
     display: flex;
 }
+
+.widget-preview {
+    position: absolute;
+    right: 500;
+}
