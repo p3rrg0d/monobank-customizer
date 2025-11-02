@@ -5,12 +5,32 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>monobank Widget Editor</title>
         <link rel="stylesheet" href="styles.css" />
+        <link rel="stylesheet" href="background.css" />
     </head>
     <body>
-        <div class="control-panel"></div>
-        <div class="header"></div>
-        <div class="footer"></div>
-        <div class="widget-preview"><my-widget></my-widget></div>
+        <div class="container">
+            <div class="header">
+                <div class="window-buttons">
+                    <span class="btn red"></span>
+                    <span class="btn yellow"></span>
+                </div>
+                <span class="title">monobank Widget Editor</span>
+            </div>
+
+            <div class="control-panel">
+                <p>Control Panel content</p>
+            </div>
+
+            <div class="widget-preview">
+                <my-widget></my-widget>
+            </div>
+
+            <div class="css-export">
+                <p>CSS Export content</p>
+                <pre id="css-output"></pre>
+            </div>
+        </div>
+
         <template id="widget-template">
             <div
                 class="widget qr-with-progress-widget color-scheme-black shadow-off"

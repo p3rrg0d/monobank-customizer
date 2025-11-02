@@ -277,7 +277,6 @@ body {
     width: 380px;
     height: 136px;
     display: flex;
-    position: relative;
 }
 
 .widget.qr-with-progress-widget.shadow-on:after {
