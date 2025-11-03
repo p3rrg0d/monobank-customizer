@@ -3,6 +3,20 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: radial-gradient(#000 1px, #d9b595 0.5px);
-    background-size: 20px 20px;
+    background-color: #7e867e;
+    background-image:
+        repeating-linear-gradient(
+            to bottom,
+            #f6debe 0px,
+            #f6debe 1px,
+            transparent 1px,
+            transparent 40px
+        ),
+        repeating-linear-gradient(
+            to right,
+            #f6debe 0px,
+            #f6debe 1px,
+            transparent 1px,
+            transparent 40px
+        );
 }

@@ -212,7 +212,7 @@ body {
 .linear-horizontal-progress-widget.color-scheme-pink .progress {
     background: linear-gradient(
         132.42deg,
-        #b93e88 0%,
+        #eee 0%,
         #f58190 50.79%,
         #fca78c 97.52%
     );

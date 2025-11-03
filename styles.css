@@ -7,6 +7,7 @@ body {
 }
 
 .container {
+    font-family: "Roboto", sans-serif;
     display: grid;
     grid-template-areas:
         "header header header"
@@ -18,11 +19,11 @@ body {
     width: 90%;
     height: 80vh;
 
-    background: #fff8df;
-    border: 2px solid #000;
-    border-radius: 8px;
-    box-shadow: 4px 4px 0 #000;
-    color: #000;
+    background: #f6debe;
+    border: 4px solid #3a1622;
+    border-radius: 1px;
+    box-shadow: 25px 25px 0 -10px #3a1622;
+    color: #3a1622;
     overflow: hidden;
 }
 
@@ -33,15 +34,23 @@ body {
 
 .header {
     grid-area: header;
-    background: #ed622b;
-    border-bottom: 4px solid #000;
+    background: #7e5e5a;
+    color: #000;
+    border-bottom: 4px solid #3a1622;
     padding: 4px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    font-weight: bold;
-    min-height: 40px;
+    height: 45px;
+    font-weight: 600;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 6px;
+    object-fit: contain;
 }
 
 .window-buttons {
@@ -52,42 +61,203 @@ body {
     display: flex;
     gap: 6px;
 }
-
 .window-buttons .btn {
-    width: 14px;
-    height: 14px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    border: 2px solid #000;
-    box-shadow: 1px 1px 0 #000;
+    border: 2px solid #3a1622;
+    box-shadow: 1px 1px 0 #3a1622;
+    background: #f6debe;
+}
+.btn {
+    transition: all 0.2s;
+}
+.btn:hover {
+    filter: brightness(1.5);
+    cursor: pointer;
 }
 
 .btn.red {
-    background: #f4eed6;
+    background: #ed5106;
 }
 
 .btn.yellow {
-    background: #f4eed6;
+    background: #f3d63c;
+}
+
+.btn.green {
+    background: #bafca4;
 }
 
 .control-panel {
     grid-area: control-panel;
-    border-right: 2px solid #000;
-    background: #f4eed6;
+    border-right: 4px solid #000;
+    background: #f6debe;
+    padding: 16px;
+    overflow-y: auto;
 }
 
 .widget-preview {
     grid-area: widget-preview;
     display: flex;
+    background: #fff;
     align-items: center;
     justify-content: center;
-    border-right: 2px solid #000;
+    border-right: 4px solid #3a1622;
 }
 
 .css-export {
     grid-area: css-export;
-    background: #f4eed6;
+    background: #f6debe;
 }
 
-.footer {
-    grid-area: footer;
+.help-container {
+    position: relative;
+    display: inline-block;
+}
+
+.help-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: #444;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    user-select: none;
+}
+
+.help-popup {
+    display: none; /* Спочатку приховане */
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background: white;
+    border: 1px solid #aaa;
+    padding: 10px;
+    width: 180px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.close-btn {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.footer-text {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #000;
+}
+
+.footer-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+a:link {
+    color: inherit; /* Sets the link color to match the parent element's text color */
+    text-decoration: none; /* Removes the underline */
+}
+
+a:visited {
+    color: inherit; /* Applies the same to visited links */
+    text-decoration: none;
+}
+
+a:hover {
+    color: inherit; /* Applies the same to links when hovered over */
+    text-decoration: none;
+}
+
+a:active {
+    color: inherit; /* Applies the same to active links (when clicked) */
+    text-decoration: none;
+}
+
+.control-row label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.control-row input[type="range"] {
+    width: 80%;
+}
+
+.control-row select {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #ddd;
+    border-radius: 5px;
+    outline: none;
+    border: 2px solid #000;
+    transition: all 0.1s;
+}
+
+/* Chrome/Safari */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #ed5106;
+    border: 2px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 #000;
+    transition: all 0.1s;
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #ed5106;
+    border: 2px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 #000;
+    transition: all 0.1s;
+}
+
+input[type="range"]::-moz-range-track {
+    height: 10px;
+    background: #ddd;
+    border-radius: 5px;
+    border: 2px solid #000;
+    transition: all 0.1s;
+}
+
+/* Hover ефект */
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #ff7909;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background: #ff7909;
 }

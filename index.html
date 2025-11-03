@@ -13,24 +13,74 @@
                 <div class="window-buttons">
                     <span class="btn red"></span>
                     <span class="btn yellow"></span>
+                    <span class="btn green"></span>
                 </div>
-                <span class="title">monobank Widget Editor</span>
+                <img src="mono-brutalism.png" alt="icon" class="header-icon" />
+                <span class="title">Редактор віджета</span>
             </div>
 
             <div class="control-panel">
+                <div class="control-section">
+                    <h3>Прогрес-бар</h3>
+                    <div class="control-row">
+                        <label
+                            >Заокруглення
+                            <span class="range-value" id="widget-radius"
+                                >50px</span
+                            ></label
+                        >
+                        <input
+                            type="range"
+                            id="widget-radius"
+                            min="0"
+                            max="50"
+                            value="16"
+                        />
+                    </div>
+                    <div class="control-row">
+                        <label
+                            >Прогрес
+                            <span class="range-value" id="progress-display"
+                                >50%</span
+                            ></label
+                        >
+                        <input
+                            type="range"
+                            id="progress"
+                            min="0"
+                            max="100"
+                            value="50"
+                        />
+                    </div>
+                </div>
+
+                <div class="control-row"></div>
+                <div class="control-row"></div>
+                <div class="control-row"></div>
+                <div class="control-row"></div>
+                <div class="control-row"></div>
                 <p>Control Panel content</p>
             </div>
 
             <div class="widget-preview">
                 <my-widget></my-widget>
             </div>
-
             <div class="css-export">
+                <div class="help-container">
+                    <span class="help-icon">?</span>
+                    <div class="help-popup">
+                        placeholder
+                        <span class="close-btn">&times;</span>
+                    </div>
+                </div>
                 <p>CSS Export content</p>
-                <pre id="css-output"></pre>
             </div>
         </div>
-
+        <div class="footer-text">
+            <a href="https://twitch.tv/p3rrg0d">by p3rrg0d </a>
+            <img src="face.png" alt="face" class="footer-icon" />
+            <img src="coffee.png" alt="coffee" class="footer-icon" />
+        </div>
         <template id="widget-template">
             <div
                 class="widget qr-with-progress-widget color-scheme-black shadow-off"
@@ -74,5 +124,7 @@
         </template>
 
         <script type="module" src="widget/widget.js"></script>
+        <script src="script.js"></script>
+        <script src="background/bg.js"></script>
     </body>
 </html>
