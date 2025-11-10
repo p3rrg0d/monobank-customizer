@@ -1,0 +1,30 @@
+.widget.qr-with-progress-widget.color-scheme-black {
+    border-radius: var(--widget-border-radius, 16px);
+    background: var(--widget-bg-color, rgba(0, 0, 0, 1));
+    border: 1px solid var(--widget-border-color, rgba(0, 0, 0, 0));
+    color: var(--widget-text-color, #fff);
+}
+
+.linear-horizontal-progress-widget.shape-scheme-rounded .background,
+.linear-horizontal-progress-widget.shape-scheme-rounded .progress-clip {
+    border-radius: var(--progress-radius);
+}
+
+.linear-horizontal-progress-widget.shape-scheme-rounded .progress-clip,
+.linear-horizontal-progress-widget.shape-scheme-rounded .progress {
+    border-radius: var(--progress-radius);
+}
+
+.linear-horizontal-progress-widget.color-scheme-pink .background {
+    background: var(
+        --progress-bg-color,
+        linear-gradient(132.42deg, #e7b5d3 0%, #f4b9c1 50.79%, #eac6bb 97.52%)
+    );
+}
+
+.linear-horizontal-progress-widget.color-scheme-pink .progress {
+    background: var(
+        --progress-gradient,
+        linear-gradient(132.42deg, #b93e88 0%, #f58190 50.79%, #fca78c 97.52%)
+    );
+}
