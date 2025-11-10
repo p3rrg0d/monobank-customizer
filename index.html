@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="background.css" />
     </head>
     <body>
+        <script src="editor.js"></script>
         <div class="container">
             <div class="header">
                 <div class="window-buttons">
@@ -20,50 +21,54 @@
             </div>
 
             <div class="control-panel">
+                <h2 style="color: black">Панель керування віджетом</h2>
                 <div class="control-section">
-                    <h3>Прогрес-бар</h3>
+                    <h3>Фон</h3>
                     <div class="control-row">
-                        <label
-                            >Заокруглення
-                            <span class="range-value" id="widget-radius"
-                                >50px</span
-                            ></label
-                        >
-                        <input
-                            type="range"
-                            id="widget-radius"
-                            min="0"
-                            max="50"
-                            value="16"
-                        />
-                    </div>
-                    <div class="control-row">
-                        <label
-                            >Прогрес
-                            <span class="range-value" id="progress-display"
-                                >50%</span
-                            ></label
-                        >
-                        <input
-                            type="range"
-                            id="progress"
-                            min="0"
-                            max="100"
-                            value="50"
-                        />
+                        <label for="border-radius-slider">Округлість</label>
+
+                        <div class="range">
+                            <input
+                                type="range"
+                                id="border-radius-slider"
+                                step="1"
+                                min="0"
+                                max="70"
+                                value="16"
+                            />
+                            <span class="range-value" id="slider">16px</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="control-row"></div>
-                <div class="control-row"></div>
-                <div class="control-row"></div>
-                <div class="control-row"></div>
-                <div class="control-row"></div>
+                <div class="control-section">
+                    <h3>Прогрес-бар</h3>
+                    <div class="control-row">
+                        <label for="progress-radius-slider">Округлість</label>
+                        <div class="range">
+                            <input
+                                type="range"
+                                id="progress-radius-slider"
+                                step="1"
+                                min="0"
+                                max="20"
+                                value="12"
+                            />
+                            <span class="range-value" id="slider">12px</span>
+                        </div>
+                    </div>
+                    <div class="control-row"></div>
+                    <div class="control-row"></div>
+                    <div class="control-row"></div>
+                    <div class="control-row"></div>
+                    <div class="control-row"></div>
+                </div>
+
                 <p>Control Panel content</p>
             </div>
 
             <div class="widget-preview">
-                <my-widget></my-widget>
+                <my-widget class="draggable" style="scale: 1.5"></my-widget>
             </div>
             <div class="css-export">
                 <div class="help-container">
@@ -122,9 +127,7 @@
                 </div>
             </div>
         </template>
-
-        <script type="module" src="widget/widget.js"></script>
         <script src="script.js"></script>
-        <script src="background/bg.js"></script>
+        <script type="module" src="widget/widget.js"></script>
     </body>
 </html>

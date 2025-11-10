@@ -216,48 +216,52 @@ input[type="range"] {
     border-radius: 5px;
     outline: none;
     border: 2px solid #000;
-    transition: all 0.1s;
+    transition: background 0.1s;
 }
 
-/* Chrome/Safari */
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #ed5106;
-    border: 2px solid #000;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 2px 2px 0 #000;
-    transition: all 0.1s;
-}
-
-/* Firefox */
-input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #ed5106;
-    border: 2px solid #000;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 2px 2px 0 #000;
-    transition: all 0.1s;
-}
-
+/* Track для Firefox */
 input[type="range"]::-moz-range-track {
     height: 10px;
     background: #ddd;
     border-radius: 5px;
     border: 2px solid #000;
-    transition: all 0.1s;
 }
 
-/* Hover ефект */
-input[type="range"]::-webkit-slider-thumb:hover {
-    background: #ff7909;
+input[type="range"]::-webkit-slider-thumb,
+input[type="range"]::-moz-range-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #ed5106;
+    border: 2px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 #000;
+    transition: background 0.1s;
 }
 
+/* Hover */
+input[type="range"]::-webkit-slider-thumb:hover,
 input[type="range"]::-moz-range-thumb:hover {
     background: #ff7909;
+}
+.range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.range .range-value {
+    background: #000;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.draggable {
+    cursor: grab;
+    position: absolute;
+    user-select: none;
+}
+.draggable:active {
+    cursor: grabbing;
 }

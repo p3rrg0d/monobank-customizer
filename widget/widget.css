@@ -1,13 +1,4 @@
-@font-face {
-    font-family: "Inter";
-    font-display: swap;
-    src: url(../widget/assets/fonts/b2b3.woff2) format("woff2");
-    font-weight: 100 1000;
-}
-
-* {
-    box-sizing: border-box;
-}
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 body {
     margin: 0;
@@ -262,36 +253,11 @@ body {
     height: 100%;
 }
 
-.widget.qr-container .preview-warning {
-    position: absolute;
-    top: 40%;
-    left: 29%;
-    color: red;
-    font-weight: bold;
-    font-size: 10vw;
-    background: white;
-}
-
 .widget.qr-with-progress-widget {
     border-radius: 16px;
     width: 380px;
     height: 136px;
     display: flex;
-}
-
-.widget.qr-with-progress-widget.shadow-on:after {
-    content: "";
-    display: block;
-    width: 344px;
-    height: 136px;
-    border-radius: 32px;
-    background: black;
-    opacity: 0.2;
-    filter: blur(16px);
-    z-index: -1;
-    bottom: -8px;
-    left: 16px;
-    position: absolute;
 }
 
 .widget.qr-with-progress-widget > .progress-container {

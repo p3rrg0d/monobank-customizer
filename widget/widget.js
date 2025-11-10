@@ -4,16 +4,19 @@ class MyWidget extends HTMLElement {
 
     // Shadow DOM
     const shadow = this.attachShadow({ mode: "open" });
-
     // CSS
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "widget/widget.css";
+    const baseStyles = document.createElement("link");
+    baseStyles.rel = "stylesheet";
+    baseStyles.href = "widget/widget.css";
+    const customStyles = document.createElement("link");
+    customStyles.rel = "stylesheet";
+    customStyles.href = "widget/custom_widget.css";
 
+    // template
     const template = document.getElementById("widget-template");
     const content = template.content.cloneNode(true);
 
-    shadow.append(link, content);
+    shadow.append(baseStyles, customStyles, content);
   }
 }
 
