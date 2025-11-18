@@ -7,19 +7,20 @@
 
 .linear-horizontal-progress-widget.shape-scheme-rounded .background,
 .linear-horizontal-progress-widget.shape-scheme-rounded .progress-clip {
-    border-radius: var(--progress-radius);
+    border-radius: var(--progress-radius, 12px);
 }
 
 .linear-horizontal-progress-widget.shape-scheme-rounded .progress-clip,
 .linear-horizontal-progress-widget.shape-scheme-rounded .progress {
-    border-radius: var(--progress-radius);
+    border-radius: var(--progress-radius, 12px);
 }
 
-.linear-horizontal-progress-widget.color-scheme-pink .background {
+.linear-horizontal-progress-widget .background {
     background: var(
         --progress-bg-color,
         linear-gradient(132.42deg, #e7b5d3 0%, #f4b9c1 50.79%, #eac6bb 97.52%)
     );
+    border-radius: var(--progress-radius, 12px);
 }
 
 .linear-horizontal-progress-widget.color-scheme-pink .progress {
@@ -27,4 +28,5 @@
         --progress-gradient,
         linear-gradient(132.42deg, #b93e88 0%, #f58190 50.79%, #fca78c 97.52%)
     );
+    border-radius: var(--progress-radius, 12px);
 }

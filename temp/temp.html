@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Gradient Editor — Retro Control</title>
+        <style>
+            body {
+                font-family: "Roboto", sans-serif;
+                background: #f6debe;
+                padding: 20px;
+            }
+
+            .control-panel {
+                background: #f6debe;
+                border: 4px solid #3a1622;
+                border-radius: 4px;
+                padding: 20px;
+                max-width: 420px;
+                margin: 0 auto;
+            }
+
+            h2 {
+                color: #3a1622;
+                margin-top: 0;
+                margin-bottom: 20px;
+            }
+
+            .gradient-preview {
+                width: 100%;
+                height: 18px;
+                border: 3px solid #3a1622;
+                border-radius: 8px;
+                margin-bottom: 18px;
+                position: relative;
+                box-shadow: 3px 3px 0 #3a1622;
+                cursor: pointer;
+            }
+
+            .color-stop-handle {
+                position: absolute;
+                top: -6px;
+                width: 14px;
+                height: 14px;
+                border: 2px solid #3a1622;
+                border-radius: 50%;
+                background: white;
+                cursor: grab;
+                transform: translateX(-50%);
+            }
+
+            .color-stop-handle.dragging {
+                cursor: grabbing;
+            }
+
+            .tooltip {
+                position: absolute;
+                top: -28px;
+                background: #3a1622;
+                color: white;
+                font-size: 11px;
+                padding: 2px 6px;
+                border-radius: 3px;
+                transform: translateX(-50%);
+                white-space: nowrap;
+            }
+
+            .color-stops {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+
+            .color-stop {
+                text-align: center;
+            }
+
+            .color-stop input[type="color"] {
+                width: 36px;
+                height: 36px;
+                border: 2px solid #3a1622;
+                border-radius: 4px;
+                cursor: pointer;
+                background: white;
+                padding: 2px;
+            }
+
+            .color-value {
+                font-family: "Courier New", monospace;
+                font-size: 11px;
+                color: #3a1622;
+                font-weight: 600;
+                margin-top: 2px;
+            }
+
+            .remove-stop-btn {
+                margin-top: 2px;
+                background: #ed5106;
+                border: 2px solid #3a1622;
+                width: 20px;
+                height: 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                box-shadow: 2px 2px 0 #3a1622;
+                transition: all 0.2s;
+            }
+
+            .remove-stop-btn:hover {
+                background: #ff7909;
+                transform: translate(1px, 1px);
+                box-shadow: 1px 1px 0 #3a1622;
+            }
+
+            .add-stop-btn {
+                width: 28px;
+                height: 28px;
+                background: #bafca4;
+                border: 2px solid #3a1622;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: 700;
+                color: #3a1622;
+                font-size: 18px;
+                box-shadow: 2px 2px 0 #3a1622;
+                transition: all 0.2s;
+            }
+
+            .add-stop-btn:hover {
+                background: #a8f090;
+                transform: translate(1px, 1px);
+                box-shadow: 1px 1px 0 #3a1622;
+            }
+
+            .angle-section {
+                margin-top: 20px;
+            }
+
+            .angle-selector {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .angle-circle {
+                width: 60px;
+                height: 60px;
+                border: 3px solid #3a1622;
+                border-radius: 50%;
+                background: white;
+                position: relative;
+                cursor: pointer;
+                box-shadow: 2px 2px 0 #3a1622;
+            }
+
+            .angle-indicator {
+                position: absolute;
+                width: 3px;
+                height: 25px;
+                background: #ed5106;
+                left: 50%;
+                top: 5px;
+                transform-origin: bottom center;
+                border-radius: 2px;
+                margin-left: -1.5px;
+            }
+
+            .angle-value-display {
+                background: #3a1622;
+                color: white;
+                padding: 6px 10px;
+                border-radius: 4px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            pre {
+                background: #f5f5f5;
+                border: 3px solid #3a1622;
+                padding: 10px;
+                font-family: "Courier New", monospace;
+                font-size: 11px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                border-radius: 4px;
+                color: #3a1622;
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="control-panel">
+            <h2>Панель градієнта</h2>
+
+            <div class="gradient-preview" id="gradientPreview"></div>
+
+            <div class="color-stops" id="colorStops"></div>
+            <button class="add-stop-btn" id="addStopBtn">+</button>
+
+            <div class="angle-section">
+                <label>Кут</label>
+                <div class="angle-selector">
+                    <div class="angle-circle" id="angleCircle">
+                        <div class="angle-indicator" id="angleIndicator"></div>
+                    </div>
+                    <div class="angle-value-display" id="angleValue">132°</div>
+                </div>
+            </div>
+
+            <pre id="cssOutput"></pre>
+        </div>
+
+        <script>
+            let gradientStops = [
+                { id: 1, color: "#b93e88", position: 0 },
+                { id: 2, color: "#f58190", position: 50 },
+                { id: 3, color: "#fca78c", position: 100 },
+            ];
+            let nextId = 4;
+            let gradientAngle = 132;
+
+            const preview = document.getElementById("gradientPreview");
+            const stopsContainer = document.getElementById("colorStops");
+            const cssOutput = document.getElementById("cssOutput");
+            const addStopBtn = document.getElementById("addStopBtn");
+            const angleCircle = document.getElementById("angleCircle");
+            const angleIndicator = document.getElementById("angleIndicator");
+            const angleValue = document.getElementById("angleValue");
+
+            function generateGradient() {
+                if (gradientStops.length === 1) {
+                    return gradientStops[0].color;
+                }
+                const sorted = [...gradientStops].sort(
+                    (a, b) => a.position - b.position,
+                );
+                const stops = sorted
+                    .map((s) => `${s.color} ${s.position}%`)
+                    .join(", ");
+                return `linear-gradient(${gradientAngle}deg, ${stops})`;
+            }
+
+            function updatePreview() {
+                const bg = generateGradient();
+                preview.style.background = bg;
+                cssOutput.textContent = `background: ${bg};`;
+                renderHandles();
+            }
+
+            function renderStops() {
+                stopsContainer.innerHTML = "";
+                gradientStops.forEach((stop) => {
+                    const el = document.createElement("div");
+                    el.className = "color-stop";
+                    el.innerHTML = `
+            <input type="color" value="${stop.color}" data-id="${stop.id}">
+            <div class="color-value">${stop.color}</div>
+            <button class="remove-stop-btn" data-id="${stop.id}">×</button>
+          `;
+                    stopsContainer.appendChild(el);
+                });
+                stopsContainer
+                    .querySelectorAll('input[type="color"]')
+                    .forEach((inp) => {
+                        inp.addEventListener("input", (e) => {
+                            const stop = gradientStops.find(
+                                (s) => s.id == e.target.dataset.id,
+                            );
+                            stop.color = e.target.value;
+                            e.target.nextElementSibling.textContent =
+                                e.target.value;
+                            updatePreview();
+                        });
+                    });
+                stopsContainer
+                    .querySelectorAll(".remove-stop-btn")
+                    .forEach((btn) => {
+                        btn.addEventListener("click", (e) => {
+                            if (gradientStops.length > 1) {
+                                gradientStops = gradientStops.filter(
+                                    (s) => s.id != e.target.dataset.id,
+                                );
+                                renderStops();
+                                updatePreview();
+                            }
+                        });
+                    });
+            }
+
+            function renderHandles() {
+                preview
+                    .querySelectorAll(".color-stop-handle")
+                    .forEach((e) => e.remove());
+                gradientStops.forEach((stop) => {
+                    const handle = document.createElement("div");
+                    handle.className = "color-stop-handle";
+                    handle.style.left = stop.position + "%";
+                    handle.style.background = stop.color;
+
+                    const tooltip = document.createElement("div");
+                    tooltip.className = "tooltip";
+                    tooltip.textContent = stop.position + "%";
+                    tooltip.style.display = "none";
+                    handle.appendChild(tooltip);
+
+                    handle.addEventListener("mousedown", (e) => {
+                        handle.classList.add("dragging");
+                        tooltip.style.display = "block";
+                        const rect = preview.getBoundingClientRect();
+
+                        function move(ev) {
+                            const pos = Math.min(
+                                Math.max(
+                                    ((ev.clientX - rect.left) / rect.width) *
+                                        100,
+                                    0,
+                                ),
+                                100,
+                            );
+                            stop.position = Math.round(pos);
+                            handle.style.left = stop.position + "%";
+                            tooltip.textContent = stop.position + "%";
+                            updatePreview();
+                        }
+
+                        function up() {
+                            handle.classList.remove("dragging");
+                            tooltip.style.display = "none";
+                            document.removeEventListener("mousemove", move);
+                            document.removeEventListener("mouseup", up);
+                        }
+
+                        document.addEventListener("mousemove", move);
+                        document.addEventListener("mouseup", up);
+                    });
+
+                    preview.appendChild(handle);
+                });
+            }
+
+            addStopBtn.addEventListener("click", () => {
+                const sorted = [...gradientStops].sort(
+                    (a, b) => a.position - b.position,
+                );
+                let newPos = 50;
+                if (sorted.length >= 2) {
+                    let biggestGap = { start: 0, end: 100, size: 0 };
+                    for (let i = 0; i < sorted.length - 1; i++) {
+                        const gap = sorted[i + 1].position - sorted[i].position;
+                        if (gap > biggestGap.size)
+                            biggestGap = {
+                                start: sorted[i].position,
+                                end: sorted[i + 1].position,
+                                size: gap,
+                            };
+                    }
+                    newPos = biggestGap.start + biggestGap.size / 2;
+                } else if (sorted.length === 1) {
+                    newPos = sorted[0].position === 0 ? 100 : 0;
+                } else newPos = 0;
+                const randomColor =
+                    "#" +
+                    Math.floor(Math.random() * 16777215)
+                        .toString(16)
+                        .padStart(6, "0");
+                gradientStops.push({
+                    id: nextId++,
+                    color: randomColor,
+                    position: Math.round(newPos),
+                });
+                renderStops();
+                updatePreview();
+            });
+
+            function calculateAngle(e) {
+                const rect = angleCircle.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                const dx = e.clientX - cx;
+                const dy = e.clientY - cy;
+                let angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+                if (angle < 0) angle += 360;
+                return Math.round(angle);
+            }
+
+            angleCircle.addEventListener("mousedown", (e) => {
+                const move = (ev) => {
+                    gradientAngle = calculateAngle(ev);
+                    angleIndicator.style.transform = `rotate(${gradientAngle}deg)`;
+                    angleValue.textContent = `${gradientAngle}°`;
+                    updatePreview();
+                };
+                document.addEventListener("mousemove", move);
+                document.addEventListener(
+                    "mouseup",
+                    () => {
+                        document.removeEventListener("mousemove", move);
+                    },
+                    { once: true },
+                );
+            });
+
+            renderStops();
+            updatePreview();
+        </script>
+    </body>
+</html>

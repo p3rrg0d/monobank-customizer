@@ -2,10 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
         <title>monobank Widget Editor</title>
-        <link rel="stylesheet" href="styles.css" />
-        <link rel="stylesheet" href="background.css" />
+        <link rel="stylesheet" href="static/styles.css" />
+        <link rel="stylesheet" href="static/background.css" />
+        <link rel="stylesheet" href="src/colorpicker.min.css" />
     </head>
     <body>
         <script src="editor.js"></script>
@@ -16,7 +20,11 @@
                     <span class="btn yellow"></span>
                     <span class="btn green"></span>
                 </div>
-                <img src="mono-brutalism.png" alt="icon" class="header-icon" />
+                <img
+                    src="icons/mono-brutalism.png"
+                    alt="icon"
+                    class="header-icon"
+                />
                 <span class="title">Редактор віджета</span>
             </div>
 
@@ -24,6 +32,58 @@
                 <h2 style="color: black">Панель керування віджетом</h2>
                 <div class="control-section">
                     <h3>Фон</h3>
+                    <div class="color-control">
+                        <div class="control-row">
+                            <div
+                                class="gradient-preview"
+                                id="gradientPreview"
+                                style="background: rgb(252, 167, 140)"
+                            >
+                                <div
+                                    class="color-stop-handle"
+                                    style="
+                                        left: 100%;
+                                        background: rgb(252, 167, 140);
+                                    "
+                                >
+                                    <div class="tooltip" style="display: none">
+                                        100%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="color-stops" id="colorStops">
+                                <div class="color-stop">
+                                    <input
+                                        type="color"
+                                        value="#fca78c"
+                                        data-id="3"
+                                    />
+                                    <div class="color-value">#fca78c</div>
+                                    <button class="remove-stop-btn" data-id="3">
+                                        ×
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="angle-section">
+                                <label>Кут</label>
+                                <div class="angle-selector">
+                                    <div class="angle-circle" id="angleCircle">
+                                        <div
+                                            class="angle-indicator"
+                                            id="angleIndicator"
+                                            style="transform: rotate(359deg)"
+                                        ></div>
+                                    </div>
+                                    <div
+                                        class="angle-value-display"
+                                        id="angleValue"
+                                    >
+                                        359°
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="control-row">
                         <label for="border-radius-slider">Округлість</label>
 
@@ -57,7 +117,58 @@
                             <span class="range-value" id="slider">12px</span>
                         </div>
                     </div>
-                    <div class="control-row"></div>
+                    <div class="color-control">
+                        <div class="control-row">
+                            <div
+                                class="gradient-preview"
+                                id="gradientPreview"
+                                style="background: rgb(252, 167, 140)"
+                            >
+                                <div
+                                    class="color-stop-handle"
+                                    style="
+                                        left: 100%;
+                                        background: rgb(252, 167, 140);
+                                    "
+                                >
+                                    <div class="tooltip" style="display: none">
+                                        100%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="color-stops" id="colorStops">
+                                <div class="color-stop">
+                                    <input
+                                        type="color"
+                                        value="#fca78c"
+                                        data-id="3"
+                                    />
+                                    <div class="color-value">#fca78c</div>
+                                    <button class="remove-stop-btn" data-id="3">
+                                        ×
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="angle-section">
+                                <label>Кут</label>
+                                <div class="angle-selector">
+                                    <div class="angle-circle" id="angleCircle">
+                                        <div
+                                            class="angle-indicator"
+                                            id="angleIndicator"
+                                            style="transform: rotate(359deg)"
+                                        ></div>
+                                    </div>
+                                    <div
+                                        class="angle-value-display"
+                                        id="angleValue"
+                                    >
+                                        359°
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="control-row"></div>
                     <div class="control-row"></div>
                     <div class="control-row"></div>
@@ -83,8 +194,8 @@
         </div>
         <div class="footer-text">
             <a href="https://twitch.tv/p3rrg0d">by p3rrg0d </a>
-            <img src="face.png" alt="face" class="footer-icon" />
-            <img src="coffee.png" alt="coffee" class="footer-icon" />
+            <img src="icons/face.png" alt="face" class="footer-icon" />
+            <img src="icons/coffee.png" alt="coffee" class="footer-icon" />
         </div>
         <template id="widget-template">
             <div
@@ -129,5 +240,6 @@
         </template>
         <script src="script.js"></script>
         <script type="module" src="widget/widget.js"></script>
+        <script src="colorpicker.iife.min.js"></script>
     </body>
 </html>
