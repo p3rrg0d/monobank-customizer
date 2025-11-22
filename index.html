@@ -1,245 +1,208 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, user-scalable=no"
-        />
-        <title>monobank Widget Editor</title>
-        <link rel="stylesheet" href="static/styles.css" />
-        <link rel="stylesheet" href="static/background.css" />
-        <link rel="stylesheet" href="src/colorpicker.min.css" />
-    </head>
-    <body>
-        <script src="editor.js"></script>
-        <div class="container">
-            <div class="header">
-                <div class="window-buttons">
-                    <span class="btn red"></span>
-                    <span class="btn yellow"></span>
-                    <span class="btn green"></span>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>monobank Widget Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="static/styles.css?v=6" />
+    <link rel="stylesheet" href="static/circular-slider.css" />
+    <link rel="stylesheet" href="static/background.css?v=2" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="window-buttons">
+                <span class="btn red"></span>
+                <span class="btn yellow"></span>
+                <span class="btn green"></span>
+            </div>
+            <img src="icons/mono-brutalism.png" alt="icon" class="header-icon" />
+            <span class="title">Редактор віджета</span>
+        </div>
+
+        <div class="control-panel">
+            <h2 style="color: black">Налаштування віджета</h2>
+
+            <div class="control-section" style="
+                        background: #e1e1e1;
+                        border-bottom: 2px solid #3a1622;
+                    ">
+                <h3>Налаштування прев'ю</h3>
+                <div class="control-row">
+                    <label>Колір фону редактора</label>
+                    <div id="preview-bg-picker"></div>
                 </div>
-                <img
-                    src="icons/mono-brutalism.png"
-                    alt="icon"
-                    class="header-icon"
-                />
-                <span class="title">Редактор віджета</span>
+                <p style="font-size: 10px; opacity: 0.7">
+                    Цей колір не впливає на сам віджет, лише для зручності.
+                </p>
             </div>
 
-            <div class="control-panel">
-                <h2 style="color: black">Панель керування віджетом</h2>
-                <div class="control-section">
-                    <h3>Фон</h3>
-                    <div class="color-control">
-                        <div class="control-row">
-                            <div
-                                class="gradient-preview"
-                                id="gradientPreview"
-                                style="background: rgb(252, 167, 140)"
-                            >
-                                <div
-                                    class="color-stop-handle"
-                                    style="
-                                        left: 100%;
-                                        background: rgb(252, 167, 140);
-                                    "
-                                >
-                                    <div class="tooltip" style="display: none">
-                                        100%
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="color-stops" id="colorStops">
-                                <div class="color-stop">
-                                    <input
-                                        type="color"
-                                        value="#fca78c"
-                                        data-id="3"
-                                    />
-                                    <div class="color-value">#fca78c</div>
-                                    <button class="remove-stop-btn" data-id="3">
-                                        ×
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="angle-section">
-                                <label>Кут</label>
-                                <div class="angle-selector">
-                                    <div class="angle-circle" id="angleCircle">
-                                        <div
-                                            class="angle-indicator"
-                                            id="angleIndicator"
-                                            style="transform: rotate(359deg)"
-                                        ></div>
-                                    </div>
-                                    <div
-                                        class="angle-value-display"
-                                        id="angleValue"
-                                    >
-                                        359°
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="control-section">
+                <h3>Фон віджета</h3>
+
+                <div class="control-row">
+                    <label>Тип заливки</label>
+                    <select id="bg-type-select">
+                        <option value="solid">Суцільний колір</option>
+                        <option value="gradient">Градієнт</option>
+                    </select>
+                </div>
+
+                <div id="bg-solid-controls">
+                    <div class="control-row">
+                        <label>Колір</label>
+                        <div id="bg-solid-picker"></div>
                     </div>
                     <div class="control-row">
-                        <label for="border-radius-slider">Округлість</label>
-
+                        <label>Прозорість</label>
                         <div class="range">
-                            <input
-                                type="range"
-                                id="border-radius-slider"
-                                step="1"
-                                min="0"
-                                max="70"
-                                value="16"
-                            />
-                            <span class="range-value" id="slider">16px</span>
+                            <input type="range" id="bg-solid-opacity" min="0" max="1" step="0.01" value="1" />
+                            <span class="range-value">1.00</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="control-section">
-                    <h3>Прогрес-бар</h3>
+                <div id="bg-gradient-controls" style="display: none">
+                    <div class="gradient-picker-container" id="bg-gradient-picker"></div>
+                </div>
+
+                <div class="control-row" style="
+                            margin-top: 15px;
+                            border-top: 1px solid #ccc;
+                            padding-top: 10px;
+                        ">
+                    <label>Колір рамки</label>
+                    <div class="range">
+                        <div id="border-color-picker"></div>
+                        <input type="range" id="border-opacity" min="0" max="1" step="0.01" value="0" />
+                    </div>
+                </div>
+                <div class="control-row">
+                    <label>Округлість рамки</label>
+                    <input type="range" id="border-radius-slider" min="0" max="70" value="16" />
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3>2. Прогрес-бар</h3>
+                <div class="control-row">
+                    <label>Округлість смужки</label>
+                    <input type="range" id="progress-radius-slider" min="0" max="20" value="12" />
+                </div>
+
+                <h4 style="margin-top: 15px; border-bottom: 1px solid #999">
+                    Підкладка (Track)
+                </h4>
+                <div class="control-row">
+                    <label>Тип заливки</label>
+                    <select id="prog-track-type-select">
+                        <option value="solid">Суцільний колір</option>
+                        <option value="gradient">Градієнт</option>
+                    </select>
+                </div>
+
+                <div id="prog-track-solid-controls">
                     <div class="control-row">
-                        <label for="progress-radius-slider">Округлість</label>
+                        <label>Колір</label>
+                        <div id="prog-track-solid-picker"></div>
+                    </div>
+                    <div class="control-row">
+                        <label>Прозорість</label>
                         <div class="range">
-                            <input
-                                type="range"
-                                id="progress-radius-slider"
-                                step="1"
-                                min="0"
-                                max="20"
-                                value="12"
-                            />
-                            <span class="range-value" id="slider">12px</span>
+                            <input type="range" id="prog-track-solid-opacity" min="0" max="1" step="0.01" value="1" />
+                            <span class="range-value">1.00</span>
                         </div>
                     </div>
-                    <div class="color-control">
-                        <div class="control-row">
-                            <div
-                                class="gradient-preview"
-                                id="gradientPreview"
-                                style="background: rgb(252, 167, 140)"
-                            >
-                                <div
-                                    class="color-stop-handle"
-                                    style="
-                                        left: 100%;
-                                        background: rgb(252, 167, 140);
-                                    "
-                                >
-                                    <div class="tooltip" style="display: none">
-                                        100%
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="color-stops" id="colorStops">
-                                <div class="color-stop">
-                                    <input
-                                        type="color"
-                                        value="#fca78c"
-                                        data-id="3"
-                                    />
-                                    <div class="color-value">#fca78c</div>
-                                    <button class="remove-stop-btn" data-id="3">
-                                        ×
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="angle-section">
-                                <label>Кут</label>
-                                <div class="angle-selector">
-                                    <div class="angle-circle" id="angleCircle">
-                                        <div
-                                            class="angle-indicator"
-                                            id="angleIndicator"
-                                            style="transform: rotate(359deg)"
-                                        ></div>
-                                    </div>
-                                    <div
-                                        class="angle-value-display"
-                                        id="angleValue"
-                                    >
-                                        359°
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="control-row"></div>
-                    <div class="control-row"></div>
-                    <div class="control-row"></div>
-                    <div class="control-row"></div>
                 </div>
 
-                <p>Control Panel content</p>
-            </div>
+                <div id="prog-track-gradient-controls" style="display: none">
+                    <div class="gradient-picker-container" id="prog-track-gradient-picker"></div>
+                </div>
 
-            <div class="widget-preview">
-                <my-widget class="draggable" style="scale: 1.5"></my-widget>
-            </div>
-            <div class="css-export">
-                <div class="help-container">
-                    <span class="help-icon">?</span>
-                    <div class="help-popup">
-                        placeholder
-                        <span class="close-btn">&times;</span>
+                <h4 style="margin-top: 15px; border-bottom: 1px solid #999">
+                    Активна смужка (Fill)
+                </h4>
+                <div class="control-row">
+                    <label>Тип заливки</label>
+                    <select id="prog-fill-type-select">
+                        <option value="gradient">Градієнт</option>
+                        <option value="solid">Суцільний колір</option>
+                    </select>
+                </div>
+
+                <div id="prog-fill-solid-controls" style="display: none">
+                    <div class="control-row">
+                        <label>Колір</label>
+                        <div id="prog-fill-solid-picker"></div>
+                    </div>
+                    <div class="control-row">
+                        <label>Прозорість</label>
+                        <div class="range">
+                            <input type="range" id="prog-fill-solid-opacity" min="0" max="1" step="0.01" value="1" />
+                            <span class="range-value">1.00</span>
+                        </div>
                     </div>
                 </div>
-                <p>CSS Export content</p>
+
+                <div id="prog-fill-gradient-controls">
+                    <div class="gradient-picker-container" id="prog-fill-gradient-picker"></div>
+                </div>
             </div>
         </div>
-        <div class="footer-text">
-            <a href="https://twitch.tv/p3rrg0d">by p3rrg0d </a>
-            <img src="icons/face.png" alt="face" class="footer-icon" />
-            <img src="icons/coffee.png" alt="coffee" class="footer-icon" />
+
+        <div class="widget-preview">
+            <my-widget class="draggable" style="scale: 1.5"></my-widget>
         </div>
-        <template id="widget-template">
-            <div
-                class="widget qr-with-progress-widget color-scheme-black shadow-off"
-                style="transition: 0.2s ease-out; left: 100px; top: 150px"
-            >
-                <div class="qr-side">
-                    <div class="widget qr-container" style="height: 145px">
-                        <div class="qr">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 29 29"
-                                shape-rendering="crispEdges"
-                            >
-                                <path fill="#ffffff"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="progress-container">
-                    <div class="title">Назва банки</div>
-                    <div
-                        class="widget linear-horizontal-progress-widget color-scheme-pink text-scheme-white shape-scheme-rounded progress-scheme-normal display-scheme-inline"
-                    >
-                        <div class="background"></div>
-                        <div class="progress-container">
-                            <div class="progress-clip">
-                                <div
-                                    class="progress"
-                                    style="--progress: 50%"
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="text">
-                            <div class="text-balance">0₴</div>
-                            <div class="text-name">1₴, 50%</div>
-                            <div class="text-goal">2₴</div>
-                        </div>
+        <div class="css-export"></div>
+    </div>
+    <div class="footer-text">
+        <a href="https://twitch.tv/p3rrg0d">by p3rrg0d </a>
+        <img src="icons/face.png" alt="face" class="footer-icon" />
+        <img src="icons/coffee.png" alt="coffee" class="footer-icon" />
+    </div>
+    <template id="widget-template">
+        <div class="widget qr-with-progress-widget color-scheme-black shadow-off"
+            style="transition: 0.2s ease-out; left: 100px; top: 150px">
+            <div class="qr-side">
+                <div class="widget qr-container" style="height: 145px">
+                    <div class="qr">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" shape-rendering="crispEdges">
+                            <path fill="#ffffff"></path>
+                        </svg>
                     </div>
                 </div>
             </div>
-        </template>
-        <script src="script.js"></script>
-        <script type="module" src="widget/widget.js"></script>
-        <script src="colorpicker.iife.min.js"></script>
-    </body>
+            <div class="progress-container">
+                <div class="title">Назва банки</div>
+                <div
+                    class="widget linear-horizontal-progress-widget color-scheme-pink text-scheme-white shape-scheme-rounded progress-scheme-normal display-scheme-inline">
+                    <div class="background"></div>
+                    <div class="progress-container">
+                        <div class="progress-clip">
+                            <div class="progress" style="--progress: 50%"></div>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <div class="text-balance">0₴</div>
+                        <div class="text-name">1₴, 50%</div>
+                        <div class="text-goal">2₴</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+    <script type="module" src="src/main.js"></script>
+    <script src="script.js"></script>
+    <script type="module" src="widget/widget.js"></script>
+</body>
+
 </html>

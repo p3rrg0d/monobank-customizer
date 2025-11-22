@@ -2,17 +2,24 @@ const helpIcon = document.querySelector(".help-icon");
 const helpPopup = document.querySelector(".help-popup");
 const closeBtn = document.querySelector(".close-btn");
 
-helpIcon.addEventListener("click", () => {
-  helpPopup.style.display = "block";
-});
+if (helpIcon && helpPopup) {
+  helpIcon.addEventListener("click", () => {
+    helpPopup.style.display = "block";
+  });
+}
 
-closeBtn.addEventListener("click", () => {
-  helpPopup.style.display = "none";
-});
+if (closeBtn && helpPopup) {
+  closeBtn.addEventListener("click", () => {
+    helpPopup.style.display = "none";
+  });
+}
 
 document.querySelectorAll(".range").forEach((range) => {
   const input = range.querySelector('input[type="range"]');
   const output = range.querySelector(".range-value");
+
+  // Skip if elements don't exist (gradient ranges don't have .range-value)
+  if (!input || !output) return;
 
   function update() {
     output.textContent = input.value + "px";

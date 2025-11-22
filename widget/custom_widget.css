@@ -1,6 +1,6 @@
 .widget.qr-with-progress-widget.color-scheme-black {
     border-radius: var(--widget-border-radius, 16px);
-    background: var(--widget-bg-color, rgba(0, 0, 0, 1));
+    background: var(--widget-bg-color);
     border: 1px solid var(--widget-border-color, rgba(0, 0, 0, 0));
     color: var(--widget-text-color, #fff);
 }
@@ -19,7 +19,7 @@
     background: var(
         --progress-bg-color,
         linear-gradient(132.42deg, #e7b5d3 0%, #f4b9c1 50.79%, #eac6bb 97.52%)
-    );
+    ) !important;
     border-radius: var(--progress-radius, 12px);
 }
 

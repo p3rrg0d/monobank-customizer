@@ -1,0 +1,69 @@
+/* Circular Slider Styles */
+.circular-slider {
+    position: relative;
+    margin: 0 auto;
+    user-select: none;
+}
+
+.circular-slider-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+}
+
+.circular-slider-svg:active {
+    cursor: grabbing;
+}
+
+.slider-track {
+    opacity: 0.2;
+}
+
+.slider-needle {
+    transition: all 0.05s ease-out;
+    pointer-events: none;
+}
+
+.slider-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Gradient top row - angle clock + preview */
+.gradient-top-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.angle-clock {
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: #fff;
+}
+
+.gradient-preview-box {
+    flex-grow: 1;
+    animation: slideFromLeft 0.3s ease-out;
+}
+
+@keyframes slideFromLeft {
+    from {
+        opacity: 0;
+        margin-left: -80px;
+    }
+
+    to {
+        opacity: 1;
+        margin-left: 0;
+    }
+}
