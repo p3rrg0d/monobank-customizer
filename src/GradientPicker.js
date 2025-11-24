@@ -35,7 +35,10 @@ export class GradientPicker {
         this.container.innerHTML = `
             <div class="gradient-ui">
                 <div class="gradient-top-row">
-                    <div id="${this.container.id}-angle-slider" class="angle-clock"></div>
+                    <div class="clock-section">
+                        <div id="${this.container.id}-angle-slider" class="angle-clock"></div>
+                        <div class="clock-label">Кут</div>
+                    </div>
                     <div class="gradient-preview-box">
                         <div class="gradient-live-view"></div>
                     </div>
