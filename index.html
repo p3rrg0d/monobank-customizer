@@ -34,7 +34,32 @@
                 <button id="randomize-btn" class="btn-action" title="Випадкові налаштування">🎲 Рандом</button>
                 <button id="undo-btn" class="btn-action" title="Скасувати останню дію" disabled>Відмінити ↩</button>
             </div>
-
+            <div class="control-section" style="
+                        background: #e1e1e1;
+                        border-bottom: 2px solid #3a1622;
+                    ">
+                <h3>Налаштування прев'ю</h3>
+                <div class="section-content" id="preview-settings">
+                    <div class="control-row">
+                        <label>Колір фону редактора</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div id="preview-bg-picker" style="flex-grow: 1;"></div>
+                            <button id="reset-bg-btn" class="btn-secondary" title="Скинути фон"
+                                style="padding: 5px 10px; font-size: 12px;">↺</button>
+                        </div>
+                    </div>
+                    <div class="control-row">
+                        <label>Прогрес</label>
+                        <div class="range">
+                            <input type="range" id="preview-progress-slider" min="0" max="100" step="1" value="50" />
+                            <span class="range-value">50%</span>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size: 10px; opacity: 0.7">
+                    Ці налаштування не впливають на сам віджет, лише для зручності перегляду.
+                </p>
+            </div>
             <div class="control-section">
                 <h3>1. Фон віджета</h3>
                 <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
@@ -251,33 +276,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="control-section" style="
-                        background: #e1e1e1;
-                        border-bottom: 2px solid #3a1622;
-                    ">
-                <h3>Налаштування прев'ю</h3>
-                <div class="section-content" id="preview-settings">
-                    <div class="control-row">
-                        <label>Колір фону редактора</label>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <div id="preview-bg-picker" style="flex-grow: 1;"></div>
-                            <button id="reset-bg-btn" class="btn-secondary" title="Скинути фон"
-                                style="padding: 5px 10px; font-size: 12px;">↺</button>
-                        </div>
-                    </div>
-                    <div class="control-row">
-                        <label>Прогрес</label>
-                        <div class="range">
-                            <input type="range" id="preview-progress-slider" min="0" max="100" step="1" value="50" />
-                            <span class="range-value">50%</span>
-                        </div>
-                    </div>
-                </div>
-                <p style="font-size: 10px; opacity: 0.7">
-                    Ці налаштування не впливають на сам віджет, лише для зручності перегляду.
-                </p>
             </div>
         </div>
 
