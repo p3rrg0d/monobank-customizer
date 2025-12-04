@@ -290,4 +290,35 @@ export class GradientPicker {
         if (view) view.style.background = bg;
         this.onChange(bg);
     }
+
+    /**
+     * Set new stops and angle programmatically (for randomize)
+     * @param {Array} newStops - Array of stop objects {color, opacity, position}
+     * @param {number} newAngle - Gradient angle in degrees
+     */
+    setStops(newStops, newAngle) {
+        // Assign new IDs to stops
+        this.stops = newStops.map((stop, i) => ({
+            id: this.nextId++,
+            color: stop.color,
+            opacity: stop.opacity ?? 1,
+            position: stop.position
+        }));
+
+        this.angle = newAngle;
+        this.activeStopId = null;
+
+        // Update angle slider if exists
+        if (this.angleSlider && this.angleSlider.setValue) {
+            this.angleSlider.setValue(newAngle);
+        }
+
+        // Hide settings panel
+        const settingsPanel = this.container.querySelector(".stop-settings");
+        if (settingsPanel) settingsPanel.classList.remove("visible");
+
+        // Re-render
+        this.renderHandles();
+        this.updatePreview();
+    }
 }

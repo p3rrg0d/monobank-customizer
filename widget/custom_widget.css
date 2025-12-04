@@ -30,3 +30,18 @@
             linear-gradient(132.42deg, #b93e88 0%, #f58190 50.79%, #fca78c 97.52%));
     border-radius: var(--progress-radius, 12px);
 }
+
+/* QR Frame - використовує CSS-змінні для вибору рамки та розмірів */
+.widget.qr-with-progress-widget .qr-side .widget.qr-container {
+    width: var(--qr-container-width, 145px);
+    background-position-x: var(--qr-container-pos-x, -5px);
+    background-position-y: var(--qr-container-pos-y, 0px);
+    background-image: var(--qr-frame-bg);
+}
+
+.widget.qr-with-progress-widget .qr-side .widget.qr-container .qr {
+    width: var(--qr-width, 45%);
+    top: var(--qr-top, 23%);
+    left: var(--qr-left, 26.5%);
+    position: var(--qr-position, absolute);
+}

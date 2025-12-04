@@ -644,6 +644,39 @@ my-widget:active {
     box-shadow: 0 0 0 var(--border-color);
 }
 
+/* Action Buttons (Randomize, Undo) */
+.btn-action {
+    flex: 1;
+    padding: 10px 12px;
+    background: var(--bg-white);
+    color: var(--text-main);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.1s;
+    text-transform: uppercase;
+}
+
+.btn-action:hover:not(:disabled) {
+    background: var(--accent-secondary);
+    transform: translate(-1px, -1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-action:active:not(:disabled) {
+    transform: translate(1px, 1px);
+    box-shadow: 0 0 0 var(--border-color);
+}
+
+.btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Footer */
 .footer-text {
     position: fixed;
