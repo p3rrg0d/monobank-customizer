@@ -31,7 +31,7 @@
     border-radius: var(--progress-radius, 12px);
 }
 
-/* QR Frame - використовує CSS-змінні для вибору рамки та розмірів */
+/* QR Frame - використовує CSS-змінні для рамки та розмірів */
 .widget.qr-with-progress-widget .qr-side .widget.qr-container {
     width: var(--qr-container-width, 145px);
     background-position-x: var(--qr-container-pos-x, -5px);

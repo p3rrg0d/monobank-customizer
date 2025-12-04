@@ -3,7 +3,7 @@ import { GradientPicker } from './GradientPicker.js';
 import { PickrManager } from './PickrManager.js';
 import { bindAllEvents } from './EventHandlers.js';
 import { ModalManager } from './ModalManager.js';
-import { generateWidgetCSS, getBackgroundCSS, CSSExporter } from './CSSGenerator.js';
+import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG } from './CSSGenerator.js';
 
 // ================= MAIN CLASS =================
 export class WidgetEditor {
@@ -39,9 +39,14 @@ export class WidgetEditor {
             progFillGradientString: "",
 
             textColor: "#ffffff",
-            
-            // 
+
+            // 5. QR Frame
+            qrFrame: "standard",
         };
+
+        // History for undo (max 20 states)
+        this.history = [];
+        this.maxHistoryLength = 20;
 
         // Cache DOM elements
         this.dom = {
@@ -83,6 +88,13 @@ export class WidgetEditor {
             progFillGradientPanel: document.getElementById("prog-fill-gradient-controls"),
             progFillSolidPicker: document.getElementById("prog-fill-solid-picker"),
             progFillSolidOpacity: document.getElementById("prog-fill-solid-opacity"),
+
+            // QR Frame Controls
+            qrFrameSelect: document.getElementById("qr-frame-select"),
+
+            // Action buttons
+            randomizeBtn: document.getElementById("randomize-btn"),
+            undoBtn: document.getElementById("undo-btn"),
         };
 
         this.init();
@@ -302,6 +314,29 @@ export class WidgetEditor {
                 this.state.progFillGradientString
             );
             s.setProperty("--progress-gradient", fillBg);
+
+            // QR Frame
+            s.setProperty("--qr-frame-bg", getQRFrameSVG(this.state.qrFrame));
+
+            // QR Frame sizing (для frame2 - кастомні розміри)
+            if (this.state.qrFrame === 'frame2') {
+                s.setProperty("--qr-container-width", "180px");
+                s.setProperty("--qr-container-pos-x", "-20.1px");
+                s.setProperty("--qr-container-pos-y", "-19.5px");
+                s.setProperty("--qr-width", "50%");
+                s.setProperty("--qr-top", "17px");
+                s.setProperty("--qr-left", "13.4%");
+                s.setProperty("--qr-position", "relative");
+            } else {
+                // Дефолтні значення для standard/frame1
+                s.setProperty("--qr-container-width", "145px");
+                s.setProperty("--qr-container-pos-x", "-5px");
+                s.setProperty("--qr-container-pos-y", "0px");
+                s.setProperty("--qr-width", "45%");
+                s.setProperty("--qr-top", "23%");
+                s.setProperty("--qr-left", "26.5%");
+                s.setProperty("--qr-position", "absolute");
+            }
         }
 
         // Update CSS export
@@ -309,5 +344,131 @@ export class WidgetEditor {
             const css = generateWidgetCSS(this.state);
             this.cssExporter.updateCSS(css);
         }
+    }
+
+    /**
+     * Save current state to history (for undo)
+     */
+    saveState() {
+        const stateCopy = JSON.parse(JSON.stringify(this.state));
+        this.history.push(stateCopy);
+        if (this.history.length > this.maxHistoryLength) {
+            this.history.shift();
+        }
+        this.updateUndoButton();
+    }
+
+    /**
+     * Undo last change
+     */
+    undo() {
+        if (this.history.length === 0) return;
+        const previousState = this.history.pop();
+        this.state = previousState;
+        this.syncUIToState();
+        this.updateAll();
+        this.updateUndoButton();
+    }
+
+    /**
+     * Update undo button enabled/disabled state
+     */
+    updateUndoButton() {
+        if (this.dom.undoBtn) {
+            this.dom.undoBtn.disabled = this.history.length === 0;
+        }
+    }
+
+    /**
+     * Sync UI controls to current state
+     */
+    syncUIToState() {
+        if (this.dom.bgTypeSelect) this.dom.bgTypeSelect.value = this.state.bgType;
+        if (this.dom.bgSolidOpacity) {
+            this.dom.bgSolidOpacity.value = this.state.bgSolidOpacity;
+            const rangeVal = this.dom.bgSolidOpacity.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = this.state.bgSolidOpacity.toFixed(2);
+        }
+        if (this.dom.borderCheckbox) this.dom.borderCheckbox.checked = this.state.borderEnabled;
+        if (this.dom.borderControls) this.dom.borderControls.style.display = this.state.borderEnabled ? "block" : "none";
+        if (this.dom.borderStyleSelect) this.dom.borderStyleSelect.value = this.state.borderStyle;
+        if (this.dom.borderWidthSlider) this.dom.borderWidthSlider.value = this.state.borderWidth;
+        if (this.dom.borderOpacity) this.dom.borderOpacity.value = this.state.borderOpacity;
+        if (this.dom.radiusSlider) this.dom.radiusSlider.value = this.state.borderRadius;
+        if (this.dom.progressRadius) this.dom.progressRadius.value = this.state.progressRadius;
+        if (this.dom.progTrackTypeSelect) this.dom.progTrackTypeSelect.value = this.state.progTrackType;
+        if (this.dom.progFillTypeSelect) this.dom.progFillTypeSelect.value = this.state.progFillType;
+        if (this.dom.qrFrameSelect) this.dom.qrFrameSelect.value = this.state.qrFrame;
+        this.togglePanel(this.state.bgType, this.dom.bgSolidPanel, this.dom.bgGradientPanel, this.bgGradientPicker);
+        this.togglePanel(this.state.progTrackType, this.dom.progTrackSolidPanel, this.dom.progTrackGradientPanel, this.trackGradientPicker);
+        this.togglePanel(this.state.progFillType, this.dom.progFillSolidPanel, this.dom.progFillGradientPanel, this.fillGradientPicker);
+        if (this.pickrManager) {
+            if (this.pickrManager.pickers.bgSolid) this.pickrManager.pickers.bgSolid.setColor(this.state.bgSolidColor, true);
+            if (this.pickrManager.pickers.borderColor) this.pickrManager.pickers.borderColor.setColor(this.state.borderColor, true);
+            if (this.pickrManager.pickers.progTrackSolid) this.pickrManager.pickers.progTrackSolid.setColor(this.state.progTrackSolidColor, true);
+            if (this.pickrManager.pickers.progFillSolid) this.pickrManager.pickers.progFillSolid.setColor(this.state.progFillSolidColor, true);
+        }
+    }
+
+    /**
+     * Randomize widget settings
+     */
+    randomize() {
+        this.saveState();
+        const randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+        const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+        const randomFloat = (min, max) => Math.random() * (max - min) + min;
+        const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        const randomGradientData = () => {
+            const angle = randomInt(0, 360);
+            const numStops = randomInt(2, 4);
+            const stops = [];
+            for (let i = 0; i < numStops; i++) {
+                stops.push({ color: randomColor(), opacity: 1, position: Math.round((i / (numStops - 1)) * 100) });
+            }
+            return { stops, angle };
+        };
+
+        if (Math.random() > 0.5) {
+            this.state.bgType = "solid";
+            this.state.bgSolidColor = randomColor();
+            this.state.bgSolidOpacity = randomFloat(0.7, 1);
+        } else {
+            this.state.bgType = "gradient";
+            const gradData = randomGradientData();
+            if (this.bgGradientPicker) this.bgGradientPicker.setStops(gradData.stops, gradData.angle);
+        }
+
+        this.state.borderEnabled = Math.random() > 0.5;
+        this.state.borderStyle = randomChoice(["solid", "dashed", "dotted", "double"]);
+        this.state.borderWidth = this.state.borderEnabled ? randomInt(1, 5) : 0;
+        this.state.borderColor = randomColor();
+        this.state.borderOpacity = this.state.borderEnabled ? randomFloat(0.5, 1) : 0;
+        this.state.borderRadius = randomInt(0, 40);
+        this.state.progressRadius = randomInt(0, 16);
+
+        if (Math.random() > 0.7) {
+            this.state.progTrackType = "solid";
+            this.state.progTrackSolidColor = randomColor();
+            this.state.progTrackSolidOpacity = randomFloat(0.5, 1);
+        } else {
+            this.state.progTrackType = "gradient";
+            const gradData = randomGradientData();
+            if (this.trackGradientPicker) this.trackGradientPicker.setStops(gradData.stops, gradData.angle);
+        }
+
+        if (Math.random() > 0.7) {
+            this.state.progFillType = "solid";
+            this.state.progFillSolidColor = randomColor();
+            this.state.progFillSolidOpacity = randomFloat(0.8, 1);
+        } else {
+            this.state.progFillType = "gradient";
+            const gradData = randomGradientData();
+            if (this.fillGradientPicker) this.fillGradientPicker.setStops(gradData.stops, gradData.angle);
+        }
+
+        this.state.qrFrame = randomChoice(["standard", "frame1", "frame2"]);
+        this.syncUIToState();
+        this.updateAll();
     }
 }

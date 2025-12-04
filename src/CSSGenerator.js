@@ -80,58 +80,58 @@ export function generateWidgetCSS(state) {
     const qrFrame2Styles = state.qrFrame === 'frame2' ? `
 /*QR код*/
 .widget.qr-container .qr {
-    width: 50%;
+    width: 50% !important;
 }
 .widget.qr-with-progress-widget .qr-side .widget.qr-container .qr {
-    top: 17px;
-    left: 13.4%;
-    position: relative;
+    top: 17px !important;
+    left: 13.4% !important;
+    position: relative !important;
 }
 .widget.qr-with-progress-widget .qr-side .widget.qr-container {
-    width: 180px;
-    background-size: 100% auto;
-    background-position-x: -20.1px;
-    background-position-y: -19.5px;
-    background-repeat: no-repeat;
-    background-image: url(${qrFrameDataUri});
+    width: 180px !important;
+    background-size: 100% auto !important;
+    background-position-x: -20.1px !important;
+    background-position-y: -19.5px !important;
+    background-repeat: no-repeat !important;
+    background-image: url(${qrFrameDataUri}) !important;
 }` : `
 /*QR код*/
 .widget.qr-with-progress-widget .qr-side .widget.qr-container {
-    background-image: url(${qrFrameDataUri});
+    background-image: url(${qrFrameDataUri}) !important;
 }`;
 
     return `
 .widget.qr-with-progress-widget.color-scheme-black {
-    border-radius: ${state.borderRadius}px;
-    background: ${bg};
-    border: ${border};
-    color: ${state.textColor};
+    border-radius: ${state.borderRadius}px !important;
+    background: ${bg} !important;
+    border: ${border} !important;
+    color: ${state.textColor} !important;
 }
 
 /* Радіуси */
 .linear-horizontal-progress-widget.shape-scheme-rounded .background,
 .linear-horizontal-progress-widget.shape-scheme-rounded .progress-clip,
 .linear-horizontal-progress-widget.shape-scheme-rounded .progress {
-    border-radius: ${state.progressRadius}px;
+    border-radius: ${state.progressRadius}px !important;
 }
 
 /* Фон підкладки */
 .linear-horizontal-progress-widget .background {
-    background: ${trackBg};
+    background: ${trackBg} !important;
 }
 
 /* Активна смужка */
 .linear-horizontal-progress-widget.color-scheme-pink .progress {
-    background: ${fillBg};
+    background: ${fillBg} !important;
 }
 ${qrFrame2Styles}
 
 .widget.qr-container svg path {
-    fill: #ffffff;
+    fill: #ffffff !important;
 }
 
 .linear-horizontal-progress-widget.text-scheme-white .text {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 .widget.qr-with-progress-widget.color-scheme-black.shadow-off {
   color: #ffffff !important;
