@@ -9,6 +9,15 @@
     font-family: 'Inter', sans-serif;
 }
 
+/* Text styling for title and progress text */
+.widget.qr-with-progress-widget .title,
+.widget.qr-with-progress-widget .progress-container .widget .text,
+.linear-horizontal-progress-widget .text .text-balance,
+.linear-horizontal-progress-widget .text .text-goal {
+    color: var(--widget-text-color, #fff);
+    text-shadow: var(--widget-text-shadow, 0px 2px 4px rgba(0, 0, 0, 0.37));
+}
+
 .linear-horizontal-progress-widget.shape-scheme-rounded .background,
 .linear-horizontal-progress-widget.shape-scheme-rounded .progress-clip {
     border-radius: var(--progress-radius, 12px);

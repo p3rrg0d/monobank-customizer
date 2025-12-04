@@ -100,12 +100,26 @@ export function generateWidgetCSS(state) {
     background-image: url(${qrFrameDataUri}) !important;
 }`;
 
+    // Generate text shadow CSS
+    const textShadow = state.textShadowEnabled
+        ? `${state.textShadowX}px ${state.textShadowY}px ${state.textShadowBlur}px ${hexToRgba(state.textShadowColor, state.textShadowOpacity)}`
+        : 'none';
+
     return `
 .widget.qr-with-progress-widget.color-scheme-black {
     border-radius: ${state.borderRadius}px !important;
     background: ${bg} !important;
     border: ${border} !important;
     color: ${state.textColor} !important;
+}
+
+/* Текст віджета */
+.widget.qr-with-progress-widget .title,
+.widget.qr-with-progress-widget .progress-container .widget .text,
+.linear-horizontal-progress-widget .text .text-balance,
+.linear-horizontal-progress-widget .text .text-goal {
+    color: ${state.textColor} !important;
+    text-shadow: ${textShadow} !important;
 }
 
 /* Радіуси */
@@ -128,13 +142,6 @@ ${qrFrame2Styles}
 
 .widget.qr-container svg path {
     fill: #ffffff !important;
-}
-
-.linear-horizontal-progress-widget.text-scheme-white .text {
-  color: #ffffff !important;
-}
-.widget.qr-with-progress-widget.color-scheme-black.shadow-off {
-  color: #ffffff !important;
 }
 
     `.trim();

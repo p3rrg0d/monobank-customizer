@@ -52,6 +52,7 @@ https://p3rrg0d.github.io/monobank-customizer/
    cd monobank-customizer
    ```
 3. Відкрийте файл `index.html` у вашому браузері.
+
 *рекомендується використовувати локальний сервер (наприклад, Live Server у VS Code або Python SimpleHTTPServer).*
 
 ```python

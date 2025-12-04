@@ -78,6 +78,7 @@ export class PickrManager {
         this.initializePreviewPicker();
         this.initializeWidgetPickers();
         this.initializeProgressPickers();
+        this.initializeTextPickers();
     }
 
     /**
@@ -149,6 +150,35 @@ export class PickrManager {
                 this.editor.updateAll();
             }
         );
+    }
+
+    /**
+     * Initialize text color pickers
+     */
+    initializeTextPickers() {
+        // Text Color
+        if (this.editor.dom.textColorPicker) {
+            this.pickers.textColor = createPickrInstance(
+                this.editor.dom.textColorPicker,
+                this.editor.state.textColor,
+                (color) => {
+                    this.editor.state.textColor = color;
+                    this.editor.updateAll();
+                }
+            );
+        }
+
+        // Text Shadow Color
+        if (this.editor.dom.textShadowColorPicker) {
+            this.pickers.textShadowColor = createPickrInstance(
+                this.editor.dom.textShadowColorPicker,
+                this.editor.state.textShadowColor,
+                (color) => {
+                    this.editor.state.textShadowColor = color;
+                    this.editor.updateAll();
+                }
+            );
+        }
     }
 
     /**

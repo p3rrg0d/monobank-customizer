@@ -40,6 +40,14 @@ export class WidgetEditor {
 
             textColor: "#ffffff",
 
+            // 4. Text
+            textShadowEnabled: false,
+            textShadowColor: "#ff0000",
+            textShadowOpacity: 1,
+            textShadowX: 0,
+            textShadowY: 2,
+            textShadowBlur: 0,
+
             // 5. QR Frame
             qrFrame: "standard",
         };
@@ -91,6 +99,15 @@ export class WidgetEditor {
 
             // QR Frame Controls
             qrFrameSelect: document.getElementById("qr-frame-select"),
+
+            // Text Controls
+            textColorPicker: document.getElementById("text-color-picker"),
+            textShadowCheckbox: document.getElementById("text-shadow-enabled"),
+            textShadowControls: document.getElementById("text-shadow-controls"),
+            textShadowColorPicker: document.getElementById("text-shadow-color-picker"),
+            textShadowX: document.getElementById("text-shadow-x"),
+            textShadowY: document.getElementById("text-shadow-y"),
+            textShadowBlur: document.getElementById("text-shadow-blur"),
 
             // Action buttons
             randomizeBtn: document.getElementById("randomize-btn"),
@@ -337,6 +354,13 @@ export class WidgetEditor {
                 s.setProperty("--qr-left", "26.5%");
                 s.setProperty("--qr-position", "absolute");
             }
+
+            // Text styles
+            s.setProperty("--widget-text-color", this.state.textColor);
+            const textShadow = this.state.textShadowEnabled
+                ? `${this.state.textShadowX}px ${this.state.textShadowY}px ${this.state.textShadowBlur}px ${hexToRgba(this.state.textShadowColor, this.state.textShadowOpacity)}`
+                : 'none';
+            s.setProperty("--widget-text-shadow", textShadow);
         }
 
         // Update CSS export
@@ -399,6 +423,26 @@ export class WidgetEditor {
         if (this.dom.progTrackTypeSelect) this.dom.progTrackTypeSelect.value = this.state.progTrackType;
         if (this.dom.progFillTypeSelect) this.dom.progFillTypeSelect.value = this.state.progFillType;
         if (this.dom.qrFrameSelect) this.dom.qrFrameSelect.value = this.state.qrFrame;
+
+        // Text controls
+        if (this.dom.textShadowCheckbox) this.dom.textShadowCheckbox.checked = this.state.textShadowEnabled;
+        if (this.dom.textShadowControls) this.dom.textShadowControls.style.display = this.state.textShadowEnabled ? "block" : "none";
+        if (this.dom.textShadowX) {
+            this.dom.textShadowX.value = this.state.textShadowX;
+            const rangeVal = this.dom.textShadowX.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = `${this.state.textShadowX}px`;
+        }
+        if (this.dom.textShadowY) {
+            this.dom.textShadowY.value = this.state.textShadowY;
+            const rangeVal = this.dom.textShadowY.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = `${this.state.textShadowY}px`;
+        }
+        if (this.dom.textShadowBlur) {
+            this.dom.textShadowBlur.value = this.state.textShadowBlur;
+            const rangeVal = this.dom.textShadowBlur.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = `${this.state.textShadowBlur}px`;
+        }
+
         this.togglePanel(this.state.bgType, this.dom.bgSolidPanel, this.dom.bgGradientPanel, this.bgGradientPicker);
         this.togglePanel(this.state.progTrackType, this.dom.progTrackSolidPanel, this.dom.progTrackGradientPanel, this.trackGradientPicker);
         this.togglePanel(this.state.progFillType, this.dom.progFillSolidPanel, this.dom.progFillGradientPanel, this.fillGradientPicker);
@@ -407,6 +451,8 @@ export class WidgetEditor {
             if (this.pickrManager.pickers.borderColor) this.pickrManager.pickers.borderColor.setColor(this.state.borderColor, true);
             if (this.pickrManager.pickers.progTrackSolid) this.pickrManager.pickers.progTrackSolid.setColor(this.state.progTrackSolidColor, true);
             if (this.pickrManager.pickers.progFillSolid) this.pickrManager.pickers.progFillSolid.setColor(this.state.progFillSolidColor, true);
+            if (this.pickrManager.pickers.textColor) this.pickrManager.pickers.textColor.setColor(this.state.textColor, true);
+            if (this.pickrManager.pickers.textShadowColor) this.pickrManager.pickers.textShadowColor.setColor(this.state.textShadowColor, true);
         }
     }
 
@@ -468,6 +514,15 @@ export class WidgetEditor {
         }
 
         this.state.qrFrame = randomChoice(["standard", "frame1", "frame2"]);
+
+        // Randomize text settings
+        this.state.textColor = randomColor();
+        this.state.textShadowEnabled = Math.random() > 0.5;
+        this.state.textShadowColor = randomColor();
+        this.state.textShadowX = randomInt(-5, 5);
+        this.state.textShadowY = randomInt(-5, 5);
+        this.state.textShadowBlur = randomInt(0, 5);
+
         this.syncUIToState();
         this.updateAll();
     }

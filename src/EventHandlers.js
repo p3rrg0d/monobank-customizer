@@ -90,6 +90,53 @@ export function bindQREvents(editor) {
 }
 
 /**
+ * Bind text customization events
+ * @param {WidgetEditor} editor - Widget editor instance
+ */
+export function bindTextEvents(editor) {
+    // Text shadow checkbox
+    if (editor.dom.textShadowCheckbox) {
+        editor.dom.textShadowCheckbox.addEventListener("change", (e) => {
+            editor.state.textShadowEnabled = e.target.checked;
+            if (editor.dom.textShadowControls) {
+                editor.dom.textShadowControls.style.display = e.target.checked ? "block" : "none";
+            }
+            editor.updateAll();
+        });
+    }
+
+    // Text shadow X slider
+    if (editor.dom.textShadowX) {
+        editor.dom.textShadowX.addEventListener("input", (e) => {
+            editor.state.textShadowX = parseInt(e.target.value);
+            const rangeValue = e.target.nextElementSibling;
+            if (rangeValue) rangeValue.textContent = `${editor.state.textShadowX}px`;
+            editor.updateAll();
+        });
+    }
+
+    // Text shadow Y slider
+    if (editor.dom.textShadowY) {
+        editor.dom.textShadowY.addEventListener("input", (e) => {
+            editor.state.textShadowY = parseInt(e.target.value);
+            const rangeValue = e.target.nextElementSibling;
+            if (rangeValue) rangeValue.textContent = `${editor.state.textShadowY}px`;
+            editor.updateAll();
+        });
+    }
+
+    // Text shadow blur slider
+    if (editor.dom.textShadowBlur) {
+        editor.dom.textShadowBlur.addEventListener("input", (e) => {
+            editor.state.textShadowBlur = parseInt(e.target.value);
+            const rangeValue = e.target.nextElementSibling;
+            if (rangeValue) rangeValue.textContent = `${editor.state.textShadowBlur}px`;
+            editor.updateAll();
+        });
+    }
+}
+
+/**
  * Bind progress bar events
  * @param {WidgetEditor} editor - Widget editor instance
  */
@@ -211,6 +258,7 @@ export function bindAllEvents(editor) {
     bindBorderEvents(editor);
     bindQREvents(editor);
     bindProgressEvents(editor);
+    bindTextEvents(editor);
     bindPreviewEvents(editor);
     bindActionButtons(editor);
 }
