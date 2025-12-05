@@ -1,6 +1,6 @@
 import { hexToRgba } from './utils.js';
 import { GradientPicker } from './GradientPicker.js';
-import { PickrManager } from './PickrManager.js';
+import { PickrManager, setPickrColorSilent } from './PickrManager.js';
 import { bindAllEvents } from './EventHandlers.js';
 import { ModalManager } from './ModalManager.js';
 import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG } from './CSSGenerator.js';
@@ -14,6 +14,11 @@ export class WidgetEditor {
             bgSolidColor: "#000000",
             bgSolidOpacity: 1,
             bgGradientString: "",
+            bgGradientStops: [
+                { id: 1, color: "#000000", opacity: 1, position: 0 },
+                { id: 2, color: "#444444", opacity: 0.8, position: 100 },
+            ],
+            bgGradientAngle: 135,
 
             // 2. Border
             borderEnabled: false,
@@ -31,12 +36,22 @@ export class WidgetEditor {
             progTrackSolidColor: "#e7b5d3",
             progTrackSolidOpacity: 1,
             progTrackGradientString: "",
+            progTrackGradientStops: [
+                { id: 1, color: "#e7b5d3", opacity: 1, position: 0 },
+                { id: 2, color: "#eac6bb", opacity: 1, position: 100 },
+            ],
+            progTrackGradientAngle: 135,
 
             // 3.2 Progress Fill (Активна)
             progFillType: "gradient",
             progFillSolidColor: "#b93e88",
             progFillSolidOpacity: 1,
             progFillGradientString: "",
+            progFillGradientStops: [
+                { id: 1, color: "#b93e88", opacity: 1, position: 0 },
+                { id: 2, color: "#fca78c", opacity: 1, position: 100 },
+            ],
+            progFillGradientAngle: 135,
 
             textColor: "#ffffff",
 
@@ -55,6 +70,7 @@ export class WidgetEditor {
         // History for undo (max 20 states)
         this.history = [];
         this.maxHistoryLength = 20;
+        this._preventSave = false; // Flag to prevent accidental saves during undo/randomize
 
         // Cache DOM elements
         this.dom = {
@@ -150,36 +166,48 @@ export class WidgetEditor {
      */
     initGradientPickers() {
         this.bgGradientPicker = new GradientPicker("bg-gradient-picker", {
-            initialStops: [
-                { id: 1, color: "#000000", opacity: 1, position: 0 },
-                { id: 2, color: "#444444", opacity: 0.8, position: 100 },
-            ],
+            initialStops: this.state.bgGradientStops,
+            initialAngle: this.state.bgGradientAngle,
             onChange: (css) => {
                 this.state.bgGradientString = css;
+                // Also save stops and angle for undo (check if picker exists - it may not during init)
+                if (this.bgGradientPicker) {
+                    this.state.bgGradientStops = JSON.parse(JSON.stringify(this.bgGradientPicker.stops));
+                    this.state.bgGradientAngle = this.bgGradientPicker.angle;
+                }
                 this.updateAll();
             },
+            onSaveState: () => this.saveState(),
         });
 
         this.trackGradientPicker = new GradientPicker("prog-track-gradient-picker", {
-            initialStops: [
-                { id: 1, color: "#e7b5d3", opacity: 1, position: 0 },
-                { id: 2, color: "#eac6bb", opacity: 1, position: 100 },
-            ],
+            initialStops: this.state.progTrackGradientStops,
+            initialAngle: this.state.progTrackGradientAngle,
             onChange: (css) => {
                 this.state.progTrackGradientString = css;
+                // Also save stops and angle for undo
+                if (this.trackGradientPicker) {
+                    this.state.progTrackGradientStops = JSON.parse(JSON.stringify(this.trackGradientPicker.stops));
+                    this.state.progTrackGradientAngle = this.trackGradientPicker.angle;
+                }
                 this.updateAll();
             },
+            onSaveState: () => this.saveState(),
         });
 
         this.fillGradientPicker = new GradientPicker("prog-fill-gradient-picker", {
-            initialStops: [
-                { id: 1, color: "#b93e88", opacity: 1, position: 0 },
-                { id: 2, color: "#fca78c", opacity: 1, position: 100 },
-            ],
+            initialStops: this.state.progFillGradientStops,
+            initialAngle: this.state.progFillGradientAngle,
             onChange: (css) => {
                 this.state.progFillGradientString = css;
+                // Also save stops and angle for undo
+                if (this.fillGradientPicker) {
+                    this.state.progFillGradientStops = JSON.parse(JSON.stringify(this.fillGradientPicker.stops));
+                    this.state.progFillGradientAngle = this.fillGradientPicker.angle;
+                }
                 this.updateAll();
             },
+            onSaveState: () => this.saveState(),
         });
     }
 
@@ -374,6 +402,9 @@ export class WidgetEditor {
      * Save current state to history (for undo)
      */
     saveState() {
+        // Don't save if we're in the middle of undo/randomize/sync operations
+        if (this._preventSave) return;
+
         const stateCopy = JSON.parse(JSON.stringify(this.state));
         this.history.push(stateCopy);
         if (this.history.length > this.maxHistoryLength) {
@@ -387,11 +418,16 @@ export class WidgetEditor {
      */
     undo() {
         if (this.history.length === 0) return;
+
+        this._preventSave = true; // Prevent any accidental saves during undo
+
         const previousState = this.history.pop();
         this.state = previousState;
         this.syncUIToState();
         this.updateAll();
         this.updateUndoButton();
+
+        this._preventSave = false;
     }
 
     /**
@@ -407,21 +443,54 @@ export class WidgetEditor {
      * Sync UI controls to current state
      */
     syncUIToState() {
+        // Background controls
         if (this.dom.bgTypeSelect) this.dom.bgTypeSelect.value = this.state.bgType;
         if (this.dom.bgSolidOpacity) {
             this.dom.bgSolidOpacity.value = this.state.bgSolidOpacity;
             const rangeVal = this.dom.bgSolidOpacity.nextElementSibling;
             if (rangeVal) rangeVal.textContent = this.state.bgSolidOpacity.toFixed(2);
         }
+
+        // Border controls
         if (this.dom.borderCheckbox) this.dom.borderCheckbox.checked = this.state.borderEnabled;
         if (this.dom.borderControls) this.dom.borderControls.style.display = this.state.borderEnabled ? "block" : "none";
         if (this.dom.borderStyleSelect) this.dom.borderStyleSelect.value = this.state.borderStyle;
-        if (this.dom.borderWidthSlider) this.dom.borderWidthSlider.value = this.state.borderWidth;
-        if (this.dom.borderOpacity) this.dom.borderOpacity.value = this.state.borderOpacity;
-        if (this.dom.radiusSlider) this.dom.radiusSlider.value = this.state.borderRadius;
-        if (this.dom.progressRadius) this.dom.progressRadius.value = this.state.progressRadius;
+        if (this.dom.borderWidthSlider) {
+            this.dom.borderWidthSlider.value = this.state.borderWidth;
+            const rangeVal = this.dom.borderWidthSlider.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = `${this.state.borderWidth}px`;
+        }
+        if (this.dom.borderOpacity) {
+            this.dom.borderOpacity.value = this.state.borderOpacity;
+            const rangeVal = this.dom.borderOpacity.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = this.state.borderOpacity.toFixed(2);
+        }
+        if (this.dom.radiusSlider) {
+            this.dom.radiusSlider.value = this.state.borderRadius;
+            const rangeVal = this.dom.radiusSlider.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = `${this.state.borderRadius}px`;
+        }
+
+        // Progress controls
+        if (this.dom.progressRadius) {
+            this.dom.progressRadius.value = this.state.progressRadius;
+            const rangeVal = this.dom.progressRadius.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = `${this.state.progressRadius}px`;
+        }
         if (this.dom.progTrackTypeSelect) this.dom.progTrackTypeSelect.value = this.state.progTrackType;
+        if (this.dom.progTrackSolidOpacity) {
+            this.dom.progTrackSolidOpacity.value = this.state.progTrackSolidOpacity;
+            const rangeVal = this.dom.progTrackSolidOpacity.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = this.state.progTrackSolidOpacity.toFixed(2);
+        }
         if (this.dom.progFillTypeSelect) this.dom.progFillTypeSelect.value = this.state.progFillType;
+        if (this.dom.progFillSolidOpacity) {
+            this.dom.progFillSolidOpacity.value = this.state.progFillSolidOpacity;
+            const rangeVal = this.dom.progFillSolidOpacity.nextElementSibling;
+            if (rangeVal) rangeVal.textContent = this.state.progFillSolidOpacity.toFixed(2);
+        }
+
+        // QR Frame
         if (this.dom.qrFrameSelect) this.dom.qrFrameSelect.value = this.state.qrFrame;
 
         // Text controls
@@ -443,16 +512,30 @@ export class WidgetEditor {
             if (rangeVal) rangeVal.textContent = `${this.state.textShadowBlur}px`;
         }
 
+        // Toggle panels based on type
         this.togglePanel(this.state.bgType, this.dom.bgSolidPanel, this.dom.bgGradientPanel, this.bgGradientPicker);
         this.togglePanel(this.state.progTrackType, this.dom.progTrackSolidPanel, this.dom.progTrackGradientPanel, this.trackGradientPicker);
         this.togglePanel(this.state.progFillType, this.dom.progFillSolidPanel, this.dom.progFillGradientPanel, this.fillGradientPicker);
+
+        // Update Pickr color pickers
         if (this.pickrManager) {
-            if (this.pickrManager.pickers.bgSolid) this.pickrManager.pickers.bgSolid.setColor(this.state.bgSolidColor, true);
-            if (this.pickrManager.pickers.borderColor) this.pickrManager.pickers.borderColor.setColor(this.state.borderColor, true);
-            if (this.pickrManager.pickers.progTrackSolid) this.pickrManager.pickers.progTrackSolid.setColor(this.state.progTrackSolidColor, true);
-            if (this.pickrManager.pickers.progFillSolid) this.pickrManager.pickers.progFillSolid.setColor(this.state.progFillSolidColor, true);
-            if (this.pickrManager.pickers.textColor) this.pickrManager.pickers.textColor.setColor(this.state.textColor, true);
-            if (this.pickrManager.pickers.textShadowColor) this.pickrManager.pickers.textShadowColor.setColor(this.state.textShadowColor, true);
+            setPickrColorSilent(this.pickrManager.pickers.bgSolid, this.state.bgSolidColor);
+            setPickrColorSilent(this.pickrManager.pickers.border, this.state.borderColor);
+            setPickrColorSilent(this.pickrManager.pickers.progTrackSolid, this.state.progTrackSolidColor);
+            setPickrColorSilent(this.pickrManager.pickers.progFillSolid, this.state.progFillSolidColor);
+            setPickrColorSilent(this.pickrManager.pickers.textColor, this.state.textColor);
+            setPickrColorSilent(this.pickrManager.pickers.textShadowColor, this.state.textShadowColor);
+        }
+
+        // Restore gradient pickers visual state
+        if (this.bgGradientPicker && this.state.bgGradientStops) {
+            this.bgGradientPicker.setStops(this.state.bgGradientStops, this.state.bgGradientAngle);
+        }
+        if (this.trackGradientPicker && this.state.progTrackGradientStops) {
+            this.trackGradientPicker.setStops(this.state.progTrackGradientStops, this.state.progTrackGradientAngle);
+        }
+        if (this.fillGradientPicker && this.state.progFillGradientStops) {
+            this.fillGradientPicker.setStops(this.state.progFillGradientStops, this.state.progFillGradientAngle);
         }
     }
 
@@ -461,6 +544,8 @@ export class WidgetEditor {
      */
     randomize() {
         this.saveState();
+        this._preventSave = true; // Prevent any accidental saves during randomize
+
         const randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
         const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
         const randomFloat = (min, max) => Math.random() * (max - min) + min;
@@ -482,6 +567,8 @@ export class WidgetEditor {
         } else {
             this.state.bgType = "gradient";
             const gradData = randomGradientData();
+            this.state.bgGradientStops = gradData.stops;
+            this.state.bgGradientAngle = gradData.angle;
             if (this.bgGradientPicker) this.bgGradientPicker.setStops(gradData.stops, gradData.angle);
         }
 
@@ -500,6 +587,8 @@ export class WidgetEditor {
         } else {
             this.state.progTrackType = "gradient";
             const gradData = randomGradientData();
+            this.state.progTrackGradientStops = gradData.stops;
+            this.state.progTrackGradientAngle = gradData.angle;
             if (this.trackGradientPicker) this.trackGradientPicker.setStops(gradData.stops, gradData.angle);
         }
 
@@ -510,6 +599,8 @@ export class WidgetEditor {
         } else {
             this.state.progFillType = "gradient";
             const gradData = randomGradientData();
+            this.state.progFillGradientStops = gradData.stops;
+            this.state.progFillGradientAngle = gradData.angle;
             if (this.fillGradientPicker) this.fillGradientPicker.setStops(gradData.stops, gradData.angle);
         }
 
@@ -525,5 +616,7 @@ export class WidgetEditor {
 
         this.syncUIToState();
         this.updateAll();
+
+        this._preventSave = false;
     }
 }

@@ -11,6 +11,8 @@ export class CircularSlider {
         this.min = options.min || 0;
         this.max = options.max || 360;
         this.onChange = options.onChange || (() => { });
+        this.onStart = options.onStart || (() => { });
+        this.onEnd = options.onEnd || (() => { });
         this.size = options.size || 120;
         this.showValue = options.showValue !== false;
         this.isDragging = false;
@@ -70,6 +72,7 @@ export class CircularSlider {
     bindEvents() {
         const startDrag = (e) => {
             this.isDragging = true;
+            this.onStart();
             this.updateFromEvent(e);
             e.preventDefault();
         };
@@ -81,7 +84,10 @@ export class CircularSlider {
         };
 
         const endDrag = () => {
-            this.isDragging = false;
+            if (this.isDragging) {
+                this.isDragging = false;
+                this.onEnd();
+            }
         };
 
         // Mouse events

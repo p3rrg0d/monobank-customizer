@@ -1,16 +1,14 @@
 /**
- * PickrManager - Manages Pickr color picker instances
- * Handles initialization and configuration of all color pickers in the widget editor
- */
-
-/**
  * Creates a Pickr color picker instance with standard configuration
  * @param {HTMLElement} el - Element to attach the picker to
  * @param {string} defaultColor - Initial color (hex or rgba)
  * @param {Function} onChange - Callback when color changes
+ * @param {Function} [onSaveState] - Optional callback to save state before color change
  * @returns {Pickr} Configured Pickr instance
  */
-export function createPickrInstance(el, defaultColor, onChange) {
+export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
+    let hasSavedState = false;
+
     const pickr = Pickr.create({
         el: el,
         theme: "nano",
@@ -33,6 +31,9 @@ export function createPickrInstance(el, defaultColor, onChange) {
         },
     });
 
+    // Store the element reference on pickr for later button updates
+    pickr._el = el;
+
     // Force set color on button after initialization
     pickr.on("init", () => {
         const button = el.querySelector(".pcr-button");
@@ -42,9 +43,15 @@ export function createPickrInstance(el, defaultColor, onChange) {
         }
     });
 
-    // Update button color in real-time when color changes
+    // Save state once when user starts changing color
     pickr.on("change", (color) => {
         if (color) {
+            // Save state only once at the beginning of a color change session
+            if (!hasSavedState && onSaveState) {
+                onSaveState();
+                hasSavedState = true;
+            }
+
             const hexColor = color.toHEXA().toString();
 
             // Call onChange callback to update state
@@ -59,7 +66,32 @@ export function createPickrInstance(el, defaultColor, onChange) {
         }
     });
 
+    // Reset the flag when picker is hidden (user finished selecting)
+    pickr.on("hide", () => {
+        hasSavedState = false;
+    });
+
     return pickr;
+}
+
+/**
+ * Set pickr color and update button visual (for undo/sync)
+ * @param {Pickr} pickr - Pickr instance
+ * @param {string} color - Color to set
+ */
+export function setPickrColorSilent(pickr, color) {
+    if (!pickr) return;
+
+    pickr.setColor(color, true); // silent - don't trigger onChange
+
+    // Update button visual manually
+    if (pickr._el) {
+        const button = pickr._el.querySelector(".pcr-button");
+        if (button) {
+            button.style.backgroundColor = color;
+            button.style.color = color;
+        }
+    }
 }
 
 /**
@@ -99,6 +131,7 @@ export class PickrManager {
                     this.editor.dom.previewBox.style.background = color;
                 }
             }
+            // No saveState for preview - it's not part of widget state
         );
     }
 
@@ -113,7 +146,8 @@ export class PickrManager {
             (color) => {
                 this.editor.state.bgSolidColor = color;
                 this.editor.updateAll();
-            }
+            },
+            () => this.editor.saveState()
         );
 
         // Border Color
@@ -123,7 +157,8 @@ export class PickrManager {
             (color) => {
                 this.editor.state.borderColor = color;
                 this.editor.updateAll();
-            }
+            },
+            () => this.editor.saveState()
         );
     }
 
@@ -138,7 +173,8 @@ export class PickrManager {
             (color) => {
                 this.editor.state.progTrackSolidColor = color;
                 this.editor.updateAll();
-            }
+            },
+            () => this.editor.saveState()
         );
 
         // Progress Fill Solid
@@ -148,7 +184,8 @@ export class PickrManager {
             (color) => {
                 this.editor.state.progFillSolidColor = color;
                 this.editor.updateAll();
-            }
+            },
+            () => this.editor.saveState()
         );
     }
 
@@ -164,7 +201,8 @@ export class PickrManager {
                 (color) => {
                     this.editor.state.textColor = color;
                     this.editor.updateAll();
-                }
+                },
+                () => this.editor.saveState()
             );
         }
 
@@ -176,7 +214,8 @@ export class PickrManager {
                 (color) => {
                     this.editor.state.textShadowColor = color;
                     this.editor.updateAll();
-                }
+                },
+                () => this.editor.saveState()
             );
         }
     }

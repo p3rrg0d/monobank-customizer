@@ -4,12 +4,37 @@
  */
 
 /**
+ * Helper to bind slider with proper undo support
+ * Saves state on mousedown (before changes), updates on input
+ */
+function bindSlider(editor, slider, stateProp, formatter = (v) => v, parser = parseFloat) {
+    if (!slider) return;
+
+    // Save state at the START of interaction
+    slider.addEventListener("mousedown", () => {
+        editor.saveState();
+    });
+    slider.addEventListener("touchstart", () => {
+        editor.saveState();
+    });
+
+    // Update value in real-time
+    slider.addEventListener("input", (e) => {
+        editor.state[stateProp] = parser(e.target.value);
+        const rangeVal = e.target.nextElementSibling;
+        if (rangeVal) rangeVal.textContent = formatter(editor.state[stateProp]);
+        editor.updateAll();
+    });
+}
+
+/**
  * Bind widget background events
  * @param {WidgetEditor} editor - Widget editor instance
  */
 export function bindWidgetEvents(editor) {
     // Background type selector
     editor.dom.bgTypeSelect.addEventListener("change", (e) => {
+        editor.saveState();
         editor.state.bgType = e.target.value;
         editor.togglePanel(
             editor.state.bgType,
@@ -21,17 +46,10 @@ export function bindWidgetEvents(editor) {
     });
 
     // Background solid opacity
-    editor.dom.bgSolidOpacity.addEventListener("input", (e) => {
-        editor.state.bgSolidOpacity = parseFloat(e.target.value);
-        e.target.nextElementSibling.textContent = editor.state.bgSolidOpacity.toFixed(2);
-        editor.updateAll();
-    });
+    bindSlider(editor, editor.dom.bgSolidOpacity, "bgSolidOpacity", (v) => v.toFixed(2));
 
     // Border radius
-    editor.dom.radiusSlider.addEventListener("input", (e) => {
-        editor.state.borderRadius = parseInt(e.target.value);
-        editor.updateAll();
-    });
+    bindSlider(editor, editor.dom.radiusSlider, "borderRadius", (v) => `${v}px`, parseInt);
 }
 
 /**
@@ -41,6 +59,7 @@ export function bindWidgetEvents(editor) {
 export function bindBorderEvents(editor) {
     // Border enabled checkbox
     editor.dom.borderCheckbox.addEventListener("change", (e) => {
+        editor.saveState();
         editor.state.borderEnabled = e.target.checked;
         editor.dom.borderControls.style.display = e.target.checked ? "block" : "none";
         if (!e.target.checked) {
@@ -58,21 +77,16 @@ export function bindBorderEvents(editor) {
 
     // Border style selector
     editor.dom.borderStyleSelect.addEventListener("change", (e) => {
+        editor.saveState();
         editor.state.borderStyle = e.target.value;
         editor.updateAll();
     });
 
     // Border width slider
-    editor.dom.borderWidthSlider.addEventListener("input", (e) => {
-        editor.state.borderWidth = parseInt(e.target.value);
-        editor.updateAll();
-    });
+    bindSlider(editor, editor.dom.borderWidthSlider, "borderWidth", (v) => `${v}px`, parseInt);
 
     // Border opacity
-    editor.dom.borderOpacity.addEventListener("input", (e) => {
-        editor.state.borderOpacity = parseFloat(e.target.value);
-        editor.updateAll();
-    });
+    bindSlider(editor, editor.dom.borderOpacity, "borderOpacity", (v) => v.toFixed(2));
 }
 
 /**
@@ -83,6 +97,7 @@ export function bindQREvents(editor) {
     // QR frame selector
     if (editor.dom.qrFrameSelect) {
         editor.dom.qrFrameSelect.addEventListener("change", (e) => {
+            editor.saveState();
             editor.state.qrFrame = e.target.value;
             editor.updateAll();
         });
@@ -97,6 +112,7 @@ export function bindTextEvents(editor) {
     // Text shadow checkbox
     if (editor.dom.textShadowCheckbox) {
         editor.dom.textShadowCheckbox.addEventListener("change", (e) => {
+            editor.saveState();
             editor.state.textShadowEnabled = e.target.checked;
             if (editor.dom.textShadowControls) {
                 editor.dom.textShadowControls.style.display = e.target.checked ? "block" : "none";
@@ -106,34 +122,13 @@ export function bindTextEvents(editor) {
     }
 
     // Text shadow X slider
-    if (editor.dom.textShadowX) {
-        editor.dom.textShadowX.addEventListener("input", (e) => {
-            editor.state.textShadowX = parseInt(e.target.value);
-            const rangeValue = e.target.nextElementSibling;
-            if (rangeValue) rangeValue.textContent = `${editor.state.textShadowX}px`;
-            editor.updateAll();
-        });
-    }
+    bindSlider(editor, editor.dom.textShadowX, "textShadowX", (v) => `${v}px`, parseInt);
 
     // Text shadow Y slider
-    if (editor.dom.textShadowY) {
-        editor.dom.textShadowY.addEventListener("input", (e) => {
-            editor.state.textShadowY = parseInt(e.target.value);
-            const rangeValue = e.target.nextElementSibling;
-            if (rangeValue) rangeValue.textContent = `${editor.state.textShadowY}px`;
-            editor.updateAll();
-        });
-    }
+    bindSlider(editor, editor.dom.textShadowY, "textShadowY", (v) => `${v}px`, parseInt);
 
     // Text shadow blur slider
-    if (editor.dom.textShadowBlur) {
-        editor.dom.textShadowBlur.addEventListener("input", (e) => {
-            editor.state.textShadowBlur = parseInt(e.target.value);
-            const rangeValue = e.target.nextElementSibling;
-            if (rangeValue) rangeValue.textContent = `${editor.state.textShadowBlur}px`;
-            editor.updateAll();
-        });
-    }
+    bindSlider(editor, editor.dom.textShadowBlur, "textShadowBlur", (v) => `${v}px`, parseInt);
 }
 
 /**
@@ -142,13 +137,11 @@ export function bindTextEvents(editor) {
  */
 export function bindProgressEvents(editor) {
     // Progress radius
-    editor.dom.progressRadius.addEventListener("input", (e) => {
-        editor.state.progressRadius = parseInt(e.target.value);
-        editor.updateAll();
-    });
+    bindSlider(editor, editor.dom.progressRadius, "progressRadius", (v) => `${v}px`, parseInt);
 
     // Progress track type selector
     editor.dom.progTrackTypeSelect.addEventListener("change", (e) => {
+        editor.saveState();
         editor.state.progTrackType = e.target.value;
         editor.togglePanel(
             editor.state.progTrackType,
@@ -160,14 +153,11 @@ export function bindProgressEvents(editor) {
     });
 
     // Progress track opacity
-    editor.dom.progTrackSolidOpacity.addEventListener("input", (e) => {
-        editor.state.progTrackSolidOpacity = parseFloat(e.target.value);
-        e.target.nextElementSibling.textContent = editor.state.progTrackSolidOpacity.toFixed(2);
-        editor.updateAll();
-    });
+    bindSlider(editor, editor.dom.progTrackSolidOpacity, "progTrackSolidOpacity", (v) => v.toFixed(2));
 
     // Progress fill type selector
     editor.dom.progFillTypeSelect.addEventListener("change", (e) => {
+        editor.saveState();
         editor.state.progFillType = e.target.value;
         editor.togglePanel(
             editor.state.progFillType,
@@ -179,11 +169,7 @@ export function bindProgressEvents(editor) {
     });
 
     // Progress fill opacity
-    editor.dom.progFillSolidOpacity.addEventListener("input", (e) => {
-        editor.state.progFillSolidOpacity = parseFloat(e.target.value);
-        e.target.nextElementSibling.textContent = editor.state.progFillSolidOpacity.toFixed(2);
-        editor.updateAll();
-    });
+    bindSlider(editor, editor.dom.progFillSolidOpacity, "progFillSolidOpacity", (v) => v.toFixed(2));
 }
 
 /**

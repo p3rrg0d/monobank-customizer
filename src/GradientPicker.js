@@ -15,9 +15,28 @@ export class GradientPicker {
         this.nextId = 100;
         this.activeStopId = null;
         this.onChange = options.onChange || (() => { });
+        this.onSaveState = options.onSaveState || (() => { });
+        this._hasSavedState = false; // Flag to prevent multiple saves during one interaction
 
         this.renderUI();
         this.updatePreview();
+    }
+
+    /**
+     * Save state once at the beginning of an interaction
+     */
+    _saveStateOnce() {
+        if (!this._hasSavedState) {
+            this.onSaveState();
+            this._hasSavedState = true;
+        }
+    }
+
+    /**
+     * Reset the saved state flag (call when interaction ends)
+     */
+    _resetSaveFlag() {
+        this._hasSavedState = false;
     }
 
     getGradientString() {
@@ -73,9 +92,15 @@ export class GradientPicker {
             initialValue: this.angle,
             size: 60,
             showValue: false,
+            onStart: () => {
+                this._saveStateOnce();
+            },
             onChange: (value) => {
                 this.angle = value;
                 this.updatePreview();
+            },
+            onEnd: () => {
+                this._resetSaveFlag();
             }
         });
 
@@ -89,6 +114,9 @@ export class GradientPicker {
         previewBox.addEventListener("click", (e) => {
             // Перевіряємо що клікнули не на handle
             if (e.target.classList.contains("grad-handle")) return;
+
+            // Save state before adding new stop
+            this.onSaveState();
 
             const rect = previewBox.getBoundingClientRect();
             let pos = ((e.clientX - rect.left) / rect.width) * 100;
@@ -142,6 +170,9 @@ export class GradientPicker {
         this.stopColorPickr.on("change", (color) => {
             if (!this.activeStopId || !color) return;
 
+            // Save state once at the start of color change
+            this._saveStateOnce();
+
             const hexColor = color.toHEXA().toString();
             const stop = this.stops.find((s) => s.id === this.activeStopId);
             if (stop) {
@@ -160,6 +191,10 @@ export class GradientPicker {
             }
         });
 
+        this.stopColorPickr.on("hide", () => {
+            this._resetSaveFlag();
+        });
+
         this.stopColorPickr.on("save", (color) => {
             if (color) {
                 this.stopColorPickr.hide();
@@ -168,6 +203,8 @@ export class GradientPicker {
 
         opacityInput.addEventListener("input", () => {
             if (!this.activeStopId) return;
+            // Save state once at the start of opacity change
+            this._saveStateOnce();
             const stop = this.stops.find((s) => s.id === this.activeStopId);
             if (stop) {
                 stop.opacity = parseFloat(opacityInput.value);
@@ -180,11 +217,17 @@ export class GradientPicker {
             }
         });
 
+        opacityInput.addEventListener("change", () => {
+            this._resetSaveFlag();
+        });
+
         delBtn.addEventListener("click", () => {
             if (this.stops.length <= 2) {
                 alert("Мінімум 2 кольори!");
                 return;
             }
+            // Save state before deleting
+            this.onSaveState();
             this.stops = this.stops.filter((s) => s.id !== this.activeStopId);
             this.activeStopId = null;
             settingsPanel.classList.remove("visible");
@@ -209,6 +252,8 @@ export class GradientPicker {
                 e.preventDefault(); // Prevent text selection
                 e.stopPropagation();
                 this.selectStop(stop.id);
+                // Save state at the start of drag
+                this._saveStateOnce();
                 const rect = box.getBoundingClientRect();
                 const move = (ev) => {
                     ev.preventDefault();
@@ -221,6 +266,7 @@ export class GradientPicker {
                 const up = () => {
                     document.removeEventListener("mousemove", move);
                     document.removeEventListener("mouseup", up);
+                    this._resetSaveFlag();
                 };
                 document.addEventListener("mousemove", move);
                 document.addEventListener("mouseup", up);
@@ -233,6 +279,8 @@ export class GradientPicker {
                     alert("Мінімум 2 кольори!");
                     return;
                 }
+                // Save state before deleting
+                this.onSaveState();
                 this.stops = this.stops.filter((s) => s.id !== stop.id);
                 if (this.activeStopId === stop.id) {
                     this.activeStopId = null;
