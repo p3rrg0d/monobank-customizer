@@ -18,15 +18,12 @@ document.querySelectorAll(".range").forEach((range) => {
   const input = range.querySelector('input[type="range"]');
   const output = range.querySelector(".range-value");
 
-  // Skip if elements don't exist (gradient ranges don't have .range-value)
   if (!input || !output) return;
 
   function update() {
-    // Check if this is an opacity slider
     if (input.id && input.id.includes("opacity")) {
       output.textContent = parseFloat(input.value).toFixed(2);
     }
-    // Check if this is a progress slider
     else if (input.id && input.id.includes("progress")) {
       output.textContent = input.value + "₴";
     }
@@ -63,10 +60,8 @@ function makeDraggable(elem) {
 
 makeDraggable(document.querySelector(".draggable"));
 
-// Accordion functionality for control sections
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".control-section h3").forEach((header) => {
-    // Add arrow indicator
     header.style.cursor = "pointer";
     header.style.userSelect = "none";
     header.innerHTML = `<span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -74,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ${header.textContent}
     </span>`;
 
-    // Store reference to the content wrapper
     const section = header.parentElement;
     const contentWrapper = section.querySelector(".section-content");
 
@@ -83,23 +77,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const isCollapsed = section.classList.contains("collapsed");
 
       if (isCollapsed) {
-        // Expand
         if (contentWrapper) contentWrapper.style.display = "block";
         section.classList.remove("collapsed");
         arrow.style.transform = "rotate(0deg)";
       } else {
-        // Collapse
         if (contentWrapper) contentWrapper.style.display = "none";
         section.classList.add("collapsed");
         arrow.style.transform = "rotate(-90deg)";
       }
     });
 
-    // Collapse by default
     const isPreviewSettings = contentWrapper && contentWrapper.id === "preview-settings";
 
     if (!isPreviewSettings) {
-      // Collapse тільки якщо це НЕ preview settings
       if (contentWrapper) contentWrapper.style.display = "none";
       section.classList.add("collapsed");
       const arrow = header.querySelector(".accordion-arrow");
@@ -107,4 +97,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-

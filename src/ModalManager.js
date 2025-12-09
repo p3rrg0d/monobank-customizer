@@ -1,8 +1,3 @@
-/**
- * ModalManager - Manages help modal and carousel functionality
- * Handles creation and interaction of the OBS integration help modal
- */
-
 export class ModalManager {
     constructor() {
         this.modal = null;
@@ -12,11 +7,7 @@ export class ModalManager {
         this.indicators = null;
     }
 
-    /**
-     * Create and inject modal HTML into the page
-     */
     create() {
-        // Don't create if already exists
         if (document.getElementById("globalHelpModal")) return;
 
         const modalHTML = `
@@ -67,20 +58,15 @@ export class ModalManager {
 
         document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-        // Cache DOM elements
         this.overlay = document.getElementById("modalOverlay");
         this.modal = document.getElementById("globalHelpModal");
         this.images = this.modal.querySelectorAll(".carousel-image");
         this.indicators = this.modal.querySelectorAll(".step-indicator");
 
-        // Initialize event handlers
         this.initCloseHandlers();
         this.initCarousel();
     }
 
-    /**
-     * Initialize modal close handlers
-     */
     initCloseHandlers() {
         const closeBtn = document.getElementById("modalCloseBtn");
         const closeModal = () => this.hide();
@@ -89,9 +75,6 @@ export class ModalManager {
         closeBtn.addEventListener("click", closeModal);
     }
 
-    /**
-     * Initialize carousel navigation
-     */
     initCarousel() {
         const prevBtn = this.modal.querySelector(".carousel-prev");
         const nextBtn = this.modal.querySelector(".carousel-next");
@@ -114,10 +97,6 @@ export class ModalManager {
         });
     }
 
-    /**
-     * Show a specific carousel step
-     * @param {number} step - Step index to show
-     */
     showStep(step) {
         this.images.forEach((img, i) => {
             img.style.display = i === step ? "block" : "none";
@@ -130,17 +109,11 @@ export class ModalManager {
         this.currentStep = step;
     }
 
-    /**
-     * Show the modal
-     */
     show() {
         this.overlay.classList.add("modal-open");
         this.modal.classList.add("modal-open");
     }
 
-    /**
-     * Hide the modal
-     */
     hide() {
         this.overlay.classList.remove("modal-open");
         this.modal.classList.remove("modal-open");

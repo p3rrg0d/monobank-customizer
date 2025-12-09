@@ -1,7 +1,6 @@
 import { hexToRgba } from './utils.js';
 import { CircularSlider } from './CircularSlider.js';
 
-// ================= COMPONENT: GRADIENT PICKER =================
 export class GradientPicker {
     constructor(containerId, options = {}) {
         this.container = document.getElementById(containerId);
@@ -16,15 +15,12 @@ export class GradientPicker {
         this.activeStopId = null;
         this.onChange = options.onChange || (() => { });
         this.onSaveState = options.onSaveState || (() => { });
-        this._hasSavedState = false; // Flag to prevent multiple saves during one interaction
+        this._hasSavedState = false;
 
         this.renderUI();
         this.updatePreview();
     }
 
-    /**
-     * Save state once at the beginning of an interaction
-     */
     _saveStateOnce() {
         if (!this._hasSavedState) {
             this.onSaveState();
@@ -32,9 +28,6 @@ export class GradientPicker {
         }
     }
 
-    /**
-     * Reset the saved state flag (call when interaction ends)
-     */
     _resetSaveFlag() {
         this._hasSavedState = false;
     }
@@ -87,7 +80,6 @@ export class GradientPicker {
     }
 
     bindEvents() {
-        // Initialize circular angle slider (clock-style)
         this.angleSlider = new CircularSlider(`${this.container.id}-angle-slider`, {
             initialValue: this.angle,
             size: 60,
@@ -110,12 +102,9 @@ export class GradientPicker {
         const opacityInput = settingsPanel.querySelector(".stop-opacity-input");
         const delBtn = settingsPanel.querySelector(".delete-stop-btn");
 
-        // Клік на смужку для створення нового stop
         previewBox.addEventListener("click", (e) => {
-            // Перевіряємо що клікнули не на handle
             if (e.target.classList.contains("grad-handle")) return;
 
-            // Save state before adding new stop
             this.onSaveState();
 
             const rect = previewBox.getBoundingClientRect();
@@ -135,7 +124,6 @@ export class GradientPicker {
             this.selectStop(newStop.id);
         });
 
-        // Ініціалізуємо Pickr для кольору точки
         this.stopColorPickr = Pickr.create({
             el: colorPickerDiv,
             theme: "nano",
@@ -158,7 +146,6 @@ export class GradientPicker {
             },
         });
 
-        // Оновлюємо колір кнопки Pickr
         this.stopColorPickr.on("init", () => {
             const button = colorPickerDiv.querySelector(".pcr-button");
             if (button) {
@@ -170,7 +157,6 @@ export class GradientPicker {
         this.stopColorPickr.on("change", (color) => {
             if (!this.activeStopId || !color) return;
 
-            // Save state once at the start of color change
             this._saveStateOnce();
 
             const hexColor = color.toHEXA().toString();
@@ -180,7 +166,6 @@ export class GradientPicker {
                 const handle = this.container.querySelector(`[data-id="${stop.id}"]`);
                 if (handle) handle.style.background = hexColor;
 
-                // Оновлюємо колір кнопки Pickr
                 const button = colorPickerDiv.querySelector(".pcr-button");
                 if (button) {
                     button.style.backgroundColor = hexColor;
@@ -203,12 +188,10 @@ export class GradientPicker {
 
         opacityInput.addEventListener("input", () => {
             if (!this.activeStopId) return;
-            // Save state once at the start of opacity change
             this._saveStateOnce();
             const stop = this.stops.find((s) => s.id === this.activeStopId);
             if (stop) {
                 stop.opacity = parseFloat(opacityInput.value);
-                // Update opacity value display
                 const opacityDisplay = settingsPanel.querySelector(".opacity-value");
                 if (opacityDisplay) {
                     opacityDisplay.textContent = stop.opacity.toFixed(2);
@@ -226,7 +209,6 @@ export class GradientPicker {
                 alert("Мінімум 2 кольори!");
                 return;
             }
-            // Save state before deleting
             this.onSaveState();
             this.stops = this.stops.filter((s) => s.id !== this.activeStopId);
             this.activeStopId = null;
@@ -249,10 +231,9 @@ export class GradientPicker {
             handle.dataset.id = stop.id;
 
             handle.addEventListener("mousedown", (e) => {
-                e.preventDefault(); // Prevent text selection
+                e.preventDefault();
                 e.stopPropagation();
                 this.selectStop(stop.id);
-                // Save state at the start of drag
                 this._saveStateOnce();
                 const rect = box.getBoundingClientRect();
                 const move = (ev) => {
@@ -272,14 +253,12 @@ export class GradientPicker {
                 document.addEventListener("mouseup", up);
             });
 
-            // Right-click to delete
             handle.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
                 if (this.stops.length <= 2) {
                     alert("Мінімум 2 кольори!");
                     return;
                 }
-                // Save state before deleting
                 this.onSaveState();
                 this.stops = this.stops.filter((s) => s.id !== stop.id);
                 if (this.activeStopId === stop.id) {
@@ -302,15 +281,13 @@ export class GradientPicker {
             h.classList.toggle("active", h.dataset.id == id);
         });
         const settingsPanel = this.container.querySelector(".stop-settings");
-        if (!settingsPanel) return; // Safety check
+        if (!settingsPanel) return;
 
         settingsPanel.classList.add("visible");
 
-        // Оновлюємо Pickr
         if (this.stopColorPickr) {
             this.stopColorPickr.setColor(stop.color);
 
-            // Оновлюємо колір кнопки Pickr
             const colorPickerDiv = settingsPanel.querySelector(".stop-color-picker");
             if (colorPickerDiv) {
                 const button = colorPickerDiv.querySelector(".pcr-button");
@@ -324,7 +301,6 @@ export class GradientPicker {
         const opacityInput = settingsPanel.querySelector(".stop-opacity-input");
         if (opacityInput) {
             opacityInput.value = stop.opacity;
-            // Update opacity value display
             const opacityDisplay = settingsPanel.querySelector(".opacity-value");
             if (opacityDisplay) {
                 opacityDisplay.textContent = stop.opacity.toFixed(2);
@@ -339,13 +315,7 @@ export class GradientPicker {
         this.onChange(bg);
     }
 
-    /**
-     * Set new stops and angle programmatically (for randomize)
-     * @param {Array} newStops - Array of stop objects {color, opacity, position}
-     * @param {number} newAngle - Gradient angle in degrees
-     */
     setStops(newStops, newAngle) {
-        // Assign new IDs to stops
         this.stops = newStops.map((stop, i) => ({
             id: this.nextId++,
             color: stop.color,
@@ -356,16 +326,13 @@ export class GradientPicker {
         this.angle = newAngle;
         this.activeStopId = null;
 
-        // Update angle slider if exists
         if (this.angleSlider && this.angleSlider.setValue) {
             this.angleSlider.setValue(newAngle);
         }
 
-        // Hide settings panel
         const settingsPanel = this.container.querySelector(".stop-settings");
         if (settingsPanel) settingsPanel.classList.remove("visible");
 
-        // Re-render
         this.renderHandles();
         this.updatePreview();
     }

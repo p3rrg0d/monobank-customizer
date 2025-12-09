@@ -1,11 +1,3 @@
-/**
- * Creates a Pickr color picker instance with standard configuration
- * @param {HTMLElement} el - Element to attach the picker to
- * @param {string} defaultColor - Initial color (hex or rgba)
- * @param {Function} onChange - Callback when color changes
- * @param {Function} [onSaveState] - Optional callback to save state before color change
- * @returns {Pickr} Configured Pickr instance
- */
 export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
     let hasSavedState = false;
 
@@ -13,7 +5,7 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
         el: el,
         theme: "nano",
         default: defaultColor,
-        useAsButton: false, // Show color on button
+        useAsButton: false,
         comparison: false,
 
         components: {
@@ -31,10 +23,8 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
         },
     });
 
-    // Store the element reference on pickr for later button updates
     pickr._el = el;
 
-    // Force set color on button after initialization
     pickr.on("init", () => {
         const button = el.querySelector(".pcr-button");
         if (button) {
@@ -43,10 +33,8 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
         }
     });
 
-    // Save state once when user starts changing color
     pickr.on("change", (color) => {
         if (color) {
-            // Save state only once at the beginning of a color change session
             if (!hasSavedState && onSaveState) {
                 onSaveState();
                 hasSavedState = true;
@@ -54,10 +42,8 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
 
             const hexColor = color.toHEXA().toString();
 
-            // Call onChange callback to update state
             onChange(hexColor);
 
-            // Update button color in real-time
             const button = el.querySelector(".pcr-button");
             if (button) {
                 button.style.backgroundColor = hexColor;
@@ -66,7 +52,6 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
         }
     });
 
-    // Reset the flag when picker is hidden (user finished selecting)
     pickr.on("hide", () => {
         hasSavedState = false;
     });
@@ -74,17 +59,11 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
     return pickr;
 }
 
-/**
- * Set pickr color and update button visual (for undo/sync)
- * @param {Pickr} pickr - Pickr instance
- * @param {string} color - Color to set
- */
 export function setPickrColorSilent(pickr, color) {
     if (!pickr) return;
 
-    pickr.setColor(color, true); // silent - don't trigger onChange
+    pickr.setColor(color, true);
 
-    // Update button visual manually
     if (pickr._el) {
         const button = pickr._el.querySelector(".pcr-button");
         if (button) {
@@ -94,18 +73,12 @@ export function setPickrColorSilent(pickr, color) {
     }
 }
 
-/**
- * PickrManager - Manages all color picker instances for the widget editor
- */
 export class PickrManager {
     constructor(editor) {
         this.editor = editor;
         this.pickers = {};
     }
 
-    /**
-     * Initialize all color pickers
-     */
     initializeAll() {
         this.initializePreviewPicker();
         this.initializeWidgetPickers();
@@ -113,33 +86,22 @@ export class PickrManager {
         this.initializeTextPickers();
     }
 
-    /**
-     * Initialize preview background color picker
-     */
     initializePreviewPicker() {
         this.pickers.previewBg = createPickrInstance(
             this.editor.dom.previewBgPicker,
-            "rgba(255, 255, 255, 0)", // Start with transparent to show checkerboard
+            "rgba(255, 255, 255, 0)",
             (color) => {
-                // Check if color is transparent (alpha = 0)
                 const rgba = this.pickers.previewBg.getColor().toRGBA();
                 if (rgba[3] === 0) {
-                    // If transparent, clear the inline style to show CSS checkerboard
                     this.editor.dom.previewBox.style.background = "";
                 } else {
-                    // Otherwise set the color normally
                     this.editor.dom.previewBox.style.background = color;
                 }
             }
-            // No saveState for preview - it's not part of widget state
         );
     }
 
-    /**
-     * Initialize widget background and border color pickers
-     */
     initializeWidgetPickers() {
-        // Widget BG Solid
         this.pickers.bgSolid = createPickrInstance(
             this.editor.dom.bgSolidPicker,
             this.editor.state.bgSolidColor,
@@ -150,7 +112,6 @@ export class PickrManager {
             () => this.editor.saveState()
         );
 
-        // Border Color
         this.pickers.border = createPickrInstance(
             this.editor.dom.borderPicker,
             this.editor.state.borderColor,
@@ -162,11 +123,7 @@ export class PickrManager {
         );
     }
 
-    /**
-     * Initialize progress bar color pickers (track and fill)
-     */
     initializeProgressPickers() {
-        // Progress Track Solid
         this.pickers.progTrackSolid = createPickrInstance(
             this.editor.dom.progTrackSolidPicker,
             this.editor.state.progTrackSolidColor,
@@ -177,7 +134,6 @@ export class PickrManager {
             () => this.editor.saveState()
         );
 
-        // Progress Fill Solid
         this.pickers.progFillSolid = createPickrInstance(
             this.editor.dom.progFillSolidPicker,
             this.editor.state.progFillSolidColor,
@@ -189,11 +145,7 @@ export class PickrManager {
         );
     }
 
-    /**
-     * Initialize text color pickers
-     */
     initializeTextPickers() {
-        // Text Color
         if (this.editor.dom.textColorPicker) {
             this.pickers.textColor = createPickrInstance(
                 this.editor.dom.textColorPicker,
@@ -206,7 +158,6 @@ export class PickrManager {
             );
         }
 
-        // Text Shadow Color
         if (this.editor.dom.textShadowColorPicker) {
             this.pickers.textShadowColor = createPickrInstance(
                 this.editor.dom.textShadowColorPicker,
@@ -220,10 +171,6 @@ export class PickrManager {
         }
     }
 
-    /**
-     * Get all picker instances
-     * @returns {Object} Object containing all picker instances
-     */
     getAllPickers() {
         return this.pickers;
     }

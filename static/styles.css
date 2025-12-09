@@ -1231,3 +1231,9 @@ input[type="checkbox"]:focus {
         padding: var(--spacing-sm);
     }
 }
+
+my-widget {
+    transform: scale(1.5);
+    transform-origin: top left;
+    position: absolute;
+}
