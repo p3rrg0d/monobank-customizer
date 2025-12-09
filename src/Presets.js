@@ -11,16 +11,13 @@ export const PRESETS = [
                 { id: 2, color: "#444444", opacity: 0.8, position: 100 }
             ],
             bgGradientAngle: 135,
-
             borderEnabled: false,
             borderStyle: "solid",
             borderWidth: 0,
             borderColor: "#000000",
             borderOpacity: 0,
             borderRadius: 16,
-
             progressRadius: 12,
-
             progTrackType: "gradient",
             progTrackSolidColor: "#e7b5d3",
             progTrackSolidOpacity: 1,
@@ -30,7 +27,6 @@ export const PRESETS = [
                 { id: 2, color: "#eac6bb", opacity: 1, position: 100 }
             ],
             progTrackGradientAngle: 135,
-
             progFillType: "gradient",
             progFillSolidColor: "#b93e88",
             progFillSolidOpacity: 1,
@@ -40,7 +36,6 @@ export const PRESETS = [
                 { id: 2, color: "#fca78c", opacity: 1, position: 100 }
             ],
             progFillGradientAngle: 135,
-
             textColor: "#ffffff",
             textShadowEnabled: false,
             textShadowColor: "#ff0000",
@@ -48,8 +43,99 @@ export const PRESETS = [
             textShadowX: 0,
             textShadowY: 2,
             textShadowBlur: 0,
-
             qrFrame: "standard"
+        }
+    },
+    {
+        name: "Aurora Borealis (Північне Сяйво)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#00c853",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#00c6ff", opacity: 1, position: 0 },
+                { id: 2, color: "#0072ff", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 135,
+            borderEnabled: true,
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderColor: "#ffffff",
+            borderOpacity: 0.3,
+            borderRadius: 24,
+            progressRadius: 10,
+            progTrackType: "solid",
+            progTrackSolidColor: "#ffffff",
+            progTrackSolidOpacity: 0.1,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#69f0ae",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(90deg, #69f0ae 0%, #00e676 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#69f0ae", opacity: 1, position: 0 },
+                { id: 2, color: "#00e676", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#ffffff",
+            textShadowEnabled: true,
+            textShadowColor: "#00e676",
+            textShadowOpacity: 0.4,
+            textShadowX: 0,
+            textShadowY: 0,
+            textShadowBlur: 5,
+            qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Christmas (Різдвяний)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#d32f2f",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(135deg, rgba(211,47,47,1) 6%, rgba(27,94,32,1) 27%, rgba(211,47,47,1) 47%, rgba(27,94,32,1) 67%, rgba(211,47,47,1) 85%, rgba(27,94,32,1) 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#d32f2f", opacity: 1, position: 6 },
+                { id: 2, color: "#1b5e20", opacity: 1, position: 27 },
+                { id: 3, color: "#d32f2f", opacity: 1, position: 47 },
+                { id: 4, color: "#1b5e20", opacity: 1, position: 67 },
+                { id: 5, color: "#d32f2f", opacity: 1, position: 85 },
+                { id: 6, color: "#1b5e20", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 135,
+            borderEnabled: true,
+            borderStyle: "solid",
+            borderWidth: 2,
+            borderColor: "#e6b559",
+            borderOpacity: 1,
+            borderRadius: 24,
+            progressRadius: 12,
+            progTrackType: "solid",
+            progTrackSolidColor: "#ffffff",
+            progTrackSolidOpacity: 0.2,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#e6b559",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(90deg, rgba(230,181,89,1) 0%, rgba(221,197,153,1) 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#e6b559", opacity: 1, position: 0 },
+                { id: 2, color: "#ddc599", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#ffffff",
+            textShadowEnabled: true,
+            textShadowColor: "#000000",
+            textShadowOpacity: 0.5,
+            textShadowX: 1,
+            textShadowY: 1,
+            textShadowBlur: 2,
+            qrFrame: "frame2"
         }
     },
     {
@@ -61,23 +147,19 @@ export const PRESETS = [
             bgGradientString: "",
             bgGradientStops: [],
             bgGradientAngle: 0,
-
             borderEnabled: true,
             borderStyle: "solid",
             borderWidth: 1,
             borderColor: "#e0e0e0",
             borderOpacity: 1,
             borderRadius: 20,
-
             progressRadius: 8,
-
             progTrackType: "solid",
             progTrackSolidColor: "#f0f0f0",
             progTrackSolidOpacity: 1,
             progTrackGradientString: "",
             progTrackGradientStops: [],
             progTrackGradientAngle: 0,
-
             progFillType: "gradient",
             progFillSolidColor: "#e0e0e0",
             progFillSolidOpacity: 1,
@@ -87,7 +169,6 @@ export const PRESETS = [
                 { id: 2, color: "#c8c8c8", opacity: 1, position: 100 }
             ],
             progFillGradientAngle: 135,
-
             textColor: "#000000",
             textShadowEnabled: false,
             textShadowColor: "#000000",
@@ -95,8 +176,235 @@ export const PRESETS = [
             textShadowX: 0,
             textShadowY: 0,
             textShadowBlur: 0,
-
             qrFrame: "standard"
+        }
+    },
+    {
+        name: "Coffee (Кавовий)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#3e2723",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(135deg, rgba(62,39,35,1) 0%, rgba(109,76,65,1) 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#3e2723", opacity: 1, position: 0 },
+                { id: 2, color: "#6d4c41", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 135,
+            borderEnabled: false,
+            borderStyle: "solid",
+            borderWidth: 0,
+            borderColor: "#d7ccc8",
+            borderOpacity: 1,
+            borderRadius: 20,
+            progressRadius: 10,
+            progTrackType: "solid",
+            progTrackSolidColor: "#d7ccc8",
+            progTrackSolidOpacity: 0.2,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#90817b",
+            progFillSolidOpacity: 0.39,
+            progFillGradientString: "linear-gradient(90deg, rgba(144,129,123,0.39) 0%, rgba(239,235,233,0.53) 98%)",
+            progFillGradientStops: [
+                { id: 1, color: "#90817b", opacity: 0.39, position: 0 },
+                { id: 2, color: "#efebe9", opacity: 0.53, position: 98 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#efebe9",
+            textShadowEnabled: false,
+            textShadowColor: "#000000",
+            textShadowOpacity: 0,
+            textShadowX: 0,
+            textShadowY: 0,
+            textShadowBlur: 0,
+            qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Cotton Candy (Цукрова Вата)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#ff9a9e",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#a18cd1", opacity: 1, position: 0 },
+                { id: 2, color: "#fbc2eb", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 135,
+            borderEnabled: false,
+            borderStyle: "solid",
+            borderWidth: 0,
+            borderColor: "#ffffff",
+            borderOpacity: 0,
+            borderRadius: 30,
+            progressRadius: 15,
+            progTrackType: "solid",
+            progTrackSolidColor: "#ffffff",
+            progTrackSolidOpacity: 0.3,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#ffffff",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(90deg, #fdcbf1 0%, #e6dee9 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#fdcbf1", opacity: 1, position: 0 },
+                { id: 2, color: "#e6dee9", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#ffffff",
+            textShadowEnabled: true,
+            textShadowColor: "#a18cd1",
+            textShadowOpacity: 0.5,
+            textShadowX: 1,
+            textShadowY: 1,
+            textShadowBlur: 2,
+            qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Dark Luxury (Темний Люкс)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#1a1a1a",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(135deg, #000000 0%, #2c2c2c 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#000000", opacity: 1, position: 0 },
+                { id: 2, color: "#2c2c2c", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 135,
+            borderEnabled: true,
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderColor: "#d4af37",
+            borderOpacity: 0.6,
+            borderRadius: 24,
+            progressRadius: 12,
+            progTrackType: "solid",
+            progTrackSolidColor: "#000000",
+            progTrackSolidOpacity: 0.4,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#d4af37",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(90deg, #ae8b3c 0%, #fcf6ba 50%, #ae8b3c 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#ae8b3c", opacity: 1, position: 0 },
+                { id: 2, color: "#fcf6ba", opacity: 1, position: 50 },
+                { id: 3, color: "#ae8b3c", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#f2eecb",
+            textShadowEnabled: true,
+            textShadowColor: "#000000",
+            textShadowOpacity: 0.8,
+            textShadowX: 0,
+            textShadowY: 2,
+            textShadowBlur: 4,
+            qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Deep Space (Глибокий Космос)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#0b0c15",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(135deg, #0b0c15 0%, #141726 50%, #201c38 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#0b0c15", opacity: 1, position: 0 },
+                { id: 2, color: "#141726", opacity: 1, position: 50 },
+                { id: 3, color: "#201c38", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 135,
+            borderEnabled: true,
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderColor: "#ffffff",
+            borderOpacity: 0.1,
+            borderRadius: 32,
+            progressRadius: 16,
+            progTrackType: "solid",
+            progTrackSolidColor: "#ffffff",
+            progTrackSolidOpacity: 0.05,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#7b2ff7",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(90deg, #7b2ff7 0%, #2f7ff7 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#7b2ff7", opacity: 1, position: 0 },
+                { id: 2, color: "#2f7ff7", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#ffffff",
+            textShadowEnabled: true,
+            textShadowColor: "#7b2ff7",
+            textShadowOpacity: 0.6,
+            textShadowX: 0,
+            textShadowY: 0,
+            textShadowBlur: 8,
+            qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Ice (Крижаний)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#e0f7fa",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(37deg, rgba(224,247,250,0.4) 0%, rgba(128,222,234,0.5) 36%, rgba(224,247,250,0.2) 76%, rgba(77,208,225,0.6) 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#e0f7fa", opacity: 0.4, position: 0 },
+                { id: 2, color: "#80deea", opacity: 0.5, position: 36 },
+                { id: 3, color: "#e0f7fa", opacity: 0.2, position: 76 },
+                { id: 4, color: "#4dd0e1", opacity: 0.6, position: 100 }
+            ],
+            bgGradientAngle: 37,
+            borderEnabled: true,
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderColor: "#ffffff",
+            borderOpacity: 0.5,
+            borderRadius: 32,
+            progressRadius: 12,
+            progTrackType: "gradient",
+            progTrackSolidColor: "#ffffff",
+            progTrackSolidOpacity: 0,
+            progTrackGradientString: "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.8) 100%)",
+            progTrackGradientStops: [
+                { id: 1, color: "#ffffff", opacity: 0.1, position: 0 },
+                { id: 2, color: "#ffffff", opacity: 0.8, position: 100 }
+            ],
+            progTrackGradientAngle: 180,
+            progFillType: "gradient",
+            progFillSolidColor: "#00acc1",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(177deg, rgba(224,247,250,0.15) 0%, rgba(38,198,218,1) 45%, rgba(0,172,193,1) 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#e0f7fa", opacity: 0.15, position: 0 },
+                { id: 2, color: "#26c6da", opacity: 1, position: 45 },
+                { id: 3, color: "#00acc1", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 177,
+            textColor: "#006064",
+            textShadowEnabled: true,
+            textShadowColor: "#ffffff",
+            textShadowOpacity: 1,
+            textShadowX: 0,
+            textShadowY: 0,
+            textShadowBlur: 4,
+            qrFrame: "frame2"
         }
     },
     {
@@ -113,26 +421,22 @@ export const PRESETS = [
                 { id: 4, color: "#a4a4a4", opacity: 0.53, position: 100 }
             ],
             bgGradientAngle: 37,
-
             borderEnabled: true,
             borderStyle: "solid",
             borderWidth: 1,
             borderColor: "#ffffff",
             borderOpacity: 0.15,
             borderRadius: 32,
-
             progressRadius: 12,
-
             progTrackType: "gradient",
             progTrackSolidColor: "#000000",
             progTrackSolidOpacity: 0,
             progTrackGradientString: "linear-gradient(180deg, rgba(0,0,0,0) 1%, rgba(0,0,0,0.22) 100%)",
             progTrackGradientStops: [
-                { id: 1, color: "#000000", opacity: 0, position: 0 }, // 1% approximated to 0 for picker simplicity, or keep 1
+                { id: 1, color: "#000000", opacity: 0, position: 0 },
                 { id: 2, color: "#000000", opacity: 0.22, position: 100 }
             ],
             progTrackGradientAngle: 180,
-
             progFillType: "gradient",
             progFillSolidColor: "#acacac",
             progFillSolidOpacity: 1,
@@ -143,7 +447,6 @@ export const PRESETS = [
                 { id: 3, color: "#53b3b7", opacity: 1, position: 100 }
             ],
             progFillGradientAngle: 177,
-
             textColor: "#ffffff",
             textShadowEnabled: true,
             textShadowColor: "#6e6e6e",
@@ -151,8 +454,139 @@ export const PRESETS = [
             textShadowX: -1,
             textShadowY: 1,
             textShadowBlur: 2,
-
             qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Miami Vice (Маямі)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#00d2ff",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(120deg, #00d2ff 0%, #3a7bd5 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#00d2ff", opacity: 1, position: 0 },
+                { id: 2, color: "#3a7bd5", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 120,
+            borderEnabled: true,
+            borderStyle: "solid",
+            borderWidth: 2,
+            borderColor: "#ffffff",
+            borderOpacity: 0.5,
+            borderRadius: 24,
+            progressRadius: 12,
+            progTrackType: "solid",
+            progTrackSolidColor: "#ffffff",
+            progTrackSolidOpacity: 0.3,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#ff0099",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(90deg, #ff0099 0%, #493240 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#ff0099", opacity: 1, position: 0 },
+                { id: 2, color: "#493240", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#ffffff",
+            textShadowEnabled: true,
+            textShadowColor: "#222222",
+            textShadowOpacity: 0.6,
+            textShadowX: 1,
+            textShadowY: 1,
+            textShadowBlur: 1,
+            qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Mint Fresh (Свіжа М'ята)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#84fab0",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#84fab0", opacity: 1, position: 0 },
+                { id: 2, color: "#8fd3f4", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 120,
+            borderEnabled: true,
+            borderStyle: "solid",
+            borderWidth: 2,
+            borderColor: "#ffffff",
+            borderOpacity: 0.6,
+            borderRadius: 24,
+            progressRadius: 12,
+            progTrackType: "solid",
+            progTrackSolidColor: "#ffffff",
+            progTrackSolidOpacity: 0.4,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#009688",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(90deg, #0ba360 0%, #3cba92 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#0ba360", opacity: 1, position: 0 },
+                { id: 2, color: "#3cba92", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#004d40",
+            textShadowEnabled: false,
+            textShadowColor: "#ffffff",
+            textShadowOpacity: 1,
+            textShadowX: 0,
+            textShadowY: 0,
+            textShadowBlur: 0,
+            qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Patriotic (Патріотичний)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#0057b7",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(180deg, rgba(0,87,183,1) 0%, rgba(0,87,183,1) 50%, rgba(136,136,136,1) 50%, rgba(255,215,0,1) 51%, rgba(255,215,0,1) 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#0057b7", opacity: 1, position: 0 },
+                { id: 2, color: "#0057b7", opacity: 1, position: 50 },
+                { id: 3, color: "#888888", opacity: 1, position: 50 },
+                { id: 4, color: "#ffd700", opacity: 1, position: 51 },
+                { id: 5, color: "#ffd700", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 180,
+            borderEnabled: false,
+            borderStyle: "solid",
+            borderWidth: 0,
+            borderColor: "#ffffff",
+            borderOpacity: 0.8,
+            borderRadius: 24,
+            progressRadius: 12,
+            progTrackType: "solid",
+            progTrackSolidColor: "#494949",
+            progTrackSolidOpacity: 0.33,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "solid",
+            progFillSolidColor: "#828282",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "",
+            progFillGradientStops: [],
+            progFillGradientAngle: 0,
+            textColor: "#ffffff",
+            textShadowEnabled: true,
+            textShadowColor: "#000000",
+            textShadowOpacity: 0.5,
+            textShadowX: 1,
+            textShadowY: 1,
+            textShadowBlur: 2,
+            qrFrame: "standard"
         }
     },
     {
@@ -201,172 +635,6 @@ export const PRESETS = [
         }
     },
     {
-        name: "Mint Fresh (Свіжа М'ята)",
-        state: {
-            bgType: "gradient",
-            bgSolidColor: "#00b09b",
-            bgSolidOpacity: 1,
-            bgGradientString: "linear-gradient(45deg, #96fbc4 0%, #f9f586 100%)",
-            bgGradientStops: [
-                { id: 1, color: "#96fbc4", opacity: 1, position: 0 },
-                { id: 2, color: "#f9f586", opacity: 1, position: 100 }
-            ],
-            bgGradientAngle: 45,
-            borderEnabled: true,
-            borderStyle: "solid",
-            borderWidth: 4,
-            borderColor: "#ffffff",
-            borderOpacity: 0.8,
-            borderRadius: 30,
-            progressRadius: 15,
-            progTrackType: "solid",
-            progTrackSolidColor: "#000000",
-            progTrackSolidOpacity: 0.1,
-            progTrackGradientString: "",
-            progTrackGradientStops: [],
-            progTrackGradientAngle: 0,
-            progFillType: "solid",
-            progFillSolidColor: "#00b09b",
-            progFillSolidOpacity: 1,
-            progFillGradientString: "",
-            progFillGradientStops: [],
-            progFillGradientAngle: 0,
-            textColor: "#2d5a4c",
-            textShadowEnabled: false,
-            textShadowColor: "#ffffff",
-            textShadowOpacity: 1,
-            textShadowX: 0,
-            textShadowY: 0,
-            textShadowBlur: 0,
-            qrFrame: "frame2"
-        }
-    },
-    {
-        name: "Dark Luxury (Темний Люкс)",
-        state: {
-            bgType: "solid",
-            bgSolidColor: "#1a1a1a",
-            bgSolidOpacity: 1,
-            bgGradientString: "",
-            bgGradientStops: [],
-            bgGradientAngle: 0,
-            borderEnabled: true,
-            borderStyle: "double",
-            borderWidth: 3,
-            borderColor: "#d4af37",
-            borderOpacity: 1,
-            borderRadius: 8,
-            progressRadius: 2,
-            progTrackType: "solid",
-            progTrackSolidColor: "#333333",
-            progTrackSolidOpacity: 1,
-            progTrackGradientString: "",
-            progTrackGradientStops: [],
-            progTrackGradientAngle: 0,
-            progFillType: "gradient",
-            progFillSolidColor: "#d4af37",
-            progFillSolidOpacity: 1,
-            progFillGradientString: "linear-gradient(90deg, #bf953f 0%, #fcf6ba 50%, #b38728 100%)",
-            progFillGradientStops: [
-                { id: 1, color: "#bf953f", opacity: 1, position: 0 },
-                { id: 2, color: "#fcf6ba", opacity: 1, position: 50 },
-                { id: 3, color: "#b38728", opacity: 1, position: 100 }
-            ],
-            progFillGradientAngle: 90,
-            textColor: "#d4af37",
-            textShadowEnabled: false,
-            textShadowColor: "#000000",
-            textShadowOpacity: 0,
-            textShadowX: 0,
-            textShadowY: 0,
-            textShadowBlur: 0,
-            qrFrame: "standard"
-        }
-    },
-    {
-        name: "Neo Brutalism (Нео Бруталізм)",
-        state: {
-            bgType: "solid",
-            bgSolidColor: "#ffcc00",
-            bgSolidOpacity: 1,
-            bgGradientString: "",
-            bgGradientStops: [],
-            bgGradientAngle: 0,
-            borderEnabled: true,
-            borderStyle: "solid",
-            borderWidth: 4,
-            borderColor: "#000000",
-            borderOpacity: 1,
-            borderRadius: 0,
-            progressRadius: 0,
-            progTrackType: "solid",
-            progTrackSolidColor: "#ffffff",
-            progTrackSolidOpacity: 1,
-            progTrackGradientString: "",
-            progTrackGradientStops: [],
-            progTrackGradientAngle: 0,
-            progFillType: "solid",
-            progFillSolidColor: "#000000",
-            progFillSolidOpacity: 1,
-            progFillGradientString: "",
-            progFillGradientStops: [],
-            progFillGradientAngle: 0,
-            textColor: "#000000",
-            textShadowEnabled: true,
-            textShadowColor: "#ffffff",
-            textShadowOpacity: 1,
-            textShadowX: 2,
-            textShadowY: 2,
-            textShadowBlur: 0,
-            qrFrame: "frame2"
-        }
-    },
-    {
-        name: "Deep Space (Глибокий Космос)",
-        state: {
-            bgType: "gradient",
-            bgSolidColor: "#0f2027",
-            bgSolidOpacity: 1,
-            bgGradientString: "linear-gradient(90deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
-            bgGradientStops: [
-                { id: 1, color: "#0f2027", opacity: 1, position: 0 },
-                { id: 2, color: "#203a43", opacity: 1, position: 50 },
-                { id: 3, color: "#2c5364", opacity: 1, position: 100 }
-            ],
-            bgGradientAngle: 90,
-            borderEnabled: true,
-            borderStyle: "solid",
-            borderWidth: 1,
-            borderColor: "#ffffff",
-            borderOpacity: 0.2,
-            borderRadius: 20,
-            progressRadius: 10,
-            progTrackType: "solid",
-            progTrackSolidColor: "#ffffff",
-            progTrackSolidOpacity: 0.1,
-            progTrackGradientString: "",
-            progTrackGradientStops: [],
-            progTrackGradientAngle: 0,
-            progFillType: "gradient",
-            progFillSolidColor: "#00d2ff",
-            progFillSolidOpacity: 1,
-            progFillGradientString: "linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%)",
-            progFillGradientStops: [
-                { id: 1, color: "#00d2ff", opacity: 1, position: 0 },
-                { id: 2, color: "#3a7bd5", opacity: 1, position: 100 }
-            ],
-            progFillGradientAngle: 90,
-            textColor: "#ffffff",
-            textShadowEnabled: true,
-            textShadowColor: "#00d2ff",
-            textShadowOpacity: 0.5,
-            textShadowX: 0,
-            textShadowY: 0,
-            textShadowBlur: 10,
-            qrFrame: "frame2"
-        }
-    },
-    {
         name: "Transparent (Прозорий)",
         state: {
             bgType: "solid",
@@ -375,23 +643,19 @@ export const PRESETS = [
             bgGradientString: "",
             bgGradientStops: [],
             bgGradientAngle: 0,
-
             borderEnabled: false,
             borderStyle: "solid",
             borderWidth: 0,
             borderColor: "#ffffff",
             borderOpacity: 0,
             borderRadius: 32,
-
             progressRadius: 12,
-
             progTrackType: "solid",
             progTrackSolidColor: "#000000",
             progTrackSolidOpacity: 0,
             progTrackGradientString: "",
             progTrackGradientStops: [],
             progTrackGradientAngle: 0,
-
             progFillType: "gradient",
             progFillSolidColor: "#acacac",
             progFillSolidOpacity: 1,
@@ -402,7 +666,6 @@ export const PRESETS = [
                 { id: 3, color: "#b75353", opacity: 1, position: 100 }
             ],
             progFillGradientAngle: 177,
-
             textColor: "#ffffff",
             textShadowEnabled: true,
             textShadowColor: "#6e6e6e",
@@ -410,8 +673,8 @@ export const PRESETS = [
             textShadowX: -1,
             textShadowY: 1,
             textShadowBlur: 2,
-
             qrFrame: "frame2"
         }
-    }
+    },
+
 ];
