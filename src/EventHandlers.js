@@ -134,6 +134,16 @@ export function bindPreviewEvents(editor) {
             }
         });
     }
+
+    if (editor.dom.resetBgBtn) {
+        editor.dom.resetBgBtn.addEventListener("click", () => {
+            const picker = editor.pickrManager.pickers.previewBg;
+            if (picker) {
+                // Set to transparent. This triggers the 'change' event which handles the UI update.
+                picker.setColor('rgba(0, 0, 0, 0)');
+            }
+        });
+    }
 }
 
 export function bindActionButtons(editor) {

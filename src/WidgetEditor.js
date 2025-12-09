@@ -72,6 +72,7 @@ export class WidgetEditor {
             cssExport: document.querySelector(".css-export"),
             previewBox: document.querySelector(".widget-preview"),
             previewBgPicker: document.getElementById("preview-bg-picker"),
+            resetBgBtn: document.getElementById("reset-bg-btn"),
             previewProgressSlider: document.getElementById("preview-progress-slider"),
 
             bgTypeSelect: document.getElementById("bg-type-select"),
