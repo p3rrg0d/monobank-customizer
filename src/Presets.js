@@ -365,5 +365,98 @@ export const PRESETS = [
             textShadowBlur: 10,
             qrFrame: "frame2"
         }
+    },
+    {
+        name: "Sunset (Захід Сонця)",
+        state: {
+            bgType: "gradient",
+            bgSolidColor: "#ee7752",
+            bgSolidOpacity: 1,
+            bgGradientString: "linear-gradient(135deg, rgba(238, 119, 82, 1) 0%, rgba(231, 60, 126, 1) 50%, rgba(35, 166, 213, 1) 100%)",
+            bgGradientStops: [
+                { id: 1, color: "#ee7752", opacity: 1, position: 0 },
+                { id: 2, color: "#e73c7e", opacity: 1, position: 50 },
+                { id: 3, color: "#23a6d5", opacity: 1, position: 100 }
+            ],
+            bgGradientAngle: 135,
+            borderEnabled: false,
+            borderStyle: "solid",
+            borderWidth: 0,
+            borderColor: "#ffffff",
+            borderOpacity: 0,
+            borderRadius: 24,
+            progressRadius: 12,
+            progTrackType: "solid",
+            progTrackSolidColor: "#ffffff",
+            progTrackSolidOpacity: 0.3,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+            progFillType: "gradient",
+            progFillSolidColor: "#ffffff",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#ffecd2", opacity: 1, position: 0 },
+                { id: 2, color: "#fcb69f", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 90,
+            textColor: "#ffffff",
+            textShadowEnabled: true,
+            textShadowColor: "#000000",
+            textShadowOpacity: 0.2,
+            textShadowX: 1,
+            textShadowY: 1,
+            textShadowBlur: 2,
+            qrFrame: "frame2"
+        }
+    },
+    {
+        name: "Transparent (Прозорий)",
+        state: {
+            bgType: "solid",
+            bgSolidColor: "#ffffff",
+            bgSolidOpacity: 0,
+            bgGradientString: "",
+            bgGradientStops: [],
+            bgGradientAngle: 0,
+
+            borderEnabled: false,
+            borderStyle: "solid",
+            borderWidth: 0,
+            borderColor: "#ffffff",
+            borderOpacity: 0,
+            borderRadius: 32,
+
+            progressRadius: 12,
+
+            progTrackType: "solid",
+            progTrackSolidColor: "#000000",
+            progTrackSolidOpacity: 0,
+            progTrackGradientString: "",
+            progTrackGradientStops: [],
+            progTrackGradientAngle: 0,
+
+            progFillType: "gradient",
+            progFillSolidColor: "#acacac",
+            progFillSolidOpacity: 1,
+            progFillGradientString: "linear-gradient(177deg, rgba(172,172,172,1) 0%, rgba(142,83,83,1) 23%, rgba(183,83,83,1) 100%)",
+            progFillGradientStops: [
+                { id: 1, color: "#acacac", opacity: 1, position: 0 },
+                { id: 2, color: "#8e5353", opacity: 1, position: 23 },
+                { id: 3, color: "#b75353", opacity: 1, position: 100 }
+            ],
+            progFillGradientAngle: 177,
+
+            textColor: "#ffffff",
+            textShadowEnabled: true,
+            textShadowColor: "#6e6e6e",
+            textShadowOpacity: 1,
+            textShadowX: -1,
+            textShadowY: 1,
+            textShadowBlur: 2,
+
+            qrFrame: "frame2"
+        }
     }
 ];
