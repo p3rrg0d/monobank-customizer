@@ -1,39 +1,29 @@
 :root {
     /* Colors */
     --bg-main: #f0ece9;
-    /* More neutral beige/grey */
     --bg-panel: #fffbf6;
-    /* Lighter panel bg */
     --bg-white: #ffffff;
 
     --text-main: #2d2d2d;
-    /* Slightly softer black */
     --text-secondary: #666666;
 
     --border-color: #000000;
-    /* Stark black for neobrutalism */
     --border-width: 2px;
     --border-radius: 6px;
-    /* Slightly sharper */
 
     --accent-primary: #ff5f57;
-    /* Vibrant Red/Orange */
     --accent-hover: #ff4036;
     --accent-secondary: #febc2e;
-    /* Yellow */
 
-    /* Spacing */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 16px;
     --spacing-lg: 24px;
 
-    /* Shadows */
     --shadow-sm: 2px 2px 0 var(--border-color);
     --shadow-md: 4px 4px 0 var(--border-color);
     --shadow-lg: 8px 8px 0 var(--border-color);
 
-    /* Fonts */
     --font-heading: "Space Grotesk", sans-serif;
     --font-body: "Inter", sans-serif;
 }
@@ -50,10 +40,9 @@ body {
     background-image: radial-gradient(var(--text-secondary) 1px,
             transparent 1px);
     background-size: 20px 20px;
-    /* Dot pattern */
 }
 
-/* Custom Scrollbar */
+
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -80,7 +69,6 @@ body {
         "header header header"
         "control-panel widget-preview css-export";
     grid-template-columns: 350px 1fr 450px;
-    /* Fixed widths for sidebars */
     grid-template-rows: 60px 1fr;
     width: 95%;
     min-height: 90vh;
@@ -99,18 +87,15 @@ body {
     box-sizing: border-box;
 }
 
-/* Scrollable panels only (NOT header!) */
 .control-panel,
 .widget-preview,
 .css-export {
     overflow-y: auto;
 }
 
-/* HEADER */
 .header {
     grid-area: header;
     background: #483bce;
-    /* Retro OS Blue */
     color: #ffffff;
     border-bottom: 4px solid var(--border-color);
     padding: 0 var(--spacing-lg);
@@ -122,7 +107,6 @@ body {
     font-weight: 700;
     font-size: 24px;
     letter-spacing: -0.5px;
-    /* Add a subtle gradient for that "active window" feel */
     background-image: linear-gradient(to right, #483bce, #5e6ad2);
     box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.1);
 }
@@ -209,7 +193,6 @@ body {
     justify-content: center;
     gap: 8px;
     background: var(--accent-secondary);
-    /* Yellow highlight */
     padding: 10px;
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
@@ -440,7 +423,6 @@ body {
     overflow: hidden;
 }
 
-/* Widget Wrapper (Drag & Drop) */
 my-widget {
     display: inline-block;
     position: absolute;
@@ -455,7 +437,6 @@ my-widget {
 
 my-widget:active {
     cursor: grabbing;
-    transform: translate(-50%, -50%) scale(0.98);
 }
 
 /* Widget Base Styles */
@@ -473,7 +454,6 @@ my-widget:active {
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    /* Add depth to widget */
 }
 
 /* Progress Bar Styles */

@@ -4,6 +4,7 @@ import { PickrManager, setPickrColorSilent } from './PickrManager.js';
 import { bindAllEvents } from './EventHandlers.js';
 import { ModalManager } from './ModalManager.js';
 import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG } from './CSSGenerator.js';
+import { PRESETS } from './Presets.js';
 
 export class WidgetEditor {
     constructor() {
@@ -113,6 +114,7 @@ export class WidgetEditor {
 
             randomizeBtn: document.getElementById("randomize-btn"),
             undoBtn: document.getElementById("undo-btn"),
+            presetSelect: document.getElementById("preset-select"),
         };
 
         this.init();
@@ -135,7 +137,58 @@ export class WidgetEditor {
 
         this.cssExporter = new CSSExporter(this.dom.cssExport);
 
+        this.initPresets();
         this.updateAll();
+    }
+
+    initPresets() {
+        if (!this.dom.presetSelect) return;
+
+        PRESETS.forEach((preset, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.textContent = preset.name;
+            this.dom.presetSelect.appendChild(option);
+        });
+
+        this.dom.presetSelect.addEventListener("change", (e) => {
+            const index = e.target.value;
+            if (index === "") return;
+            this.loadPreset(parseInt(index));
+            // Reset selection to default so user can re-select if they want
+            // this.dom.presetSelect.value = ""; 
+        });
+    }
+
+    loadPreset(index) {
+        const preset = PRESETS[index];
+        if (!preset) return;
+
+        this.saveState();
+        this._preventSave = true;
+
+        // Deep copy the preset state to avoid modifying original
+        this.state = JSON.parse(JSON.stringify(preset.state));
+
+        // We need to re-initialize or update gradient pickers explicitly
+        // because syncing UI doesn't necessarily update the picker instances internal state
+        // for complex objects like arrays of stops if not handled carefully.
+
+        // Syncing Pickers
+        if (this.bgGradientPicker) {
+            this.bgGradientPicker.setStops(this.state.bgGradientStops || [], this.state.bgGradientAngle || 90);
+        }
+        if (this.trackGradientPicker) {
+            this.trackGradientPicker.setStops(this.state.progTrackGradientStops || [], this.state.progTrackGradientAngle || 90);
+        }
+        if (this.fillGradientPicker) {
+            this.fillGradientPicker.setStops(this.state.progFillGradientStops || [], this.state.progFillGradientAngle || 90);
+        }
+
+        this.syncUIToState();
+        this.updateAll();
+
+        this._preventSave = false;
     }
 
     initGradientPickers() {
@@ -577,7 +630,7 @@ export class WidgetEditor {
             if (this.fillGradientPicker) this.fillGradientPicker.setStops(gradData.stops, gradData.angle);
         }
 
-        this.state.qrFrame = randomChoice(["standard", "frame1", "frame2", "frame3"]);
+        this.state.qrFrame = randomChoice(["standard", "frame1", "frame2"]);
 
         this.state.textColor = randomColor();
         this.state.textShadowEnabled = Math.random() > 0.5;

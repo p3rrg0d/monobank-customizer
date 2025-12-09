@@ -123,19 +123,14 @@ export function bindPreviewEvents(editor) {
         editor.dom.previewProgressSlider.addEventListener("input", (e) => {
             const val = e.target.value;
             const rangeValue = e.target.nextElementSibling;
-            if (rangeValue) rangeValue.textContent = `${val}₴`;
+            if (rangeValue) rangeValue.textContent = `${val}%`;
 
             if (editor.dom.widget && editor.dom.widget.shadowRoot) {
                 const progressBar = editor.dom.widget.shadowRoot.querySelector('.progress');
-                const textBalance = editor.dom.widget.shadowRoot.querySelector('.text-balance');
                 const textName = editor.dom.widget.shadowRoot.querySelector('.text-name');
 
                 if (progressBar) progressBar.style.setProperty('--progress', `${val}%`);
-                previewArea.style.background = "";
-            }
-
-            if (editor.pickrManager && editor.pickrManager.pickers.previewBg) {
-                editor.pickrManager.pickers.previewBg.setColor("rgba(255, 255, 255, 0)", true);
+                if (textName) textName.textContent = `${val}₴, ${val}%`;
             }
         });
     }
