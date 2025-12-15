@@ -136,10 +136,20 @@ export class WidgetEditor {
         this.modalManager = new ModalManager();
         this.modalManager.create();
 
-        this.cssExporter = new CSSExporter(this.dom.cssExport);
+        this.cssExporter = new CSSExporter(this.dom.cssExport, () => {
+            // Callback for "first time copy"
+            this.modalManager.show();
+        });
 
         this.initPresets();
         this.updateAll();
+
+        const tutorialBtn = document.getElementById("tutorial-btn");
+        if (tutorialBtn) {
+            tutorialBtn.addEventListener("click", () => {
+                this.modalManager.show();
+            });
+        }
     }
 
     initPresets() {
@@ -267,9 +277,16 @@ export class WidgetEditor {
         let startX, startY;
         let startLeft, startTop;
 
+        // Ensure widget starts centered
+        widget.style.position = 'absolute';
+        widget.style.left = '50%';
+        widget.style.top = '50%';
+
         // Ensure initial scale is applied even before drag
         if (!this.isCustomPositioned) {
-            widget.style.transform = `translate(-50%, -50%) scale(${this.previewScale})`;
+            widget.style.transformOrigin = 'center center'; // Explicit origin
+            const transformValue = `translate(-50%, -50%) scale(${this.previewScale})`;
+            widget.style.transform = transformValue;
         }
 
         const onMouseDown = (e) => {

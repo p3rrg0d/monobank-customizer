@@ -403,37 +403,39 @@ body {
 /* WIDGET PREVIEW AREA */
 .widget-preview {
     grid-area: widget-preview;
-    display: flex;
-    background-color: #ffffff;
-    background-image:
-        linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
-        linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
-        linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+    background: linear-gradient(45deg,
+            rgba(0, 0, 0, 0.03) 25%,
+            transparent 25%,
+            transparent 75%,
+            rgba(0, 0, 0, 0.03) 75%,
+            rgba(0, 0, 0, 0.03)),
+        linear-gradient(45deg,
+            rgba(0, 0, 0, 0.03) 25%,
+            transparent 25%,
+            transparent 75%,
+            rgba(0, 0, 0, 0.03) 75%,
+            rgba(0, 0, 0, 0.03));
     background-size: 20px 20px;
-    background-position:
-        0 0,
-        0 10px,
-        10px -10px,
-        -10px 0px;
-    align-items: center;
-    justify-content: center;
+    background-position: 0 0, 10px 10px;
+    /* Removed display: flex that breaks absolute positioning */
     border-right: 4px solid var(--border-color);
     position: relative;
     overflow: hidden;
 }
 
-my-widget {
-    display: inline-block;
+/* Widget initial centering */
+.widget-preview my-widget {
     position: absolute;
-    cursor: grab;
-    user-select: none;
-    touch-action: none;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
+
+/* Widget initial centering - removed, handled by JS */
 
 my-widget:active {
     cursor: grabbing;
@@ -560,8 +562,11 @@ my-widget:active {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 700px;
-    max-height: 90vh;
+    width: 1200px;
+    /* Big increase */
+    max-width: 95vw;
+    /* Responsive cap */
+    max-height: 95vh;
     overflow-y: auto;
     background: var(--bg-white);
     border: 4px solid var(--border-color);
@@ -622,6 +627,212 @@ my-widget:active {
 .copy-btn-wide:active {
     transform: translate(2px, 2px);
     box-shadow: 0 0 0 var(--border-color);
+}
+
+.tutorial-btn-secondary {
+    width: 45px;
+    height: 45px;
+    /* Match Copy CSS height */
+    flex-shrink: 0;
+    border: 2px solid var(--border-color);
+    background: #e0e0e0;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-main);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: all 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+}
+
+.tutorial-btn-secondary:hover {
+    background: #d4d4d4;
+    transform: translate(-1px, -1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.tutorial-btn-secondary:active {
+    transform: translate(1px, 1px);
+    box-shadow: 0 0 0 var(--border-color);
+}
+
+/* Modal Split Layout */
+.modal-body {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.modal-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.modal-visual {
+    flex: 2;
+    /* Give images double the space of text */
+    min-width: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    background: #f5f5f5;
+    /* Placeholder background */
+    border-radius: 8px;
+    border: 2px solid #000;
+    overflow: hidden;
+    /* Aspect ratio 16:9 approx or fixed height */
+    aspect-ratio: 16/9;
+    /* display: flex; REMOVED to fix layout break with indicators */
+}
+
+.screenshot-carousel {
+    width: 100%;
+    height: 100%;
+}
+
+.screenshot-carousel img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Keep entire image visible */
+    display: none;
+    /* Helpers handle display logic, but default here */
+    border: none;
+    /* Border moved to container */
+    border-radius: 0;
+}
+
+.screenshot-carousel img.active {
+    display: block;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: 2px solid #000;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 10;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.5);
+    /* Semi-transparent bg for visibility */
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.step-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+    cursor: pointer;
+    border: 2px solid #000;
+}
+
+.step-indicator.active {
+    background: #ff5f57;
+}
+
+.tip-box {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    font-size: 12px;
+    border-left: 4px solid var(--accent-secondary);
+}
+
+@media (max-width: 800px) {
+    .modal-body {
+        flex-direction: column;
+    }
+
+    .modal-visual {
+        width: 100%;
+        order: -1;
+        /* Visualize first on mobile? Or text? User said text left (desktop), usually means text first. */
+        margin-bottom: 20px;
+    }
+}
+
+/* Tutorial Highlight Animation - Updated to Gentle Bounce */
+@keyframes tutorial-pulse-btn {
+
+    0%,
+    100% {
+        transform: translateY(0);
+        background: #e0e0e0;
+        color: var(--text-main);
+    }
+
+    20% {
+        transform: translateY(-6px);
+        background: #ff5f57;
+        color: white;
+        border-color: #000;
+        box-shadow: 4px 8px 0 var(--border-color);
+        /* Shadow grows as it lifts */
+    }
+
+    40% {
+        transform: translateY(0);
+        box-shadow: 4px 4px 0 var(--border-color);
+    }
+
+    60% {
+        transform: translateY(-3px);
+        background: #ff5f57;
+        color: white;
+        box-shadow: 4px 7px 0 var(--border-color);
+    }
+
+    80% {
+        transform: translateY(0);
+        box-shadow: 4px 4px 0 var(--border-color);
+    }
+}
+
+.tutorial-highlight {
+    animation: tutorial-pulse-btn 1.5s ease-in-out infinite;
 }
 
 /* Action Buttons (Randomize, Undo) */
