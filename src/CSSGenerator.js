@@ -109,8 +109,9 @@ ${qrFrame2Styles}
 }
 
 export class CSSExporter {
-    constructor(cssExportElement) {
+    constructor(cssExportElement, onFirstCopy) {
         this.cssExportElement = cssExportElement;
+        this.onFirstCopy = onFirstCopy;
         this.codeBlock = null;
         this.initialized = false;
     }
@@ -121,15 +122,16 @@ export class CSSExporter {
         this.cssExportElement.innerHTML = `
             <div class="code-title">
                 <span>CSS код</span>
-                <button class="btn red" id="helpBtn" style="width: 20px; height: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 12px;">?</button>
             </div>
             <pre></pre>
-            <button class="copy-btn-wide" id="copyBtn">Скопіювати CSS код</button>
+            <div style="display: flex; gap: 10px; margin-top: 24px;">
+                <button class="copy-btn-wide" id="copyBtn" style="margin-top: 0; flex-grow: 1;">Скопіювати CSS код</button>
+                <button id="tutorial-btn" class="tutorial-btn-secondary" title="Інструкція">?</button>
+            </div>
         `;
 
         this.codeBlock = this.cssExportElement.querySelector("pre");
         this.initCopyButton();
-        this.initHelpButton();
         this.initialized = true;
     }
 
@@ -139,10 +141,29 @@ export class CSSExporter {
 
         copyBtn.addEventListener("click", () => {
             navigator.clipboard.writeText(this.codeBlock.textContent).then(() => {
+                // Check if first time
+                if (!localStorage.getItem('monobank_widget_css_copied')) {
+                    localStorage.setItem('monobank_widget_css_copied', 'true');
+                    if (this.onFirstCopy) {
+                        this.onFirstCopy();
+                    }
+                }
+
                 const originalText = copyBtn.textContent;
                 copyBtn.textContent = "Скопійовано!";
                 copyBtn.style.background = "var(--accent-secondary)";
                 copyBtn.style.color = "var(--text-main)";
+
+                // Highlight tutorial button
+                const tutorialBtn = document.getElementById("tutorial-btn");
+                if (tutorialBtn) {
+                    tutorialBtn.classList.add("tutorial-highlight");
+                    // Remove class after animation or when user clicks it (optional, handled by click)
+                    setTimeout(() => {
+                        tutorialBtn.classList.remove("tutorial-highlight");
+                    }, 3000); // 3 seconds (2 full loops of 1.5s)
+                }
+
                 setTimeout(() => {
                     copyBtn.textContent = originalText;
                     copyBtn.style.background = "";
@@ -152,15 +173,7 @@ export class CSSExporter {
         });
     }
 
-    initHelpButton() {
-        const helpBtn = this.cssExportElement.querySelector("#helpBtn");
-        if (!helpBtn) return;
 
-        helpBtn.addEventListener("click", () => {
-            document.getElementById("modalOverlay").classList.add("modal-open");
-            document.getElementById("globalHelpModal").classList.add("modal-open");
-        });
-    }
 
     updateCSS(css) {
         if (!this.initialized) {
