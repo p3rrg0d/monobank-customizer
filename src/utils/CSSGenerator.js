@@ -1,4 +1,4 @@
-import { hexToRgba } from './utils.js';
+import { hexToRgba } from './helpers.js';
 
 export function getBackgroundCSS(type, solidColor, solidOpacity, gradString) {
     if (type === "solid") {
@@ -109,9 +109,10 @@ ${qrFrame2Styles}
 }
 
 export class CSSExporter {
-    constructor(cssExportElement, onFirstCopy) {
+    constructor(cssExportElement, onFirstCopy, onTutorialClick) {
         this.cssExportElement = cssExportElement;
         this.onFirstCopy = onFirstCopy;
+        this.onTutorialClick = onTutorialClick;
         this.codeBlock = null;
         this.initialized = false;
     }
@@ -132,7 +133,19 @@ export class CSSExporter {
 
         this.codeBlock = this.cssExportElement.querySelector("pre");
         this.initCopyButton();
+        this.initTutorialButton();
         this.initialized = true;
+    }
+
+    initTutorialButton() {
+        const tutorialBtn = this.cssExportElement.querySelector("#tutorial-btn");
+        if (!tutorialBtn) return;
+
+        tutorialBtn.addEventListener("click", () => {
+            if (this.onTutorialClick) {
+                this.onTutorialClick();
+            }
+        });
     }
 
     initCopyButton() {

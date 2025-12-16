@@ -1,10 +1,10 @@
-import { hexToRgba } from './utils.js';
-import { GradientPicker } from './GradientPicker.js';
-import { PickrManager, setPickrColorSilent } from './PickrManager.js';
-import { bindAllEvents } from './EventHandlers.js';
-import { ModalManager } from './ModalManager.js';
-import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG } from './CSSGenerator.js';
-import { PRESETS } from './Presets.js';
+import { hexToRgba } from './utils/helpers.js';
+import { GradientPicker } from './components/GradientPicker.js';
+import { PickrManager, setPickrColorSilent } from './components/PickrManager.js';
+import { bindAllEvents } from './controllers/EventHandlers.js';
+import { ModalManager } from './managers/ModalManager.js';
+import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG } from './utils/CSSGenerator.js';
+import { PRESETS } from './utils/Presets.js';
 import { StateManager } from './managers/StateManager.js';
 import { DragController } from './controllers/DragController.js';
 
@@ -152,7 +152,11 @@ export class WidgetEditor {
         this.modalManager = new ModalManager();
         this.modalManager.create();
 
-        this.cssExporter = new CSSExporter(this.dom.cssExport);
+        this.cssExporter = new CSSExporter(
+            this.dom.cssExport,
+            () => this.modalManager.show(), // onFirstCopy
+            () => this.modalManager.show()  // onTutorialClick
+        );
 
         this.initPresets();
         this.updateAll();

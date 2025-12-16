@@ -1,4 +1,4 @@
-import { hexToRgba } from './utils.js';
+import { hexToRgba } from '../utils/helpers.js';
 import { CircularSlider } from './CircularSlider.js';
 import Pickr from '@simonwep/pickr';
 import '@simonwep/pickr/dist/themes/nano.min.css';
