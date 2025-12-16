@@ -8,10 +8,13 @@ export class GradientPicker {
         this.container = document.getElementById(containerId);
         if (!this.container) return;
 
-        this.stops = options.initialStops || [
-            { id: 1, color: "#b93e88", opacity: 1, position: 0 },
-            { id: 2, color: "#fca78c", opacity: 1, position: 100 },
-        ];
+        // Break reference to state object by deep cloning
+        this.stops = options.initialStops
+            ? JSON.parse(JSON.stringify(options.initialStops))
+            : [
+                { id: 1, color: "#b93e88", opacity: 1, position: 0 },
+                { id: 2, color: "#fca78c", opacity: 1, position: 100 },
+            ];
         this.angle = options.initialAngle || 135;
         this.nextId = 100;
         this.activeStopId = null;
@@ -317,7 +320,7 @@ export class GradientPicker {
         this.onChange(bg);
     }
 
-    setStops(newStops, newAngle) {
+    setStops(newStops, newAngle, silent = false) {
         this.stops = newStops.map((stop, i) => ({
             id: this.nextId++,
             color: stop.color,
@@ -336,6 +339,14 @@ export class GradientPicker {
         if (settingsPanel) settingsPanel.classList.remove("visible");
 
         this.renderHandles();
-        this.updatePreview();
+
+        if (!silent) {
+            this.updatePreview();
+        } else {
+            // Just update the visual preview box but DO NOT fire onChange
+            const bg = this.getGradientString();
+            const view = this.container.querySelector(".gradient-live-view");
+            if (view) view.style.background = bg;
+        }
     }
 }

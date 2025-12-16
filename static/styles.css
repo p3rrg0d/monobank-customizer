@@ -428,6 +428,8 @@ body {
     position: absolute;
     left: 50%;
     top: 50%;
+    display: block;
+    /* Ensure it behaves like a block for positioning */
     cursor: grab;
     user-select: none;
     -webkit-user-select: none;

@@ -5,10 +5,12 @@ import { bindAllEvents } from './EventHandlers.js';
 import { ModalManager } from './ModalManager.js';
 import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG } from './CSSGenerator.js';
 import { PRESETS } from './Presets.js';
+import { StateManager } from './managers/StateManager.js';
+import { DragController } from './controllers/DragController.js';
 
 export class WidgetEditor {
     constructor() {
-        this.state = {
+        const initialState = {
             bgType: "solid",
             bgSolidColor: "#000000",
             bgSolidOpacity: 1,
@@ -59,13 +61,7 @@ export class WidgetEditor {
 
             qrFrame: "standard",
         };
-
-        this.history = [];
-        this.maxHistoryLength = 20;
-        this._preventSave = false;
-
-        this.previewScale = 1.5;
-        this.isCustomPositioned = false;
+        this.isUpdatingUI = false;
 
         this.dom = {
             widget: document.querySelector("my-widget"),
@@ -118,6 +114,23 @@ export class WidgetEditor {
             presetSelect: document.getElementById("preset-select"),
         };
 
+        // Initialize State Manager
+        this.stateManager = new StateManager(initialState, {
+            onStateChange: (newState) => {
+                this.state = newState; // Keep reference for legacy access if needed, or remove
+                this.syncUIToState();
+                this.updateAll();
+            },
+            onUndoAvailabilityChange: (hasHistory) => {
+                if (this.dom.undoBtn) {
+                    this.dom.undoBtn.disabled = !hasHistory;
+                }
+            }
+        });
+
+        // Proxy state for compatibility
+        this.state = this.stateManager.state;
+
         this.init();
     }
 
@@ -131,25 +144,18 @@ export class WidgetEditor {
 
         this.setInitialPanelStates();
 
-        this.initDraggable();
+        // Initialize Drag Controller
+        this.dragController = new DragController(this.dom.widget, this.dom.previewBox, {
+            scale: 1.5
+        });
 
         this.modalManager = new ModalManager();
         this.modalManager.create();
 
-        this.cssExporter = new CSSExporter(this.dom.cssExport, () => {
-            // Callback for "first time copy"
-            this.modalManager.show();
-        });
+        this.cssExporter = new CSSExporter(this.dom.cssExport);
 
         this.initPresets();
         this.updateAll();
-
-        const tutorialBtn = document.getElementById("tutorial-btn");
-        if (tutorialBtn) {
-            tutorialBtn.addEventListener("click", () => {
-                this.modalManager.show();
-            });
-        }
     }
 
     initPresets() {
@@ -166,8 +172,6 @@ export class WidgetEditor {
             const index = e.target.value;
             if (index === "") return;
             this.loadPreset(parseInt(index));
-            // Reset selection to default so user can re-select if they want
-            // this.dom.presetSelect.value = ""; 
         });
     }
 
@@ -175,31 +179,26 @@ export class WidgetEditor {
         const preset = PRESETS[index];
         if (!preset) return;
 
-        this.saveState();
-        this._preventSave = true;
+        // Force update internal pickers too?
+        // Ideally, StateManager handles the data, but Pickers need to be told about new stops manually 
+        // because they maintain their own internal state (objects vs arrays).
 
-        // Deep copy the preset state to avoid modifying original
-        this.state = JSON.parse(JSON.stringify(preset.state));
+        // We do this BEFORE telling StateManager to replace state, so the UI update loop uses correct picker data if queried
+        // Actually, we should update Pickers AFTER state replacement but BEFORE UI sync.
 
-        // We need to re-initialize or update gradient pickers explicitly
-        // because syncing UI doesn't necessarily update the picker instances internal state
-        // for complex objects like arrays of stops if not handled carefully.
+        const newState = JSON.parse(JSON.stringify(preset.state));
 
-        // Syncing Pickers
-        if (this.bgGradientPicker) {
-            this.bgGradientPicker.setStops(this.state.bgGradientStops || [], this.state.bgGradientAngle || 90);
-        }
-        if (this.trackGradientPicker) {
-            this.trackGradientPicker.setStops(this.state.progTrackGradientStops || [], this.state.progTrackGradientAngle || 90);
-        }
-        if (this.fillGradientPicker) {
-            this.fillGradientPicker.setStops(this.state.progFillGradientStops || [], this.state.progFillGradientAngle || 90);
-        }
+        // Save current state to history BEFORE applying the new preset.
+        // We do not manually update pickers here because stateManager.replace() will trigger onStateChange,
+        // which calls syncUIToState(), which correctly updates pickers silently.
+        this.stateManager.save();
 
-        this.syncUIToState();
-        this.updateAll();
+        this.stateManager.replace(newState, false);
 
-        this._preventSave = false;
+        // Wait, original logic: saveState() then replace. 
+        // Our replace method doesn't push to history automatically.
+        // let's assume global saveState was called before this if triggered by user action? 
+        // No, let's just use replace.
     }
 
     initGradientPickers() {
@@ -212,9 +211,9 @@ export class WidgetEditor {
                     this.state.bgGradientStops = JSON.parse(JSON.stringify(this.bgGradientPicker.stops));
                     this.state.bgGradientAngle = this.bgGradientPicker.angle;
                 }
-                this.updateAll();
+                this.updateAll(); // Direct update for performance during drag
             },
-            onSaveState: () => this.saveState(),
+            onSaveState: () => this.saveState(), // Delegate to wrapper
         });
 
         this.trackGradientPicker = new GradientPicker("prog-track-gradient-picker", {
@@ -269,123 +268,6 @@ export class WidgetEditor {
         );
     }
 
-    initDraggable() {
-        const widget = this.dom.widget;
-        const container = this.dom.previewBox;
-
-        let isDragging = false;
-        let startX, startY;
-        let startLeft, startTop;
-
-        // Ensure widget starts centered
-        widget.style.position = 'absolute';
-        widget.style.left = '50%';
-        widget.style.top = '50%';
-
-        // Ensure initial scale is applied even before drag
-        if (!this.isCustomPositioned) {
-            widget.style.transformOrigin = 'center center'; // Explicit origin
-            const transformValue = `translate(-50%, -50%) scale(${this.previewScale})`;
-            widget.style.transform = transformValue;
-        }
-
-        const onMouseDown = (e) => {
-            if (e.button !== 0) return;
-            isDragging = true;
-
-            startX = e.clientX;
-            startY = e.clientY;
-
-            // Temporarily disable transition
-            widget.style.transition = 'none';
-
-            if (!this.isCustomPositioned) {
-                // Switch from center-based positioning to top-left based positioning
-                // to make drag math simpler and prevent jumping.
-
-                const rect = widget.getBoundingClientRect();
-                const containerRect = container.getBoundingClientRect();
-
-                // Calculate where the element currently is visually inside the container
-                const visualLeft = rect.left - containerRect.left;
-                const visualTop = rect.top - containerRect.top;
-
-                // Freeze it there, but change origin to top-left (0 0)
-                // so subsequent scale() expands right/down, which is easier to clamp.
-                widget.style.transformOrigin = "0 0";
-                widget.style.transform = `scale(${this.previewScale})`;
-                widget.style.left = `${visualLeft}px`;
-                widget.style.top = `${visualTop}px`;
-
-                this.isCustomPositioned = true;
-
-                // Force reflow
-                void widget.offsetWidth;
-            }
-
-            startLeft = parseFloat(widget.style.left);
-            startTop = parseFloat(widget.style.top);
-
-            widget.style.cursor = "grabbing";
-
-            window.addEventListener("mousemove", onMouseMove);
-            window.addEventListener("mouseup", onMouseUp);
-        };
-
-        const onMouseMove = (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
-
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-
-            let newLeft = startLeft + dx;
-            let newTop = startTop + dy;
-
-            const containerWidth = container.clientWidth;
-            const containerHeight = container.clientHeight;
-
-            // Visual width/height is the actual screen space taken
-            const visualWidth = widget.getBoundingClientRect().width;
-            const visualHeight = widget.getBoundingClientRect().height;
-
-            // Clamp so the visual box never leaves the container
-            const maxLeft = containerWidth - visualWidth;
-            const maxTop = containerHeight - visualHeight;
-
-            // Simple clamping
-            if (maxLeft > 0) {
-                newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-            } else {
-                newLeft = 0; // Or center it? User said "exactly size of container", implying containment
-            }
-
-            if (maxTop > 0) {
-                newTop = Math.max(0, Math.min(newTop, maxTop));
-            } else {
-                newTop = 0;
-            }
-
-            widget.style.left = `${newLeft}px`;
-            widget.style.top = `${newTop}px`;
-        };
-
-        const onMouseUp = () => {
-            if (isDragging) {
-                isDragging = false;
-                widget.style.cursor = "grab";
-                widget.style.transition = 'transform 0.1s ease-out';
-
-                window.removeEventListener("mousemove", onMouseMove);
-                window.removeEventListener("mouseup", onMouseUp);
-            }
-        };
-
-        widget.addEventListener("mousedown", onMouseDown);
-    }
-
-
-
     togglePanel(type, solidPanel, gradPanel, pickerInstance) {
         if (type === "solid") {
             solidPanel.style.display = "block";
@@ -431,6 +313,7 @@ export class WidgetEditor {
                 this.state.progFillSolidOpacity,
                 this.state.progFillGradientString
             );
+            console.log("updateAll: setting --progress-gradient to", fillBg, "Type:", this.state.progFillType, "Color:", this.state.progFillSolidColor);
             s.setProperty("--progress-gradient", fillBg);
 
             s.setProperty("--qr-frame-bg", getQRFrameSVG(this.state.qrFrame));
@@ -467,37 +350,25 @@ export class WidgetEditor {
     }
 
     saveState() {
-        if (this._preventSave) return;
-
-        const stateCopy = JSON.parse(JSON.stringify(this.state));
-        this.history.push(stateCopy);
-        if (this.history.length > this.maxHistoryLength) {
-            this.history.shift();
-        }
-        this.updateUndoButton();
+        if (this.isUpdatingUI) return;
+        this.stateManager.save();
     }
 
     undo() {
-        if (this.history.length === 0) return;
-
-        this._preventSave = true;
-
-        const previousState = this.history.pop();
-        this.state = previousState;
-        this.syncUIToState();
-        this.updateAll();
-        this.updateUndoButton();
-
-        this._preventSave = false;
+        this.stateManager.undo();
+        // Since undoing triggers onStateChange -> syncUIToState -> updateAll, we might need to manually sync complex pickers
+        // We will do it in syncUIToState
     }
 
     updateUndoButton() {
         if (this.dom.undoBtn) {
-            this.dom.undoBtn.disabled = this.history.length === 0;
+            this.dom.undoBtn.disabled = this.stateManager.history.length === 0;
         }
     }
 
     syncUIToState() {
+        this.isUpdatingUI = true;
+
         if (this.dom.bgTypeSelect) this.dom.bgTypeSelect.value = this.state.bgType;
         if (this.dom.bgSolidOpacity) {
             this.dom.bgSolidOpacity.value = this.state.bgSolidOpacity;
@@ -575,91 +446,24 @@ export class WidgetEditor {
             setPickrColorSilent(this.pickrManager.pickers.textShadowColor, this.state.textShadowColor);
         }
 
+        // Sync Gradient Pickers explicitly if stops changed (e.g. undo or randomize)
+        // Pass 'true' to silent mode to avoid triggering onChange -> state update -> updateAll recursion
         if (this.bgGradientPicker && this.state.bgGradientStops) {
-            this.bgGradientPicker.setStops(this.state.bgGradientStops, this.state.bgGradientAngle);
+            this.bgGradientPicker.setStops(this.state.bgGradientStops, this.state.bgGradientAngle, true);
         }
         if (this.trackGradientPicker && this.state.progTrackGradientStops) {
-            this.trackGradientPicker.setStops(this.state.progTrackGradientStops, this.state.progTrackGradientAngle);
+            this.trackGradientPicker.setStops(this.state.progTrackGradientStops, this.state.progTrackGradientAngle, true);
         }
         if (this.fillGradientPicker && this.state.progFillGradientStops) {
-            this.fillGradientPicker.setStops(this.state.progFillGradientStops, this.state.progFillGradientAngle);
+            this.fillGradientPicker.setStops(this.state.progFillGradientStops, this.state.progFillGradientAngle, true);
         }
+
+        this.isUpdatingUI = false;
     }
 
     randomize() {
-        this.saveState();
-        this._preventSave = true;
-
-        const randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-        const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-        const randomFloat = (min, max) => Math.random() * (max - min) + min;
-        const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
-        const randomGradientData = () => {
-            const angle = randomInt(0, 360);
-            const numStops = randomInt(2, 4);
-            const stops = [];
-            for (let i = 0; i < numStops; i++) {
-                stops.push({ color: randomColor(), opacity: 1, position: Math.round((i / (numStops - 1)) * 100) });
-            }
-            return { stops, angle };
-        };
-
-        if (Math.random() > 0.5) {
-            this.state.bgType = "solid";
-            this.state.bgSolidColor = randomColor();
-            this.state.bgSolidOpacity = randomFloat(0.7, 1);
-        } else {
-            this.state.bgType = "gradient";
-            const gradData = randomGradientData();
-            this.state.bgGradientStops = gradData.stops;
-            this.state.bgGradientAngle = gradData.angle;
-            if (this.bgGradientPicker) this.bgGradientPicker.setStops(gradData.stops, gradData.angle);
-        }
-
-        this.state.borderEnabled = Math.random() > 0.5;
-        this.state.borderStyle = randomChoice(["solid", "dashed", "dotted", "double"]);
-        this.state.borderWidth = this.state.borderEnabled ? randomInt(1, 5) : 0;
-        this.state.borderColor = randomColor();
-        this.state.borderOpacity = this.state.borderEnabled ? randomFloat(0.5, 1) : 0;
-        this.state.borderRadius = randomInt(0, 40);
-        this.state.progressRadius = randomInt(0, 16);
-
-        if (Math.random() > 0.7) {
-            this.state.progTrackType = "solid";
-            this.state.progTrackSolidColor = randomColor();
-            this.state.progTrackSolidOpacity = randomFloat(0.5, 1);
-        } else {
-            this.state.progTrackType = "gradient";
-            const gradData = randomGradientData();
-            this.state.progTrackGradientStops = gradData.stops;
-            this.state.progTrackGradientAngle = gradData.angle;
-            if (this.trackGradientPicker) this.trackGradientPicker.setStops(gradData.stops, gradData.angle);
-        }
-
-        if (Math.random() > 0.7) {
-            this.state.progFillType = "solid";
-            this.state.progFillSolidColor = randomColor();
-            this.state.progFillSolidOpacity = randomFloat(0.8, 1);
-        } else {
-            this.state.progFillType = "gradient";
-            const gradData = randomGradientData();
-            this.state.progFillGradientStops = gradData.stops;
-            this.state.progFillGradientAngle = gradData.angle;
-            if (this.fillGradientPicker) this.fillGradientPicker.setStops(gradData.stops, gradData.angle);
-        }
-
-        this.state.qrFrame = randomChoice(["standard", "frame1", "frame2"]);
-
-        this.state.textColor = randomColor();
-        this.state.textShadowEnabled = Math.random() > 0.5;
-        this.state.textShadowColor = randomColor();
-        this.state.textShadowX = randomInt(-5, 5);
-        this.state.textShadowY = randomInt(-5, 5);
-        this.state.textShadowBlur = randomInt(0, 5);
-
-        this.syncUIToState();
-        this.updateAll();
-
-        this._preventSave = false;
+        this.stateManager.randomize();
+        // No need to manually sync pickers here, as StateManager.randomize() triggers onStateChange,
+        // which calls syncUIToState(), which updates pickers silently.
     }
 }
