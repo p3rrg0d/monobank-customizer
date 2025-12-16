@@ -1,0 +1,18 @@
+{
+  "name": "monobank-customizer",
+  "version": "1.0.0",
+  "description": "Monobank Widget Editor",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "p3rrg0d",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "@simonwep/pickr": "^1.9.0"
+  }
+}

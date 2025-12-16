@@ -1,3 +1,6 @@
+import Pickr from '@simonwep/pickr';
+import '@simonwep/pickr/dist/themes/nano.min.css';
+
 export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
     let hasSavedState = false;
 

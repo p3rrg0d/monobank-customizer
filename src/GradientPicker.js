@@ -1,5 +1,7 @@
 import { hexToRgba } from './utils.js';
 import { CircularSlider } from './CircularSlider.js';
+import Pickr from '@simonwep/pickr';
+import '@simonwep/pickr/dist/themes/nano.min.css';
 
 export class GradientPicker {
     constructor(containerId, options = {}) {
