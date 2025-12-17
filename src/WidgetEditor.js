@@ -356,7 +356,7 @@ export class WidgetEditor {
 
             s.setProperty("--qr-frame-bg", getQRFrameSVG(this.state.qrFrame));
 
-            if (['frame2', 'frame3'].includes(this.state.qrFrame)) {
+            if (this.state.qrFrame === 'frame2') {
                 s.setProperty("--qr-container-width", "180px");
                 s.setProperty("--qr-container-pos-x", "-20.1px");
                 s.setProperty("--qr-container-pos-y", "-19.5px");
