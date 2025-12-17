@@ -140,12 +140,6 @@ export class WidgetEditor {
             presetSelect: document.getElementById("preset-select"),
         };
 
-        // Initialize Share Button
-        this.dom.shareBtn = document.getElementById("share-btn");
-        if (this.dom.shareBtn) {
-            this.dom.shareBtn.addEventListener("click", () => this.shareState());
-        }
-
         // Initialize State Manager
         this.stateManager = new StateManager(initialState, {
             onStateChange: (newState) => {
@@ -192,6 +186,14 @@ export class WidgetEditor {
 
         this.initPresets();
         this.updateAll();
+
+        // Initialize Share Button (must be after CSSExporter init since button is created there)
+        setTimeout(() => {
+            this.dom.shareBtn = document.getElementById("share-btn");
+            if (this.dom.shareBtn) {
+                this.dom.shareBtn.addEventListener("click", () => this.shareState());
+            }
+        }, 100);
     }
 
     initPresets() {
@@ -525,11 +527,28 @@ export class WidgetEditor {
 
         // Copy to clipboard
         navigator.clipboard.writeText(url.toString()).then(() => {
-            const originalText = this.dom.shareBtn.textContent;
-            this.dom.shareBtn.textContent = "Copied! ✅";
+            if (!this.dom.shareBtn) return;
+
+            // Save original HTML
+            const originalHTML = this.dom.shareBtn.innerHTML;
+
+            // Replace icon with checkmark
+            this.dom.shareBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            `;
+
+            // Animate background to green with scale effect
+            this.dom.shareBtn.style.background = "#4ade80";
+            this.dom.shareBtn.style.transform = "scale(1.1)";
+            this.dom.shareBtn.style.transition = "all 0.2s ease";
+
             setTimeout(() => {
-                this.dom.shareBtn.textContent = originalText;
-            }, 2000);
+                this.dom.shareBtn.innerHTML = originalHTML;
+                this.dom.shareBtn.style.background = "#febc2e";
+                this.dom.shareBtn.style.transform = "";
+            }, 1500);
         }).catch(err => {
             console.error('Failed to copy text: ', err);
             alert("Failed to copy link. Check console.");
