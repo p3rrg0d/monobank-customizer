@@ -5,6 +5,9 @@ export class DragController {
         this.previewScale = options.scale || 1.5;
         this.isCustomPositioned = false;
 
+        // Detect touch device - disable dragging on touch
+        this.isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+
         this.onDragStart = options.onDragStart || (() => { });
         this.onDragEnd = options.onDragEnd || (() => { });
 
@@ -13,6 +16,17 @@ export class DragController {
 
     init() {
         if (!this.element || !this.container) return;
+
+        // Disable dragging on touch devices
+        if (this.isTouchDevice) {
+            // Still apply positioning and scale, but no drag
+            this.element.style.position = "absolute";
+            this.element.style.transformOrigin = "center center";
+            this.element.style.left = "50%";
+            this.element.style.top = "50%";
+            this.element.style.transform = `translate(-50%, -50%) scale(${this.previewScale})`;
+            return; // Exit early, don't attach drag listeners
+        }
 
         this.element.style.position = "absolute";
         this.element.style.transformOrigin = "center center"; // Ensure scale works from center

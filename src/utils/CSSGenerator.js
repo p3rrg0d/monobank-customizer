@@ -171,9 +171,9 @@ export class CSSExporter {
 
     initCopyButton() {
         const copyBtn = this.cssExportElement.querySelector("#copyBtn");
-        if (!copyBtn) return;
+        const mobileCopyBtn = document.getElementById("mobile-copy-css");
 
-        copyBtn.addEventListener("click", () => {
+        const copyHandler = () => {
             navigator.clipboard.writeText(this.codeBlock.textContent).then(() => {
                 // Check if first time
                 if (!localStorage.getItem('monobank_widget_css_copied')) {
@@ -183,28 +183,52 @@ export class CSSExporter {
                     }
                 }
 
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = "Скопійовано!";
-                copyBtn.style.background = "var(--accent-secondary)";
-                copyBtn.style.color = "var(--text-main)";
+                // Desktop button feedback
+                if (copyBtn) {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = "Скопійовано!";
+                    copyBtn.style.background = "var(--accent-secondary)";
+                    copyBtn.style.color = "var(--text-main)";
+
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                        copyBtn.style.background = "";
+                        copyBtn.style.color = "";
+                    }, 2000);
+                }
+
+                // Mobile button feedback
+                if (mobileCopyBtn) {
+                    const originalText = mobileCopyBtn.textContent;
+                    mobileCopyBtn.textContent = "✓";
+                    mobileCopyBtn.style.background = "var(--accent-secondary)";
+                    mobileCopyBtn.style.color = "var(--text-main)";
+
+                    setTimeout(() => {
+                        mobileCopyBtn.textContent = originalText;
+                        mobileCopyBtn.style.background = "";
+                        mobileCopyBtn.style.color = "";
+                    }, 2000);
+                }
 
                 // Highlight tutorial button
                 const tutorialBtn = document.getElementById("tutorial-btn");
                 if (tutorialBtn) {
                     tutorialBtn.classList.add("tutorial-highlight");
-                    // Remove class after animation or when user clicks it (optional, handled by click)
                     setTimeout(() => {
                         tutorialBtn.classList.remove("tutorial-highlight");
-                    }, 3000); // 3 seconds (2 full loops of 1.5s)
+                    }, 3000);
                 }
-
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                    copyBtn.style.background = "";
-                    copyBtn.style.color = "";
-                }, 2000);
             });
-        });
+        };
+
+        if (copyBtn) {
+            copyBtn.addEventListener("click", copyHandler);
+        }
+
+        if (mobileCopyBtn) {
+            mobileCopyBtn.addEventListener("click", copyHandler);
+        }
     }
 
 
