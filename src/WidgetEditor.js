@@ -1,3 +1,6 @@
+import '../src/styles/styles.css';
+import '../src/styles/circular-slider.css';
+import '../src/styles/background.css';
 import { hexToRgba } from './utils/helpers.js';
 import { GradientPicker } from './components/GradientPicker.js';
 import { PickrManager, setPickrColorSilent } from './components/PickrManager.js';
