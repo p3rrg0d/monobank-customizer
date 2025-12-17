@@ -1,7 +1,7 @@
 import '../src/styles/styles.css';
 import '../src/styles/circular-slider.css';
 import '../src/styles/background.css';
-import { hexToRgba } from './utils/helpers.js';
+import { hexToRgba, encodeWidgetState, decodeWidgetState } from './utils/helpers.js';
 import { GradientPicker } from './components/GradientPicker.js';
 import { PickrManager, setPickrColorSilent } from './components/PickrManager.js';
 import { bindAllEvents } from './controllers/EventHandlers.js';
@@ -13,7 +13,8 @@ import { DragController } from './controllers/DragController.js';
 
 export class WidgetEditor {
     constructor() {
-        const initialState = {
+        // Define DEFAULT state first
+        const DEFAULT_STATE = {
             bgType: "solid",
             bgSolidColor: "#000000",
             bgSolidOpacity: 1,
@@ -64,6 +65,28 @@ export class WidgetEditor {
 
             qrFrame: "standard",
         };
+
+        // Check for state in URL BEFORE creating initialState
+        let initialState = { ...DEFAULT_STATE };
+        const urlParams = new URLSearchParams(window.location.search);
+        const encodedState = urlParams.get('state');
+        if (encodedState) {
+            try {
+                const decodedState = decodeWidgetState(encodedState);
+                if (decodedState) {
+                    // Merge decoded state with default structure
+                    initialState = { ...initialState, ...decodedState };
+                    // Clean URL immediately
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            } catch (err) {
+                console.error("Failed to restore state from URL:", err);
+            }
+        }
+
+        // Store default state reference for delta encoding
+        this.defaultState = DEFAULT_STATE;
+
         this.isUpdatingUI = false;
 
         this.dom = {
@@ -116,6 +139,12 @@ export class WidgetEditor {
             undoBtn: document.getElementById("undo-btn"),
             presetSelect: document.getElementById("preset-select"),
         };
+
+        // Initialize Share Button
+        this.dom.shareBtn = document.getElementById("share-btn");
+        if (this.dom.shareBtn) {
+            this.dom.shareBtn.addEventListener("click", () => this.shareState());
+        }
 
         // Initialize State Manager
         this.stateManager = new StateManager(initialState, {
@@ -472,5 +501,38 @@ export class WidgetEditor {
         this.stateManager.randomize();
         // No need to manually sync pickers here, as StateManager.randomize() triggers onStateChange,
         // which calls syncUIToState(), which updates pickers silently.
+    }
+
+    shareState() {
+        // Create delta: only include values that differ from default
+        const delta = {};
+
+        for (const key in this.state) {
+            const currentValue = this.state[key];
+            const defaultValue = this.defaultState[key];
+
+            // Deep comparison for arrays and objects
+            if (JSON.stringify(currentValue) !== JSON.stringify(defaultValue)) {
+                delta[key] = currentValue;
+            }
+        }
+
+        const encoded = encodeWidgetState(delta);
+        if (!encoded) return;
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('state', encoded);
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(url.toString()).then(() => {
+            const originalText = this.dom.shareBtn.textContent;
+            this.dom.shareBtn.textContent = "Copied! ✅";
+            setTimeout(() => {
+                this.dom.shareBtn.textContent = originalText;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            alert("Failed to copy link. Check console.");
+        });
     }
 }
