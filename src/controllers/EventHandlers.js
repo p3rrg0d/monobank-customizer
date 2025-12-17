@@ -160,6 +160,22 @@ export function bindActionButtons(editor) {
     }
 }
 
+export function bindCollapsibleSections(editor) {
+    const headers = document.querySelectorAll('.control-panel h3');
+    headers.forEach(header => {
+        // Skip headers that don't have descriptions or content following them directly in expected structure
+        // But simpler: just find the next .section-content
+        const sectionContent = header.parentElement.querySelector('.section-content');
+
+        if (sectionContent) {
+            header.addEventListener('click', () => {
+                const isCollapsed = sectionContent.classList.toggle('collapsed');
+                header.classList.toggle('collapsed', isCollapsed);
+            });
+        }
+    });
+}
+
 export function bindAllEvents(editor) {
     bindWidgetEvents(editor);
     bindBorderEvents(editor);
@@ -168,4 +184,5 @@ export function bindAllEvents(editor) {
     bindTextEvents(editor);
     bindPreviewEvents(editor);
     bindActionButtons(editor);
+    bindCollapsibleSections(editor);
 }

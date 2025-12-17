@@ -190,13 +190,49 @@ body {
     margin: 0 0 var(--spacing-md) 0;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    /* Changed from center to space-between for arrow */
     gap: 8px;
     background: var(--accent-secondary);
     padding: 10px;
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    /* Enable pointer */
+    transition: all 0.2s;
+}
+
+.control-panel h3:hover {
+    background: #FFD54F;
+    /* Slightly lighter yellow on hover */
+    transform: translate(-1px, -1px);
+    box-shadow: var(--shadow-md);
+}
+
+.control-panel h3::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.control-panel h3.collapsed::after {
+    transform: rotate(-90deg);
+}
+
+.section-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.section-content.collapsed {
+    display: none;
 }
 
 .control-panel h3::before {
@@ -289,12 +325,12 @@ body {
     width: 100%;
     background: transparent;
     margin: 0;
-    padding: 0;
+    padding: 0 3px;
     border: none;
-    height: 30px;
+    height: 40px;
     cursor: pointer;
     display: block;
-    /* Ensure it takes space */
+    box-sizing: border-box;
 }
 
 .control-row input[type="range"]:focus {
@@ -324,7 +360,8 @@ body {
     cursor: pointer;
     box-shadow: var(--shadow-md);
     transition: all 0.1s;
-    margin-top: -8px;
+    margin-top: -6px;
+    box-sizing: border-box;
 }
 
 .control-row input[type="range"]::-webkit-slider-thumb:hover {
