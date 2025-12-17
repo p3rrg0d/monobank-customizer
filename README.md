@@ -38,6 +38,7 @@
 
 - **HTML5 / CSS3** (Custom Properties, Flexbox)
 - **JavaScript** (гги jаба 🐸)
+- **Vite** (Збирач проекту: HMR, оптимізація)
 - **Pickr** (Бібліотека для вибору кольору)
 - **Google Fonts** (Inter, Space Grotesk)
 
@@ -51,17 +52,18 @@ https://p3rrg0d.github.io/monobank-customizer/
    ```bash
    git clone https://github.com/p3rrg0d/monobank-customizer.git
    ```
-2. Перейдіть у папку проекту:
+2. Встановіть залежності:
    ```bash
-   cd monobank-customizer
+   npm install
    ```
-3. Відкрийте файл `index.html` у вашому браузері.
-
-*рекомендується використовувати локальний сервер (наприклад, Live Server у VS Code або Python SimpleHTTPServer).*
-
-```python
-python -m http.server 8000
-```
+3. Запустіть локальний сервер:
+   ```bash
+   npm run dev
+   ```
+4. Для збірки (build):
+   ```bash
+   npm run build
+   ```
 
 ## Автор
 
