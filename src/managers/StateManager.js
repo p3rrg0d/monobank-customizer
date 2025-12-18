@@ -116,7 +116,7 @@ export class StateManager {
             overrides.progFillGradientAngle = gradData.angle;
         }
 
-        overrides.qrFrame = randomChoice(["standard", "frame1", "frame2"]);
+        overrides.qrFrame = randomChoice(["standard", "frame1", "frame2", "frame3"]);
 
         overrides.textColor = randomColor();
         overrides.textShadowEnabled = Math.random() > 0.5;
