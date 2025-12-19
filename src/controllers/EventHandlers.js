@@ -158,6 +158,12 @@ export function bindActionButtons(editor) {
             editor.undo();
         });
     }
+
+    if (editor.dom.redoBtn) {
+        editor.dom.redoBtn.addEventListener("click", () => {
+            editor.redo();
+        });
+    }
 }
 
 export function bindCollapsibleSections(editor) {

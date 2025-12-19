@@ -5,11 +5,13 @@ export class StateManager {
         this.state = { ...initialState };
         this.defaultState = JSON.parse(JSON.stringify(initialState));
         this.history = [];
+        this.redoHistory = []; // Stack for redo operations
         this.maxHistoryLength = 20;
         this._preventSave = false;
 
         this.onStateChange = callbacks.onStateChange || (() => { });
         this.onUndoAvailabilityChange = callbacks.onUndoAvailabilityChange || (() => { });
+        this.onRedoAvailabilityChange = callbacks.onRedoAvailabilityChange || (() => { });
     }
 
     get() {
@@ -34,6 +36,13 @@ export class StateManager {
 
         const stateCopy = JSON.parse(JSON.stringify(this.state));
         this.history.push(stateCopy);
+
+        // Clear redo history on new change
+        if (this.redoHistory.length > 0) {
+            this.redoHistory = [];
+            this.onRedoAvailabilityChange(false);
+        }
+
         if (this.history.length > this.maxHistoryLength) {
             this.history.shift();
         }
@@ -44,9 +53,31 @@ export class StateManager {
         if (this.history.length === 0) return;
 
         this._preventSave = true;
+
+        // Save current state to redo history
+        this.redoHistory.push(JSON.parse(JSON.stringify(this.state)));
+        this.onRedoAvailabilityChange(true);
+
         const previousState = this.history.pop();
         this.replace(previousState, true);
+
         this.onUndoAvailabilityChange(this.history.length > 0);
+        this._preventSave = false;
+    }
+
+    redo() {
+        if (this.redoHistory.length === 0) return;
+
+        this._preventSave = true;
+
+        // Save current state to normal history
+        this.history.push(JSON.parse(JSON.stringify(this.state)));
+        this.onUndoAvailabilityChange(true);
+
+        const nextState = this.redoHistory.pop();
+        this.replace(nextState, true);
+
+        this.onRedoAvailabilityChange(this.redoHistory.length > 0);
         this._preventSave = false;
     }
 

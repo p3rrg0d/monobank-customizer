@@ -137,6 +137,7 @@ export class WidgetEditor {
 
             randomizeBtn: document.getElementById("randomize-btn"),
             undoBtn: document.getElementById("undo-btn"),
+            redoBtn: document.getElementById("redo-btn"),
             presetSelect: document.getElementById("preset-select"),
         };
 
@@ -150,6 +151,11 @@ export class WidgetEditor {
             onUndoAvailabilityChange: (hasHistory) => {
                 if (this.dom.undoBtn) {
                     this.dom.undoBtn.disabled = !hasHistory;
+                }
+            },
+            onRedoAvailabilityChange: (hasRedoHistory) => {
+                if (this.dom.redoBtn) {
+                    this.dom.redoBtn.disabled = !hasRedoHistory;
                 }
             }
         });
@@ -394,8 +400,10 @@ export class WidgetEditor {
 
     undo() {
         this.stateManager.undo();
-        // Since undoing triggers onStateChange -> syncUIToState -> updateAll, we might need to manually sync complex pickers
-        // We will do it in syncUIToState
+    }
+
+    redo() {
+        this.stateManager.redo();
     }
 
     updateUndoButton() {
