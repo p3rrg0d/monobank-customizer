@@ -1,4 +1,5 @@
 import { hexToRgba } from './helpers.js';
+import confetti from 'canvas-confetti';
 
 export function getBackgroundCSS(type, solidColor, solidOpacity, gradString) {
     if (type === "solid") {
@@ -195,6 +196,14 @@ export class CSSExporter {
                         copyBtn.style.background = "";
                         copyBtn.style.color = "";
                     }, 2000);
+
+                    // Trigger Confetti
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#ff5f57', '#febc2e', '#483bce', '#28c840']
+                    });
                 }
 
                 // Mobile button feedback

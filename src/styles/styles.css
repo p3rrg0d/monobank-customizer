@@ -35,11 +35,127 @@ body {
     height: 100%;
     overflow: hidden;
     font-family: var(--font-body);
-    color: var(--text-main);
     background-color: var(--bg-main);
     background-image: radial-gradient(var(--text-secondary) 1px,
             transparent 1px);
     background-size: 20px 20px;
+    position: relative;
+}
+
+/* Background Decorations */
+.background-decor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.decor-shape {
+    position: absolute;
+    background: var(--accent-secondary);
+    opacity: 0.15;
+    border: 3px solid var(--border-color);
+    box-shadow: 4px 4px 0 var(--border-color);
+    animation: float 20s linear infinite;
+}
+
+.shape-1 {
+    width: 60px;
+    height: 60px;
+    top: 10%;
+    left: 5%;
+    transform: rotate(15deg);
+    border-radius: 8px;
+}
+
+.shape-2 {
+    width: 80px;
+    height: 40px;
+    top: 70%;
+    left: 85%;
+    transform: rotate(-25deg);
+    border-radius: 4px;
+}
+
+.shape-3 {
+    width: 50px;
+    height: 50px;
+    top: 30%;
+    left: 90%;
+    transform: rotate(45deg);
+    border-radius: 50%;
+    opacity: 0.1;
+}
+
+.shape-4 {
+    width: 100px;
+    height: 20px;
+    top: 85%;
+    left: 15%;
+    transform: rotate(10deg);
+    border-radius: 4px;
+}
+
+.shape-5 {
+    width: 40px;
+    height: 80px;
+    top: 40%;
+    left: 45%;
+    transform: rotate(-10deg);
+    border-radius: 4px;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    33% {
+        transform: translate(30px, -20px) rotate(5deg);
+    }
+
+    66% {
+        transform: translate(-20px, 30px) rotate(-5deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+}
+
+/* Snow Styles */
+#snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.snowflake {
+    position: absolute;
+    top: -10px;
+    background: white;
+    border-radius: 50%;
+    will-change: transform;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-10vh) translateX(0);
+    }
+
+    100% {
+        transform: translateY(110vh) translateX(50px);
+    }
 }
 
 
@@ -75,11 +191,14 @@ body {
     max-height: 90vh;
     margin: 20px auto;
     margin-bottom: 60px;
-    background: var(--bg-main);
+    background: rgba(240, 236, 233, 0.85);
+    /* Increased opacity for better contrast without blur */
     border: 4px solid var(--border-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
+    position: relative;
+    z-index: 10;
 }
 
 .container>div {
@@ -107,8 +226,8 @@ body {
     font-weight: 700;
     font-size: 24px;
     letter-spacing: -0.5px;
-    background-image: linear-gradient(to right, #483bce, #5e6ad2);
-    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+    background-image: linear-gradient(135deg, #483bce, #8a48ce);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .header-icon {
@@ -250,19 +369,23 @@ body {
 
 /* Control Sections */
 .control-section {
-    background: var(--bg-white);
-    border: 2px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 3px solid var(--border-color);
     border-radius: var(--border-radius);
     padding: var(--spacing-md);
     box-shadow: var(--shadow-sm);
     transition:
         transform 0.2s,
-        box-shadow 0.2s;
+        box-shadow 0.2s,
+        background 0.2s;
 }
 
 .control-section:hover {
-    transform: translate(-2px, -2px);
+    transform: translate(-3px, -3px);
     box-shadow: var(--shadow-md);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .control-row {
@@ -440,6 +563,22 @@ body {
 /* WIDGET PREVIEW AREA */
 .widget-preview {
     grid-area: widget-preview;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.widget-preview::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(45deg,
             rgba(0, 0, 0, 0.03) 25%,
             transparent 25%,
@@ -454,10 +593,8 @@ body {
             rgba(0, 0, 0, 0.03));
     background-size: 20px 20px;
     background-position: 0 0, 10px 10px;
-    /* Removed display: flex that breaks absolute positioning */
-    border-right: 4px solid var(--border-color);
-    position: relative;
-    overflow: hidden;
+    opacity: 0.5;
+    z-index: -1;
 }
 
 /* Widget initial centering */
@@ -525,7 +662,9 @@ my-widget:active {
 /* CSS EXPORT AREA */
 .css-export {
     grid-area: css-export;
-    background: var(--bg-panel);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-left: 4px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -909,8 +1048,22 @@ my-widget:active {
 
 .btn-action:hover:not(:disabled) {
     background: var(--accent-secondary);
-    transform: translate(-1px, -1px);
+    transform: translate(-2px, -2px);
     box-shadow: var(--shadow-md);
+}
+
+.btn-action:hover:not(:disabled) svg {
+    animation: rotate-dice 0.6s ease-in-out;
+}
+
+@keyframes rotate-dice {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .btn-action:active:not(:disabled) {

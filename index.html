@@ -14,340 +14,344 @@
     <link rel="icon" type="image/x-icon" href="icons/coffee.png">
 </head>
 
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="window-buttons">
-                <span class="btn red"></span>
-                <span class="btn yellow"></span>
-                <span class="btn green"></span>
-            </div>
-            <img src="icons/mono-brutalism.png" alt="icon" class="header-icon" />
-            <span class="title">Редактор віджета</span>
+<div class="background-decor-container">
+    <div class="decor-shape shape-1"></div>
+    <div class="decor-shape shape-2"></div>
+    <div class="decor-shape shape-3"></div>
+    <div class="decor-shape shape-4"></div>
+    <div class="decor-shape shape-5"></div>
+</div>
+<div class="container">
+    <div class="header">
+        <div class="window-buttons">
+            <span class="btn red"></span>
+            <span class="btn yellow"></span>
+            <span class="btn green"></span>
+        </div>
+        <img src="icons/mono-brutalism.png" alt="icon" class="header-icon" />
+        <span class="title">Редактор віджета</span>
+    </div>
+
+    <div class="control-panel">
+        <h2 style="color: black">Налаштування віджета</h2>
+        <div class="action-buttons" style="display: flex; gap: 8px; margin-bottom: 15px;">
+            <button id="randomize-btn" class="btn-action" title="Випадкові налаштування">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M17 2H7C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2ZM10.5 6.5C10.5 7.32843 9.82843 8 9 8C8.17157 8 7.5 7.32843 7.5 6.5C7.5 5.67157 8.17157 5 9 5C9.82843 5 10.5 5.67157 10.5 6.5ZM16.5 6.5C16.5 7.32843 15.8284 8 15 8C14.1716 8 13.5 7.32843 13.5 6.5C13.5 5.67157 14.1716 5 15 5C15.8284 5 16.5 5.67157 16.5 6.5ZM9 19C8.17157 19 7.5 18.3284 7.5 17.5C7.5 16.6716 8.17157 16 9 16C9.82843 16 10.5 16.6716 10.5 17.5C10.5 18.3284 9.82843 19 9 19ZM16.5 12C16.5 12.8284 15.8284 13.5 15 13.5C14.1716 13.5 13.5 12.8284 13.5 12C13.5 11.1716 14.1716 10.5 15 10.5C15.8284 10.5 16.5 11.1716 16.5 12ZM16.5 17.5C16.5 18.3284 15.8284 19 15 19C14.1716 19 13.5 18.3284 13.5 17.5C13.5 16.6716 14.1716 16 15 16C15.8284 16 16.5 16.6716 16.5 17.5ZM9 13.5C8.17157 13.5 7.5 12.8284 7.5 12C7.5 11.1716 8.17157 10.5 9 10.5C9.82843 10.5 10.5 11.1716 10.5 12C10.5 12.8284 9.82843 13.5 9 13.5Z" />
+                </svg>
+                Рандом
+            </button>
+            <button id="undo-btn" class="btn-action" title="Скасувати останню дію" disabled>Відмінити ↩</button>
         </div>
 
-        <div class="control-panel">
-            <h2 style="color: black">Налаштування віджета</h2>
-            <div class="action-buttons" style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <button id="randomize-btn" class="btn-action" title="Випадкові налаштування">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M17 2H7C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2ZM10.5 6.5C10.5 7.32843 9.82843 8 9 8C8.17157 8 7.5 7.32843 7.5 6.5C7.5 5.67157 8.17157 5 9 5C9.82843 5 10.5 5.67157 10.5 6.5ZM16.5 6.5C16.5 7.32843 15.8284 8 15 8C14.1716 8 13.5 7.32843 13.5 6.5C13.5 5.67157 14.1716 5 15 5C15.8284 5 16.5 5.67157 16.5 6.5ZM9 19C8.17157 19 7.5 18.3284 7.5 17.5C7.5 16.6716 8.17157 16 9 16C9.82843 16 10.5 16.6716 10.5 17.5C10.5 18.3284 9.82843 19 9 19ZM16.5 12C16.5 12.8284 15.8284 13.5 15 13.5C14.1716 13.5 13.5 12.8284 13.5 12C13.5 11.1716 14.1716 10.5 15 10.5C15.8284 10.5 16.5 11.1716 16.5 12ZM16.5 17.5C16.5 18.3284 15.8284 19 15 19C14.1716 19 13.5 18.3284 13.5 17.5C13.5 16.6716 14.1716 16 15 16C15.8284 16 16.5 16.6716 16.5 17.5ZM9 13.5C8.17157 13.5 7.5 12.8284 7.5 12C7.5 11.1716 8.17157 10.5 9 10.5C9.82843 10.5 10.5 11.1716 10.5 12C10.5 12.8284 9.82843 13.5 9 13.5Z" />
-                    </svg>
-                    Рандом
-                </button>
-                <button id="undo-btn" class="btn-action" title="Скасувати останню дію" disabled>Відмінити ↩</button>
-            </div>
-
-            <div class="control-section" style="margin-bottom: 15px;">
-                <h3>Пресети</h3>
-                <p style="font-size: 10px; opacity: 0.7;">
-                    Обрати готовий пресет для віджета.
-                </p>
-                <div class="section-content">
-                    <div class="control-row">
-                        <select id="preset-select" style="width: 100%">
-                        </select>
-                    </div>
-
+        <div class="control-section" style="margin-bottom: 15px;">
+            <h3>Пресети</h3>
+            <p style="font-size: 10px; opacity: 0.7;">
+                Обрати готовий пресет для віджета.
+            </p>
+            <div class="section-content">
+                <div class="control-row">
+                    <select id="preset-select" style="width: 100%">
+                    </select>
                 </div>
-            </div>
 
-            <div class="control-section" style="
+            </div>
+        </div>
+
+        <div class="control-section" style="
                         background: #e1e1e1;
                         border-bottom: 2px solid #3a1622;
                     ">
-                <h3>Налаштування прев'ю</h3>
-                <div class="section-content" id="preview-settings">
+            <h3>Налаштування прев'ю</h3>
+            <div class="section-content" id="preview-settings">
+                <div class="control-row">
+                    <label>Колір фону редактора</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div id="preview-bg-picker" style="flex-grow: 1;"></div>
+                        <button id="reset-bg-btn" class="btn-secondary" title="Скинути фон"
+                            style="padding: 5px 10px; font-size: 12px;">↺</button>
+                    </div>
+                </div>
+                <div class="control-row">
+                    <label>Прогрес</label>
+                    <div class="range">
+                        <input type="range" id="preview-progress-slider" min="0" max="100" step="1" value="50" />
+                        <span class="range-value">50%</span>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 10px; opacity: 0.7">
+                Ці налаштування не впливають на сам віджет, лише для зручності перегляду.
+            </p>
+        </div>
+        <div class="control-section">
+            <h3 class="collapsed">1. Фон віджета</h3>
+            <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
+                Налаштування фону, прозорості та меж.
+            </p>
+
+            <div class="section-content collapsed">
+                <div class="control-row">
+                    <label>Тип заливки</label>
+                    <select id="bg-type-select">
+                        <option value="solid">Суцільний колір</option>
+                        <option value="gradient">Градієнт</option>
+                    </select>
+                </div>
+
+                <div id="bg-solid-controls">
                     <div class="control-row">
-                        <label>Колір фону редактора</label>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <div id="preview-bg-picker" style="flex-grow: 1;"></div>
-                            <button id="reset-bg-btn" class="btn-secondary" title="Скинути фон"
-                                style="padding: 5px 10px; font-size: 12px;">↺</button>
-                        </div>
+                        <label>Колір</label>
+                        <div id="bg-solid-picker"></div>
                     </div>
                     <div class="control-row">
-                        <label>Прогрес</label>
+                        <label>Прозорість</label>
                         <div class="range">
-                            <input type="range" id="preview-progress-slider" min="0" max="100" step="1" value="50" />
-                            <span class="range-value">50%</span>
+                            <input type="range" id="bg-solid-opacity" min="0" max="1" step="0.01" value="1" />
+                            <span class="range-value">1.00</span>
                         </div>
                     </div>
                 </div>
-                <p style="font-size: 10px; opacity: 0.7">
-                    Ці налаштування не впливають на сам віджет, лише для зручності перегляду.
-                </p>
-            </div>
-            <div class="control-section">
-                <h3 class="collapsed">1. Фон віджета</h3>
-                <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
-                    Налаштування фону, прозорості та меж.
-                </p>
 
-                <div class="section-content collapsed">
-                    <div class="control-row">
-                        <label>Тип заливки</label>
-                        <select id="bg-type-select">
-                            <option value="solid">Суцільний колір</option>
-                            <option value="gradient">Градієнт</option>
-                        </select>
-                    </div>
+                <div id="bg-gradient-controls" style="display: none">
+                    <div class="gradient-picker-container" id="bg-gradient-picker"></div>
+                </div>
 
-                    <div id="bg-solid-controls">
-                        <div class="control-row">
-                            <label>Колір</label>
-                            <div id="bg-solid-picker"></div>
-                        </div>
-                        <div class="control-row">
-                            <label>Прозорість</label>
-                            <div class="range">
-                                <input type="range" id="bg-solid-opacity" min="0" max="1" step="0.01" value="1" />
-                                <span class="range-value">1.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="bg-gradient-controls" style="display: none">
-                        <div class="gradient-picker-container" id="bg-gradient-picker"></div>
-                    </div>
-
-                    <div class="control-row" style="
+                <div class="control-row" style="
                                 margin-top: 15px;
                                 border-top: 1px solid #ccc;
                                 padding-top: 10px;
                             ">
-                        <label>Округлість віджета</label>
-                        <input type="range" id="border-radius-slider" min="0" max="70" value="16" />
-                    </div>
-
-                    <div class="control-row">
-                        <label>
-                            <input type="checkbox" id="border-enabled" style="margin-right: 8px;" />
-                            Додати межу
-                        </label>
-                    </div>
-                    <div id="border-controls" style="display: none;">
-                        <div class="control-row">
-                            <label>Стиль межі</label>
-                            <select id="border-style-select">
-                                <option value="solid">Суцільна (Solid)</option>
-                                <option value="dashed">Пунктирна (Dashed)</option>
-                                <option value="dotted">Точкова (Dotted)</option>
-                                <option value="double">Подвійна (Double)</option>
-                                <option value="groove">Groove</option>
-                                <option value="ridge">Ridge</option>
-                            </select>
-                        </div>
-                        <div class="control-row">
-                            <label>Ширина межі</label>
-                            <div class="range">
-                                <input type="range" id="border-width-slider" min="1" max="10" step="1" value="1" />
-                                <span class="range-value">1px</span>
-                            </div>
-                        </div>
-                        <div class="control-row">
-                            <label>Колір межі</label>
-                            <div id="border-color-picker"></div>
-                        </div>
-                        <div class="control-row">
-                            <label>Прозорість межі</label>
-                            <div class="range">
-                                <input type="range" id="border-opacity" min="0" max="1" step="0.01" value="1" />
-                                <span class="range-value">1.00</span>
-                            </div>
-                        </div>
-                    </div>
+                    <label>Округлість віджета</label>
+                    <input type="range" id="border-radius-slider" min="0" max="70" value="16" />
                 </div>
-            </div>
 
-            <div class="control-section">
-                <h3 class="collapsed">2. QR-код</h3>
-                <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
-                    Налаштування рамки QR-коду.
-                </p>
-                <div class="section-content collapsed">
+                <div class="control-row">
+                    <label>
+                        <input type="checkbox" id="border-enabled" style="margin-right: 8px;" />
+                        Додати межу
+                    </label>
+                </div>
+                <div id="border-controls" style="display: none;">
                     <div class="control-row">
-                        <label>Рамка QR-коду</label>
-                        <select id="qr-frame-select">
-                            <option value="standard">Стандарт</option>
-                            <option value="frame1">Стандарт (без тіні)</option>
-                            <option value="frame2">Рамка (скруглена)</option>
-                            <option value="frame3">Чорний кіт</option>
+                        <label>Стиль межі</label>
+                        <select id="border-style-select">
+                            <option value="solid">Суцільна (Solid)</option>
+                            <option value="dashed">Пунктирна (Dashed)</option>
+                            <option value="dotted">Точкова (Dotted)</option>
+                            <option value="double">Подвійна (Double)</option>
+                            <option value="groove">Groove</option>
+                            <option value="ridge">Ridge</option>
                         </select>
                     </div>
-                </div>
-            </div>
-
-            <div class="control-section">
-                <h3 class="collapsed">3. Прогрес-бар</h3>
-                <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
-                    Налаштування стилю та кольорів прогрес-бару.
-                </p>
-                <div class="section-content collapsed">
                     <div class="control-row">
-                        <label>Округлість смужки</label>
-                        <input type="range" id="progress-radius-slider" min="0" max="20" value="12" />
-                    </div>
-
-                    <h4 style="margin-top: 15px; border-bottom: 1px solid #999">
-                        Підкладка (Track)
-                    </h4>
-                    <div class="control-row">
-                        <label>Тип заливки</label>
-                        <select id="prog-track-type-select">
-                            <option value="solid">Суцільний колір</option>
-                            <option value="gradient" selected>Градієнт</option>
-                        </select>
-                    </div>
-
-                    <div id="prog-track-solid-controls">
-                        <div class="control-row">
-                            <label>Колір</label>
-                            <div id="prog-track-solid-picker"></div>
+                        <label>Ширина межі</label>
+                        <div class="range">
+                            <input type="range" id="border-width-slider" min="1" max="10" step="1" value="1" />
+                            <span class="range-value">1px</span>
                         </div>
-                        <div class="control-row">
-                            <label>Прозорість</label>
-                            <div class="range">
-                                <input type="range" id="prog-track-solid-opacity" min="0" max="1" step="0.01"
-                                    value="1" />
-                                <span class="range-value">1.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="prog-track-gradient-controls" style="display: none">
-                        <div class="gradient-picker-container" id="prog-track-gradient-picker"></div>
-                    </div>
-
-                    <h4 style="margin-top: 15px; border-bottom: 1px solid #999">
-                        Активна смужка (Fill)
-                    </h4>
-                    <div class="control-row">
-                        <label>Тип заливки</label>
-                        <select id="prog-fill-type-select">
-                            <option value="gradient">Градієнт</option>
-                            <option value="solid">Суцільний колір</option>
-                        </select>
-                    </div>
-
-                    <div id="prog-fill-solid-controls" style="display: none">
-                        <div class="control-row">
-                            <label>Колір</label>
-                            <div id="prog-fill-solid-picker"></div>
-                        </div>
-                        <div class="control-row">
-                            <label>Прозорість</label>
-                            <div class="range">
-                                <input type="range" id="prog-fill-solid-opacity" min="0" max="1" step="0.01"
-                                    value="1" />
-                                <span class="range-value">1.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="prog-fill-gradient-controls">
-                        <div class="gradient-picker-container" id="prog-fill-gradient-picker"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="control-section">
-                <h3 class="collapsed">4. Текст</h3>
-                <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
-                    Налаштування кольору та тіні тексту.
-                </p>
-                <div class="section-content collapsed">
-                    <div class="control-row">
-                        <label>Колір тексту</label>
-                        <div id="text-color-picker"></div>
                     </div>
                     <div class="control-row">
-                        <label>
-                            <input type="checkbox" id="text-shadow-enabled" style="margin-right: 8px;" />
-                            Тінь тексту
-                        </label>
+                        <label>Колір межі</label>
+                        <div id="border-color-picker"></div>
                     </div>
-                    <div id="text-shadow-controls" style="display: none;">
-                        <div class="control-row">
-                            <label>Колір тіні</label>
-                            <div id="text-shadow-color-picker"></div>
-                        </div>
-                        <div class="control-row">
-                            <label>Зміщення X</label>
-                            <div class="range">
-                                <input type="range" id="text-shadow-x" min="-5" max="5" step="1" value="0" />
-                                <span class="range-value">0px</span>
-                            </div>
-                        </div>
-                        <div class="control-row">
-                            <label>Зміщення Y</label>
-                            <div class="range">
-                                <input type="range" id="text-shadow-y" min="-5" max="5" step="1" value="2" />
-                                <span class="range-value">2px</span>
-                            </div>
-                        </div>
-                        <div class="control-row">
-                            <label>Розмиття</label>
-                            <div class="range">
-                                <input type="range" id="text-shadow-blur" min="0" max="5" step="1" value="0" />
-                                <span class="range-value">0px</span>
-                            </div>
+                    <div class="control-row">
+                        <label>Прозорість межі</label>
+                        <div class="range">
+                            <input type="range" id="border-opacity" min="0" max="1" step="0.01" value="1" />
+                            <span class="range-value">1.00</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="widget-preview">
-            <my-widget class="draggable"></my-widget>
+        <div class="control-section">
+            <h3 class="collapsed">2. QR-код</h3>
+            <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
+                Налаштування рамки QR-коду.
+            </p>
+            <div class="section-content collapsed">
+                <div class="control-row">
+                    <label>Рамка QR-коду</label>
+                    <select id="qr-frame-select">
+                        <option value="standard">Стандарт</option>
+                        <option value="frame1">Стандарт (без тіні)</option>
+                        <option value="frame2">Рамка (скруглена)</option>
+                        <option value="frame3">Чорний кіт</option>
+                    </select>
+                </div>
+            </div>
         </div>
-        <div class="css-export"></div>
-    </div>
-    <div class="footer-text">
-        <a href="https://p3rrg0d.github.io/">by p3rrg0d </a>
-        <img src="icons/face.png" alt="face" class="footer-icon" />
-        <img src="icons/coffee.png" alt="coffee" class="footer-icon" />
+
+        <div class="control-section">
+            <h3 class="collapsed">3. Прогрес-бар</h3>
+            <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
+                Налаштування стилю та кольорів прогрес-бару.
+            </p>
+            <div class="section-content collapsed">
+                <div class="control-row">
+                    <label>Округлість смужки</label>
+                    <input type="range" id="progress-radius-slider" min="0" max="20" value="12" />
+                </div>
+
+                <h4 style="margin-top: 15px; border-bottom: 1px solid #999">
+                    Підкладка (Track)
+                </h4>
+                <div class="control-row">
+                    <label>Тип заливки</label>
+                    <select id="prog-track-type-select">
+                        <option value="solid">Суцільний колір</option>
+                        <option value="gradient" selected>Градієнт</option>
+                    </select>
+                </div>
+
+                <div id="prog-track-solid-controls">
+                    <div class="control-row">
+                        <label>Колір</label>
+                        <div id="prog-track-solid-picker"></div>
+                    </div>
+                    <div class="control-row">
+                        <label>Прозорість</label>
+                        <div class="range">
+                            <input type="range" id="prog-track-solid-opacity" min="0" max="1" step="0.01" value="1" />
+                            <span class="range-value">1.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="prog-track-gradient-controls" style="display: none">
+                    <div class="gradient-picker-container" id="prog-track-gradient-picker"></div>
+                </div>
+
+                <h4 style="margin-top: 15px; border-bottom: 1px solid #999">
+                    Активна смужка (Fill)
+                </h4>
+                <div class="control-row">
+                    <label>Тип заливки</label>
+                    <select id="prog-fill-type-select">
+                        <option value="gradient">Градієнт</option>
+                        <option value="solid">Суцільний колір</option>
+                    </select>
+                </div>
+
+                <div id="prog-fill-solid-controls" style="display: none">
+                    <div class="control-row">
+                        <label>Колір</label>
+                        <div id="prog-fill-solid-picker"></div>
+                    </div>
+                    <div class="control-row">
+                        <label>Прозорість</label>
+                        <div class="range">
+                            <input type="range" id="prog-fill-solid-opacity" min="0" max="1" step="0.01" value="1" />
+                            <span class="range-value">1.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="prog-fill-gradient-controls">
+                    <div class="gradient-picker-container" id="prog-fill-gradient-picker"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h3 class="collapsed">4. Текст</h3>
+            <p style="font-size: 10px; opacity: 0.7; margin-bottom: 10px;">
+                Налаштування кольору та тіні тексту.
+            </p>
+            <div class="section-content collapsed">
+                <div class="control-row">
+                    <label>Колір тексту</label>
+                    <div id="text-color-picker"></div>
+                </div>
+                <div class="control-row">
+                    <label>
+                        <input type="checkbox" id="text-shadow-enabled" style="margin-right: 8px;" />
+                        Тінь тексту
+                    </label>
+                </div>
+                <div id="text-shadow-controls" style="display: none;">
+                    <div class="control-row">
+                        <label>Колір тіні</label>
+                        <div id="text-shadow-color-picker"></div>
+                    </div>
+                    <div class="control-row">
+                        <label>Зміщення X</label>
+                        <div class="range">
+                            <input type="range" id="text-shadow-x" min="-5" max="5" step="1" value="0" />
+                            <span class="range-value">0px</span>
+                        </div>
+                    </div>
+                    <div class="control-row">
+                        <label>Зміщення Y</label>
+                        <div class="range">
+                            <input type="range" id="text-shadow-y" min="-5" max="5" step="1" value="2" />
+                            <span class="range-value">2px</span>
+                        </div>
+                    </div>
+                    <div class="control-row">
+                        <label>Розмиття</label>
+                        <div class="range">
+                            <input type="range" id="text-shadow-blur" min="0" max="5" step="1" value="0" />
+                            <span class="range-value">0px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Mobile floating copy button -->
-    <button class="mobile-copy-btn" id="mobile-copy-css" title="Скопіювати CSS">
-        📋
-    </button>
+    <div class="widget-preview">
+        <my-widget class="draggable"></my-widget>
+    </div>
+    <div class="css-export"></div>
+</div>
+<div class="footer-text">
+    <a href="https://p3rrg0d.github.io/">by p3rrg0d </a>
+    <img src="icons/face.png" alt="face" class="footer-icon" />
+    <img src="icons/coffee.png" alt="coffee" class="footer-icon" />
+</div>
 
-    <template id="widget-template">
-        <div class="widget qr-with-progress-widget color-scheme-black shadow-off" style="transition: 0.2s ease-out;">
-            <div class="qr-side">
-                <div class="widget qr-container" style="height: 145px">
-                    <div class="qr">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" shape-rendering="crispEdges">
-                            <path fill="#ffffff"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <div class="progress-container">
-                <div class="title">Назва банки</div>
-                <div
-                    class="widget linear-horizontal-progress-widget color-scheme-pink text-scheme-white shape-scheme-rounded progress-scheme-normal display-scheme-inline">
-                    <div class="background"></div>
-                    <div class="progress-container">
-                        <div class="progress-clip">
-                            <div class="progress" style="--progress: 50%"></div>
-                        </div>
-                    </div>
-                    <div class="text">
-                        <div class="text-balance">0₴</div>
-                        <div class="text-name">50₴, 50%</div>
-                        <div class="text-goal">100₴</div>
-                    </div>
+<!-- Mobile floating copy button -->
+<button class="mobile-copy-btn" id="mobile-copy-css" title="Скопіювати CSS">
+    📋
+</button>
+
+<template id="widget-template">
+    <div class="widget qr-with-progress-widget color-scheme-black shadow-off" style="transition: 0.2s ease-out;">
+        <div class="qr-side">
+            <div class="widget qr-container" style="height: 145px">
+                <div class="qr">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" shape-rendering="crispEdges">
+                        <path fill="#ffffff"></path>
+                    </svg>
                 </div>
             </div>
         </div>
-    </template>
-    <script type="module" src="src/main.js"></script>
+        <div class="progress-container">
+            <div class="title">Назва банки</div>
+            <div
+                class="widget linear-horizontal-progress-widget color-scheme-pink text-scheme-white shape-scheme-rounded progress-scheme-normal display-scheme-inline">
+                <div class="background"></div>
+                <div class="progress-container">
+                    <div class="progress-clip">
+                        <div class="progress" style="--progress: 50%"></div>
+                    </div>
+                </div>
+                <div class="text">
+                    <div class="text-balance">0₴</div>
+                    <div class="text-name">50₴, 50%</div>
+                    <div class="text-goal">100₴</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script type="module" src="src/main.js"></script>
 
-    <script type="module" src="src/widget/widget.js"></script>
+<script type="module" src="src/widget/widget.js"></script>
 </body>
 
 </html>
