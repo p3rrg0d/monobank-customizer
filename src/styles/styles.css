@@ -139,24 +139,13 @@ body {
     overflow: hidden;
 }
 
-.snowflake {
+#snow-container canvas {
     position: absolute;
-    top: -10px;
-    background: white;
-    border-radius: 50%;
-    will-change: transform;
-    animation: fall linear infinite;
+    top: 0;
+    left: 0;
+    pointer-events: none;
 }
 
-@keyframes fall {
-    0% {
-        transform: translateY(-10vh) translateX(0);
-    }
-
-    100% {
-        transform: translateY(110vh) translateX(50px);
-    }
-}
 
 
 ::-webkit-scrollbar {
