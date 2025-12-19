@@ -11,7 +11,7 @@ export class SnowManager {
         this.ctx = this.canvas.getContext('2d');
         this.container.appendChild(this.canvas);
 
-        this.snowflakeCount = 300;
+        this.snowflakeCount = 600;
         this.snowflakes = [];
         this.isRunning = false;
 

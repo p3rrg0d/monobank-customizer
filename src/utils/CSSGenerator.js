@@ -1,6 +1,85 @@
 import { hexToRgba } from './helpers.js';
 import confetti from 'canvas-confetti';
 
+const MONO_COLORS = ['#ff5f57', '#febc2e', '#483bce', '#28c840'];
+
+export function triggerCelebration() {
+    // Success: Multi-cannon sequence with Brutalist styling
+    const duration = 2 * 1000;
+    const animationEnd = Date.now() + duration;
+
+    // Brutalist defaults: square shapes, smaller size, fast velocity
+    const defaults = {
+        startVelocity: 45,
+        spread: 360,
+        ticks: 60,
+        zIndex: 9999,
+        colors: MONO_COLORS,
+        shapes: ['square'],
+        scalar: 0.6 // Smaller particles for a sharper look
+    };
+
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    // Side cannons immediately
+    confetti({
+        ...defaults,
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: -0.1, y: 0.5 },
+        drift: 0.5
+    });
+    confetti({
+        ...defaults,
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1.1, y: 0.5 },
+        drift: -0.5
+    });
+
+    // Central burst slightly delayed
+    setTimeout(() => {
+        confetti({
+            ...defaults,
+            particleCount: 120,
+            spread: 80,
+            origin: { y: 0.7 },
+            scalar: 0.8 // Slightly larger for the main burst, but still squares
+        });
+    }, 200);
+
+    // Continuous sparkles sequence
+    const interval = setInterval(function () {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        const particleCount = 25 * (timeLeft / duration);
+        confetti({
+            ...defaults,
+            particleCount,
+            position: {
+                x: randomInRange(0.1, 0.4),
+                y: Math.random() - 0.2
+            }
+        });
+        confetti({
+            ...defaults,
+            particleCount,
+            position: {
+                x: randomInRange(0.6, 0.9),
+                y: Math.random() - 0.2
+            }
+        });
+    }, 250);
+}
+
 export function getBackgroundCSS(type, solidColor, solidOpacity, gradString) {
     if (type === "solid") {
         return hexToRgba(solidColor, solidOpacity);
@@ -30,7 +109,9 @@ export function generateWidgetCSS(state) {
         state.bgSolidOpacity,
         state.bgGradientString
     );
-    const border = `${state.borderWidth}px ${state.borderStyle} ${hexToRgba(state.borderColor, state.borderOpacity)}`;
+    const border = state.borderEnabled
+        ? `${state.borderWidth}px ${state.borderStyle} ${hexToRgba(state.borderColor, state.borderOpacity)}`
+        : 'none';
 
     const trackBg = getBackgroundCSS(
         state.progTrackType,
@@ -198,12 +279,7 @@ export class CSSExporter {
                     }, 2000);
 
                     // Trigger Confetti
-                    confetti({
-                        particleCount: 150,
-                        spread: 70,
-                        origin: { y: 0.6 },
-                        colors: ['#ff5f57', '#febc2e', '#483bce', '#28c840']
-                    });
+                    triggerCelebration('success');
                 }
 
                 // Mobile button feedback

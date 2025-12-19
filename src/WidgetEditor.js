@@ -6,8 +6,8 @@ import { GradientPicker } from './components/GradientPicker.js';
 import { PickrManager, setPickrColorSilent } from './components/PickrManager.js';
 import { bindAllEvents } from './controllers/EventHandlers.js';
 import { ModalManager } from './managers/ModalManager.js';
-import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG } from './utils/CSSGenerator.js';
-import { PRESETS } from './utils/Presets.js';
+import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG, triggerCelebration } from './utils/CSSGenerator.js';
+import { PRESETS } from './data/Presets.js';
 import { StateManager } from './managers/StateManager.js';
 import { DragController } from './controllers/DragController.js';
 
@@ -331,7 +331,7 @@ export class WidgetEditor {
 
             const borderCol = hexToRgba(this.state.borderColor, this.state.borderOpacity);
             s.setProperty("--widget-border-color", borderCol);
-            s.setProperty("--widget-border-width", this.state.borderWidth + "px");
+            s.setProperty("--widget-border-width", (this.state.borderEnabled ? this.state.borderWidth : 0) + "px");
             s.setProperty("--widget-border-style", this.state.borderStyle);
             s.setProperty("--widget-border-radius", this.state.borderRadius + "px");
 
@@ -501,8 +501,6 @@ export class WidgetEditor {
 
     randomize() {
         this.stateManager.randomize();
-        // No need to manually sync pickers here, as StateManager.randomize() triggers onStateChange,
-        // which calls syncUIToState(), which updates pickers silently.
     }
 
     shareState() {
