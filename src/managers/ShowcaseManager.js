@@ -35,7 +35,7 @@ export class ShowcaseManager {
         const header = document.createElement('div');
         header.className = 'showcase-header';
         header.innerHTML = `
-            <h2>Показ пресетів</h2>
+            <h2>Галерея пресетів</h2>
             <button class="showcase-close-btn" title="Закрити">&times;</button>
         `;
         header.querySelector('.showcase-close-btn').addEventListener('click', this.close);
