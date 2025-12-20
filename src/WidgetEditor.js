@@ -1,6 +1,7 @@
 import '../src/styles/styles.css';
 import '../src/styles/circular-slider.css';
 import '../src/styles/background.css';
+import '../src/styles/preset-showcase.css';
 import { hexToRgba, encodeWidgetState, decodeWidgetState } from './utils/helpers.js';
 import { GradientPicker } from './components/GradientPicker.js';
 import { PickrManager, setPickrColorSilent } from './components/PickrManager.js';
@@ -10,6 +11,7 @@ import { generateWidgetCSS, getBackgroundCSS, CSSExporter, getQRFrameSVG, trigge
 import { PRESETS } from './data/Presets.js';
 import { StateManager } from './managers/StateManager.js';
 import { DragController } from './controllers/DragController.js';
+import { ShowcaseManager } from './managers/ShowcaseManager.js';
 
 export class WidgetEditor {
     constructor() {
@@ -138,7 +140,7 @@ export class WidgetEditor {
             randomizeBtn: document.getElementById("randomize-btn"),
             undoBtn: document.getElementById("undo-btn"),
             redoBtn: document.getElementById("redo-btn"),
-            presetSelect: document.getElementById("preset-select"),
+            showcaseBtn: document.getElementById("open-presets-showcase"),
         };
 
         // Initialize State Manager
@@ -190,6 +192,7 @@ export class WidgetEditor {
             () => this.modalManager.show()  // onTutorialClick
         );
 
+        this.showcaseManager = new ShowcaseManager(this);
         this.initPresets();
         this.updateAll();
 
@@ -203,19 +206,10 @@ export class WidgetEditor {
     }
 
     initPresets() {
-        if (!this.dom.presetSelect) return;
+        if (!this.dom.showcaseBtn) return;
 
-        PRESETS.forEach((preset, index) => {
-            const option = document.createElement("option");
-            option.value = index;
-            option.textContent = preset.name;
-            this.dom.presetSelect.appendChild(option);
-        });
-
-        this.dom.presetSelect.addEventListener("change", (e) => {
-            const index = e.target.value;
-            if (index === "") return;
-            this.loadPreset(parseInt(index));
+        this.dom.showcaseBtn.addEventListener("click", () => {
+            this.showcaseManager.open();
         });
     }
 

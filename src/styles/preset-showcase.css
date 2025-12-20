@@ -1,0 +1,217 @@
+.showcase-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.showcase-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.showcase-modal {
+    width: 900px;
+    max-width: 95vw;
+    max-height: 85vh;
+    background: var(--bg-panel, #fffbf6);
+    border: 4px solid #000;
+    box-shadow: 12px 12px 0 #000;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.showcase-overlay.active .showcase-modal {
+    transform: translateY(0);
+}
+
+.showcase-header {
+    padding: 24px;
+    padding-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.showcase-header h2 {
+    margin: 0;
+    font-family: var(--font-heading, "Space Grotesk");
+    font-size: 32px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: -1px;
+    -webkit-text-stroke: 1px #000;
+    color: #000;
+}
+
+.showcase-close-btn {
+    background: var(--accent-primary, #ff5f57);
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    transition: all 0.1s;
+}
+
+.showcase-close-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000;
+}
+
+.showcase-close-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #000;
+}
+
+.showcase-grid {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.showcase-card {
+    background: #fff;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    border-radius: 4px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.showcase-card:hover {
+    transform: rotate(-1deg) scale(1.05) translate(-4px, -4px);
+    box-shadow: 12px 12px 0 #000;
+    border-color: var(--accent-primary);
+    z-index: 10;
+}
+
+.showcase-card.active {
+    background: #fff5f5;
+    border-color: var(--accent-primary);
+    box-shadow: 8px 8px 0 var(--accent-primary);
+}
+
+.showcase-card-preview {
+    flex-grow: 1;
+    height: 140px;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    background-image:
+        linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+.showcase-card-name {
+    font-family: var(--font-heading, "Space Grotesk");
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #000;
+    text-align: center;
+    border-top: 2px solid #000;
+    margin: 0 -12px -12px -12px;
+    padding: 8px;
+    background: #f0f0f0;
+    flex-shrink: 0;
+}
+
+.showcase-card:hover .showcase-card-name {
+    background: var(--accent-secondary);
+}
+
+.mini-widget-wrapper {
+    transform: scale(0.6);
+    transform-origin: center;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: auto;
+}
+
+/* IMPORTANT: Override the absolute positioning from styles.css for showcase previews */
+.mini-widget-wrapper my-widget {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    /* Scale is handled by wrapper */
+    display: block !important;
+}
+
+body.modal-open {
+    overflow: hidden !important;
+}
+
+/* Scrollbar styling for the grid */
+.showcase-grid::-webkit-scrollbar {
+    width: 12px;
+}
+
+.showcase-grid::-webkit-scrollbar-track {
+    background: transparent;
+    border-left: 2px solid #000;
+}
+
+.showcase-grid::-webkit-scrollbar-thumb {
+    background: var(--accent-secondary);
+    border: 2px solid #000;
+    border-radius: 0;
+}
+
+.showcase-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+@media (max-width: 600px) {
+    .showcase-modal {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .showcase-header h2 {
+        font-size: 24px;
+    }
+}

@@ -167,7 +167,7 @@ export function bindActionButtons(editor) {
 }
 
 export function bindCollapsibleSections(editor) {
-    const headers = document.querySelectorAll('.control-panel h3');
+    const headers = document.querySelectorAll('.control-panel h3:not(.preset-showcase-trigger)');
     headers.forEach(header => {
         // Skip headers that don't have descriptions or content following them directly in expected structure
         // But simpler: just find the next .section-content

@@ -311,6 +311,20 @@ body {
     transition: all 0.2s;
 }
 
+.control-panel h3.preset-showcase-trigger {
+    background: var(--accent-primary);
+    color: #fff;
+    justify-content: center;
+}
+
+.control-panel h3.preset-showcase-trigger:hover {
+    background: var(--accent-hover);
+}
+
+.control-panel h3.preset-showcase-trigger::after {
+    display: none;
+}
+
 .control-panel h3:hover {
     background: #FFD54F;
     /* Slightly lighter yellow on hover */
