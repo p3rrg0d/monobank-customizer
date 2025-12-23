@@ -1,15 +1,40 @@
+interface DragControllerOptions {
+    scale?: number;
+    onDragStart?: () => void;
+    onDragEnd?: (pos: { left: number; top: number }) => void;
+}
+
 export class DragController {
-    constructor(element, container, options = {}) {
+    private element: HTMLElement;
+    private container: HTMLElement;
+    private previewScale: number;
+    private isCustomPositioned: boolean = false;
+    private isTouchDevice: boolean;
+    private onDragStart: () => void;
+    private onDragEnd: (pos: { left: number; top: number }) => void;
+
+    private isDragging: boolean = false;
+    private startX: number = 0;
+    private startY: number = 0;
+    private startLeft: number = 0;
+    private startTop: number = 0;
+
+    private boundMouseMove: (e: MouseEvent) => void;
+    private boundMouseUp: (e: MouseEvent) => void;
+
+    constructor(element: HTMLElement, container: HTMLElement, options: DragControllerOptions = {}) {
         this.element = element;
         this.container = container;
         this.previewScale = options.scale || 1.5;
         this.isCustomPositioned = false;
 
-        // Detect touch device - disable dragging on touch
         this.isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
         this.onDragStart = options.onDragStart || (() => { });
         this.onDragEnd = options.onDragEnd || (() => { });
+
+        this.boundMouseMove = this.onMouseMove.bind(this);
+        this.boundMouseUp = this.onMouseUp.bind(this);
 
         this.init();
     }
@@ -17,21 +42,18 @@ export class DragController {
     init() {
         if (!this.element || !this.container) return;
 
-        // Disable dragging on touch devices
         if (this.isTouchDevice) {
-            // Still apply positioning and scale, but no drag
             this.element.style.position = "absolute";
             this.element.style.transformOrigin = "center center";
             this.element.style.left = "50%";
             this.element.style.top = "50%";
             this.element.style.transform = `translate(-50%, -50%) scale(${this.previewScale})`;
-            return; // Exit early, don't attach drag listeners
+            return;
         }
 
         this.element.style.position = "absolute";
-        this.element.style.transformOrigin = "center center"; // Ensure scale works from center
+        this.element.style.transformOrigin = "center center";
 
-        // Ensure initial scale is applied even before drag
         if (!this.isCustomPositioned) {
             this.element.style.left = "50%";
             this.element.style.top = "50%";
@@ -41,26 +63,22 @@ export class DragController {
         this.element.addEventListener("mousedown", this.onMouseDown.bind(this));
     }
 
-    onMouseDown(e) {
+    private onMouseDown(e: MouseEvent) {
         if (e.button !== 0) return;
         this.isDragging = true;
 
         this.startX = e.clientX;
         this.startY = e.clientY;
 
-        // Temporarily disable transition
         this.element.style.transition = 'none';
 
         if (!this.isCustomPositioned) {
-            // Switch from center-based positioning to top-left based positioning
             const rect = this.element.getBoundingClientRect();
             const containerRect = this.container.getBoundingClientRect();
 
-            // Calculate where the element currently is visually inside the container
             const visualLeft = rect.left - containerRect.left;
             const visualTop = rect.top - containerRect.top;
 
-            // Freeze it there, but change origin to top-left (0 0)
             this.element.style.transformOrigin = "0 0";
             this.element.style.transform = `scale(${this.previewScale})`;
             this.element.style.left = `${visualLeft}px`;
@@ -68,25 +86,21 @@ export class DragController {
 
             this.isCustomPositioned = true;
 
-            // Force reflow
             void this.element.offsetWidth;
         }
 
-        this.startLeft = parseFloat(this.element.style.left);
-        this.startTop = parseFloat(this.element.style.top);
+        this.startLeft = parseFloat(this.element.style.left) || 0;
+        this.startTop = parseFloat(this.element.style.top) || 0;
 
         this.element.style.cursor = "grabbing";
 
-        this.onDragStart(); // Save state before dragging starts
-
-        this.boundMouseMove = this.onMouseMove.bind(this);
-        this.boundMouseUp = this.onMouseUp.bind(this);
+        this.onDragStart();
 
         window.addEventListener("mousemove", this.boundMouseMove);
         window.addEventListener("mouseup", this.boundMouseUp);
     }
 
-    onMouseMove(e) {
+    private onMouseMove(e: MouseEvent) {
         if (!this.isDragging) return;
         e.preventDefault();
 
@@ -121,7 +135,7 @@ export class DragController {
         this.element.style.top = `${newTop}px`;
     }
 
-    onMouseUp() {
+    private onMouseUp() {
         if (this.isDragging) {
             this.isDragging = false;
             this.element.style.cursor = "grab";
@@ -130,14 +144,13 @@ export class DragController {
             window.removeEventListener("mousemove", this.boundMouseMove);
             window.removeEventListener("mouseup", this.boundMouseUp);
 
-            // Return current position for state update
-            const currentLeft = parseFloat(this.element.style.left);
-            const currentTop = parseFloat(this.element.style.top);
+            const currentLeft = parseFloat(this.element.style.left) || 0;
+            const currentTop = parseFloat(this.element.style.top) || 0;
             this.onDragEnd({ left: currentLeft, top: currentTop });
         }
     }
 
-    setPosition(left, top) {
+    setPosition(left: number | undefined, top: number | undefined) {
         if (left === undefined || top === undefined) {
             return;
         }
