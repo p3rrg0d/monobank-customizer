@@ -1,5 +1,21 @@
 import { PALETTES } from "../data/Palettes.ts";
-import { generateGradientString } from "../utils/helpers.js";
+import { generateGradientString } from "../utils/helpers.ts";
+import { FillSettings, BorderSettings, ShadowSettings, GradientStop, Palette } from "../data/types.ts";
+
+interface RandomizerOverrides {
+  background?: FillSettings;
+  border?: BorderSettings;
+  progress?: {
+    radius: number;
+    track: FillSettings;
+    fill: FillSettings;
+  };
+  text?: {
+    color: string;
+    shadow: ShadowSettings;
+  };
+  qrFrame?: "standard" | "frame1" | "frame2" | "frame3";
+}
 
 interface RGB {
   r: number;
@@ -11,51 +27,6 @@ interface HSL {
   h: number;
   s: number;
   l: number;
-}
-interface GradientStop {
-  id: number;
-  color: string;
-  opacity: number;
-  position: number;
-}
-
-interface RandomizerOverrides {
-  bgType?: "solid" | "gradient";
-  bgSolidColor?: string;
-  bgSolidOpacity?: number;
-  bgGradientStops?: GradientStop[];
-  bgGradientAngle?: number;
-  bgGradientString?: string;
-  textColor?: string;
-  textShadowEnabled?: boolean;
-  textShadowColor?: string;
-  textShadowOpacity?: number;
-  textShadowBlur?: number;
-  textShadowX?: number;
-  textShadowY?: number;
-  progressRadius?: number;
-  progTrackType?: "solid" | "gradient";
-  progTrackSolidColor?: string;
-  progTrackSolidOpacity?: number;
-  progFillType?: "solid" | "gradient";
-  progFillSolidColor?: string;
-  progFillSolidOpacity?: number;
-  progFillGradientStops?: GradientStop[];
-  progFillGradientString?: string;
-  progFillGradientAngle?: number;
-  borderEnabled?: boolean;
-  borderRadius?: number;
-  borderStyle?: "solid" | "dashed" | "dotted" | "double" | "groove" | "ridge";
-  borderWidth?: number;
-  borderColor?: string;
-  borderOpacity?: number;
-  qrFrame?: "standard" | "frame1" | "frame2" | "frame3";
-}
-interface Palette {
-  bg: string[];
-  accent: string;
-  secondary: string;
-  text: string;
 }
 
 export class Randomizer {
@@ -183,148 +154,128 @@ export class Randomizer {
       ? randomFloat(0.2, 0.5)
       : randomFloat(0.8, 1);
 
+    // BACKGROUND
+    const background: FillSettings = {
+      type: "solid",
+      color: palette.bg[0],
+      opacity: baseBgOpacity,
+      gradientStops: [],
+      gradientAngle: 0,
+      gradientString: ""
+    };
+
     if (chance(CHANCE_GRADIENT)) {
       const colors = getBaseColors();
-      overrides.bgType = "gradient";
-
+      background.type = "gradient";
       const stops: GradientStop[] = [];
+
       if (isStepped) {
         colors.forEach((color: string, i: number) => {
           const pos = Math.round((i / colors.length) * 100);
           const nextPos = Math.round(((i + 1) / colors.length) * 100);
           const op = hasTransGrad ? randomFloat(0.1, 0.9) : baseBgOpacity;
-          stops.push({
-            id: stops.length + 1,
-            color,
-            opacity: op,
-            position: pos,
-          });
+          stops.push({ id: stops.length + 1, color, opacity: op, position: pos });
           if (i < colors.length - 1) {
-            stops.push({
-              id: stops.length + 1,
-              color,
-              opacity: op,
-              position: nextPos,
-            });
+            stops.push({ id: stops.length + 1, color, opacity: op, position: nextPos });
           }
         });
       } else {
         colors.forEach((color: string, i: number) => {
-          let pos: number;
-          if (i === 0) pos = 0;
-          else if (i === colors.length - 1) pos = 100;
-          else pos = randomInt(20, 80);
+          let pos = (i === 0) ? 0 : (i === colors.length - 1) ? 100 : randomInt(20, 80);
           const op = hasTransGrad ? randomFloat(0.1, 1) : baseBgOpacity;
           stops.push({ id: i + 1, color, opacity: op, position: pos });
         });
       }
-      overrides.bgGradientStops = stops.sort(
-        (a: GradientStop, b: GradientStop) => a.position - b.position,
-      );
-      overrides.bgGradientAngle = randomInt(0, 360);
-      overrides.bgGradientString = generateGradientString(
-        overrides.bgGradientStops,
-        overrides.bgGradientAngle,
-      );
+      background.gradientStops = stops.sort((a, b) => a.position - b.position);
+      background.gradientAngle = randomInt(0, 360);
+      background.gradientString = generateGradientString(background.gradientStops, background.gradientAngle);
     } else {
-      overrides.bgType = "solid";
-      overrides.bgSolidColor = chance(CHANCE_JITTER)
-        ? this.jitterColor(palette.bg[0])
-        : palette.bg[0];
-      overrides.bgSolidOpacity = baseBgOpacity;
-      overrides.bgGradientString = "";
+      background.color = chance(CHANCE_JITTER) ? this.jitterColor(palette.bg[0]) : palette.bg[0];
     }
+    overrides.background = background;
 
-    overrides.textColor = chance(CHANCE_JITTER)
-      ? this.jitterColor(palette.text, 5)
-      : palette.text;
-    overrides.textShadowEnabled = chance(CHANCE_SHADOW);
-    if (overrides.textShadowEnabled) {
+    // TEXT
+    const shadow: ShadowSettings = {
+      enabled: chance(CHANCE_SHADOW),
+      color: palette.accent,
+      opacity: randomFloat(0.5, 1),
+      x: 0,
+      y: 0,
+      blur: 0
+    };
+
+    if (shadow.enabled) {
       const shadowType = randomChoice(["glow", "brutal", "soft"]);
-      const shadowBaseColor =
-        shadowType === "brutal"
-          ? palette.text === "#ffffff"
-            ? "#000000"
-            : palette.accent
-          : palette.accent;
-      overrides.textShadowColor = chance(CHANCE_JITTER)
-        ? this.jitterColor(shadowBaseColor)
-        : shadowBaseColor;
-      overrides.textShadowOpacity = randomFloat(0.5, 1);
-      overrides.textShadowBlur = shadowType === "brutal" ? 0 : randomInt(5, 20);
-      overrides.textShadowX =
-        shadowType === "brutal" ? randomChoice([-3, 3]) : 0;
-      overrides.textShadowY =
-        shadowType === "brutal"
-          ? randomChoice([-3, 3])
-          : shadowType === "soft"
-            ? 4
-            : 0;
+      const shadowBaseColor = shadowType === "brutal" ? (palette.text === "#ffffff" ? "#000000" : palette.accent) : palette.accent;
+      shadow.color = chance(CHANCE_JITTER) ? this.jitterColor(shadowBaseColor) : shadowBaseColor;
+      shadow.blur = shadowType === "brutal" ? 0 : randomInt(5, 20);
+      shadow.x = shadowType === "brutal" ? randomChoice([-3, 3]) : 0;
+      shadow.y = shadowType === "brutal" ? randomChoice([-3, 3]) : (shadowType === "soft" ? 4 : 0);
     }
 
-    overrides.progressRadius = randomChoice([0, 4, 8, 12, 25, 50]);
-    overrides.progTrackType = "solid";
-    overrides.progTrackSolidColor =
-      palette.text === "#ffffff" ? "#ffffff" : "#000000";
-    overrides.progTrackSolidOpacity = randomFloat(0.1, 0.25);
+    overrides.text = {
+      color: chance(CHANCE_JITTER) ? this.jitterColor(palette.text, 5) : palette.text,
+      shadow
+    };
 
-    overrides.progFillType = chance(CHANCE_PROG_GRAD) ? "gradient" : "solid";
-    if (overrides.progFillType === "solid") {
-      overrides.progFillSolidColor = chance(CHANCE_JITTER)
-        ? this.jitterColor(palette.accent)
-        : palette.accent;
-      overrides.progFillSolidOpacity = 1;
-      overrides.progFillGradientString = "";
+    // PROGRESS
+    const track: FillSettings = {
+      type: "solid",
+      color: palette.text === "#ffffff" ? "#ffffff" : "#000000",
+      opacity: randomFloat(0.1, 0.25),
+      gradientStops: [],
+      gradientAngle: 0
+    };
+
+    const fill: FillSettings = {
+      type: chance(CHANCE_PROG_GRAD) ? "gradient" : "solid",
+      color: palette.accent,
+      opacity: 1,
+      gradientStops: [],
+      gradientAngle: 0,
+      gradientString: ""
+    };
+
+    if (fill.type === "solid") {
+      fill.color = chance(CHANCE_JITTER) ? this.jitterColor(palette.accent) : palette.accent;
     } else {
-      const c1 = chance(CHANCE_JITTER)
-        ? this.jitterColor(palette.accent)
-        : palette.accent;
-      const c2 = chance(CHANCE_JITTER)
-        ? this.jitterColor(palette.secondary)
-        : palette.secondary;
-      overrides.progFillGradientStops = [
+      const c1 = chance(CHANCE_JITTER) ? this.jitterColor(palette.accent) : palette.accent;
+      const c2 = chance(CHANCE_JITTER) ? this.jitterColor(palette.secondary) : palette.secondary;
+      fill.gradientStops = [
         { id: 1, color: c1, opacity: 1, position: 0 },
         { id: 2, color: c2, opacity: randomFloat(0.8, 1), position: 100 },
       ];
-      overrides.progFillGradientAngle = randomInt(0, 360);
-      overrides.progFillGradientString = generateGradientString(
-        overrides.progFillGradientStops,
-        overrides.progFillGradientAngle,
-      );
-    }
-    overrides.borderRadius = randomChoice([
-      0, 0, 4, 8, 12, 16, 20, 24, 32, 48, 64, 100,
-    ]);
-    overrides.borderEnabled = chance(CHANCE_BORDER);
-    if (overrides.borderEnabled) {
-      overrides.borderStyle = randomChoice([
-        "solid",
-        "dashed",
-        "dotted",
-        "double",
-        "groove",
-        "ridge",
-      ]);
-      overrides.borderWidth = randomInt(1, 8);
-      overrides.borderColor =
-        Math.random() > 0.5 ? palette.text : palette.accent;
-      if (chance(CHANCE_JITTER))
-        overrides.borderColor = this.jitterColor(overrides.borderColor);
-      overrides.borderOpacity = isGlassy
-        ? randomFloat(0.3, 0.7)
-        : randomFloat(0.2, 1);
-    } else {
-      overrides.borderWidth = 0;
-      overrides.borderOpacity = 0;
-      overrides.borderColor = "transparent";
+      fill.gradientAngle = randomInt(0, 360);
+      fill.gradientString = generateGradientString(fill.gradientStops, fill.gradientAngle);
     }
 
-    overrides.qrFrame = randomChoice([
-      "standard",
-      "frame1",
-      "frame2",
-      "frame3",
-    ]);
+    overrides.progress = {
+      radius: randomChoice([0, 4, 8, 12, 25, 50]),
+      track,
+      fill
+    };
+
+    // BORDER
+    const border: BorderSettings = {
+      enabled: chance(CHANCE_BORDER),
+      style: "solid",
+      width: 0,
+      color: "transparent",
+      opacity: 0,
+      radius: randomChoice([0, 0, 4, 8, 12, 16, 20, 24, 32, 48, 64, 100])
+    };
+
+    if (border.enabled) {
+      border.style = randomChoice(["solid", "dashed", "dotted", "double", "groove", "ridge"]);
+      border.width = randomInt(1, 8);
+      border.color = Math.random() > 0.5 ? palette.text : palette.accent;
+      if (chance(CHANCE_JITTER)) border.color = this.jitterColor(border.color);
+      border.opacity = isGlassy ? randomFloat(0.3, 0.7) : randomFloat(0.2, 1);
+    }
+    overrides.border = border;
+
+    overrides.qrFrame = randomChoice(["standard", "frame1", "frame2", "frame3"]);
+
     return overrides;
   }
 }
