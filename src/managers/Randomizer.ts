@@ -1,4 +1,4 @@
-import { PALETTES } from "../data/Palettes.js";
+import { PALETTES } from "../data/Palettes.ts";
 import { generateGradientString } from "../utils/helpers.js";
 
 interface RGB {
@@ -45,7 +45,7 @@ interface RandomizerOverrides {
   progFillGradientAngle?: number;
   borderEnabled?: boolean;
   borderRadius?: number;
-  borderStyle?: "solid" | "dashed" | "dotted" | "double";
+  borderStyle?: "solid" | "dashed" | "dotted" | "double" | "groove" | "ridge";
   borderWidth?: number;
   borderColor?: string;
   borderOpacity?: number;
@@ -156,6 +156,7 @@ export class Randomizer {
     const palette: Palette = randomChoice(PALETTES);
     const overrides: RandomizerOverrides = {};
 
+    //Chances
     const CHANCE_GLASS: number = 80;
     const CHANCE_BORDER: number = 10;
     const CHANCE_SHADOW: number = 25;
@@ -233,7 +234,7 @@ export class Randomizer {
       overrides.bgSolidOpacity = baseBgOpacity;
       overrides.bgGradientString = "";
     }
-    // 2. Text & Effects
+
     overrides.textColor = chance(CHANCE_JITTER)
       ? this.jitterColor(palette.text, 5)
       : palette.text;
@@ -301,6 +302,8 @@ export class Randomizer {
         "dashed",
         "dotted",
         "double",
+        "groove",
+        "ridge",
       ]);
       overrides.borderWidth = randomInt(1, 8);
       overrides.borderColor =
