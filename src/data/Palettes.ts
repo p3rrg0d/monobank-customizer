@@ -1,10 +1,5 @@
-interface Palette {
-  name: string;
-  bg: string[];
-  accent: string;
-  secondary: string;
-  text: string;
-}
+import { Palette } from "./types";
+
 export const PALETTES: Palette[] = [
   {
     name: "Cyberpunk",
