@@ -1,7 +1,7 @@
 import Pickr from '@simonwep/pickr';
 import '@simonwep/pickr/dist/themes/nano.min.css';
 
-export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
+export function createPickrInstance(el: HTMLElement, defaultColor: string, onChange: (color: string) => void, onSaveState?: () => void) {
     let hasSavedState = false;
 
     const pickr = Pickr.create({
@@ -26,17 +26,17 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
         },
     });
 
-    pickr._el = el;
+    (pickr as any)._el = el;
 
     pickr.on("init", () => {
-        const button = el.querySelector(".pcr-button");
+        const button = el.querySelector(".pcr-button") as HTMLElement;
         if (button) {
             button.style.backgroundColor = defaultColor;
             button.style.color = defaultColor;
         }
     });
 
-    pickr.on("change", (color) => {
+    pickr.on("change", (color: any) => {
         if (color) {
             if (!hasSavedState && onSaveState) {
                 onSaveState();
@@ -47,7 +47,7 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
 
             onChange(hexColor);
 
-            const button = el.querySelector(".pcr-button");
+            const button = el.querySelector(".pcr-button") as HTMLElement;
             if (button) {
                 button.style.backgroundColor = hexColor;
                 button.style.color = hexColor;
@@ -62,13 +62,13 @@ export function createPickrInstance(el, defaultColor, onChange, onSaveState) {
     return pickr;
 }
 
-export function setPickrColorSilent(pickr, color) {
+export function setPickrColorSilent(pickr: any, color: string) {
     if (!pickr) return;
 
     pickr.setColor(color, true);
 
     if (pickr._el) {
-        const button = pickr._el.querySelector(".pcr-button");
+        const button = pickr._el.querySelector(".pcr-button") as HTMLElement;
         if (button) {
             button.style.backgroundColor = color;
             button.style.color = color;
@@ -77,9 +77,11 @@ export function setPickrColorSilent(pickr, color) {
 }
 
 export class PickrManager {
-    constructor(editor) {
+    private editor: any;
+    public pickers: Record<string, any> = {};
+
+    constructor(editor: any) {
         this.editor = editor;
-        this.pickers = {};
     }
 
     initializeAll() {
@@ -107,9 +109,9 @@ export class PickrManager {
     initializeWidgetPickers() {
         this.pickers.bgSolid = createPickrInstance(
             this.editor.dom.bgSolidPicker,
-            this.editor.state.bgSolidColor,
+            this.editor.state.background.color,
             (color) => {
-                this.editor.state.bgSolidColor = color;
+                this.editor.state.background.color = color;
                 this.editor.updateAll();
             },
             () => this.editor.saveState()
@@ -117,9 +119,9 @@ export class PickrManager {
 
         this.pickers.border = createPickrInstance(
             this.editor.dom.borderPicker,
-            this.editor.state.borderColor,
+            this.editor.state.border.color,
             (color) => {
-                this.editor.state.borderColor = color;
+                this.editor.state.border.color = color;
                 this.editor.updateAll();
             },
             () => this.editor.saveState()
@@ -129,9 +131,9 @@ export class PickrManager {
     initializeProgressPickers() {
         this.pickers.progTrackSolid = createPickrInstance(
             this.editor.dom.progTrackSolidPicker,
-            this.editor.state.progTrackSolidColor,
+            this.editor.state.progress.track.color,
             (color) => {
-                this.editor.state.progTrackSolidColor = color;
+                this.editor.state.progress.track.color = color;
                 this.editor.updateAll();
             },
             () => this.editor.saveState()
@@ -139,9 +141,9 @@ export class PickrManager {
 
         this.pickers.progFillSolid = createPickrInstance(
             this.editor.dom.progFillSolidPicker,
-            this.editor.state.progFillSolidColor,
+            this.editor.state.progress.fill.color,
             (color) => {
-                this.editor.state.progFillSolidColor = color;
+                this.editor.state.progress.fill.color = color;
                 this.editor.updateAll();
             },
             () => this.editor.saveState()
@@ -152,9 +154,9 @@ export class PickrManager {
         if (this.editor.dom.textColorPicker) {
             this.pickers.textColor = createPickrInstance(
                 this.editor.dom.textColorPicker,
-                this.editor.state.textColor,
+                this.editor.state.text.color,
                 (color) => {
-                    this.editor.state.textColor = color;
+                    this.editor.state.text.color = color;
                     this.editor.updateAll();
                 },
                 () => this.editor.saveState()
@@ -164,9 +166,9 @@ export class PickrManager {
         if (this.editor.dom.textShadowColorPicker) {
             this.pickers.textShadowColor = createPickrInstance(
                 this.editor.dom.textShadowColorPicker,
-                this.editor.state.textShadowColor,
+                this.editor.state.text.shadow.color,
                 (color) => {
-                    this.editor.state.textShadowColor = color;
+                    this.editor.state.text.shadow.color = color;
                     this.editor.updateAll();
                 },
                 () => this.editor.saveState()
