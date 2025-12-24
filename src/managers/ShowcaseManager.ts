@@ -1,16 +1,15 @@
-import { PRESETS } from '../data/Presets.js';
-import { getBackgroundCSS, getQRFrameSVG } from '../utils/CSSGenerator.js';
-import { hexToRgba } from '../utils/helpers.js';
+import { PRESETS } from '../data/Presets.ts';
+import { getBackgroundCSS, getQRFrameSVG } from '../utils/CSSGenerator.ts';
+import { hexToRgba } from '../utils/helpers.ts';
 
 export class ShowcaseManager {
-    constructor(editor) {
-        this.editor = editor;
-        this.overlay = null;
-        this.modal = null;
-        this.grid = null;
+    private editor: any;
+    private overlay: HTMLElement | null = null;
+    private modal: HTMLElement | null = null;
+    private grid: HTMLElement | null = null;
 
-        // State
-        this.currentCategory = 'all';
+    constructor(editor: any) {
+        this.editor = editor;
 
         // Bind methods
         this.open = this.open.bind(this);
@@ -20,48 +19,43 @@ export class ShowcaseManager {
     create() {
         if (this.overlay) return;
 
-        // Create overlay
         this.overlay = document.createElement('div');
         this.overlay.className = 'showcase-overlay';
         this.overlay.addEventListener('click', (e) => {
             if (e.target === this.overlay) this.close();
         });
 
-        // Create modal
         this.modal = document.createElement('div');
         this.modal.className = 'showcase-modal';
 
-        // Header
         const header = document.createElement('div');
         header.className = 'showcase-header';
         header.innerHTML = `
             <h2>Галерея пресетів</h2>
             <button class="showcase-close-btn" title="Закрити">&times;</button>
         `;
-        header.querySelector('.showcase-close-btn').addEventListener('click', this.close);
+        header.querySelector('.showcase-close-btn')?.addEventListener('click', this.close);
 
         this.modal.appendChild(header);
 
-        // Grid
         this.grid = document.createElement('div');
         this.grid.className = 'showcase-grid';
         this.modal.appendChild(this.grid);
 
-        // Populate grid
         this.populate();
 
         this.overlay.appendChild(this.modal);
         document.body.appendChild(this.overlay);
 
-        // ESC handler
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.overlay.classList.contains('active')) {
+            if (e.key === 'Escape' && this.overlay?.classList.contains('active')) {
                 this.close();
             }
         });
     }
 
     populate() {
+        if (!this.grid) return;
         this.grid.innerHTML = '';
 
         PRESETS.forEach((preset, index) => {
@@ -74,11 +68,9 @@ export class ShowcaseManager {
             const widgetContainer = document.createElement('div');
             widgetContainer.className = 'mini-widget-wrapper';
 
-            // Use actual custom element for perfect replication
-            const widget = document.createElement('my-widget');
+            const widget = document.createElement('my-widget') as any;
             widget.className = 'mini-widget';
 
-            // Apply styles from preset state
             this.applyPresetStyles(widget, preset.state);
 
             widgetContainer.appendChild(widget);
@@ -96,52 +88,38 @@ export class ShowcaseManager {
                 this.close();
             });
 
-            this.grid.appendChild(card);
+            this.grid?.appendChild(card);
         });
     }
 
-    applyPresetStyles(el, s) {
+    applyPresetStyles(el: HTMLElement, s: any) {
         const style = el.style;
 
         // Background
-        const bg = getBackgroundCSS(
-            s.bgType,
-            s.bgSolidColor,
-            s.bgSolidOpacity,
-            s.bgGradientString
-        );
+        const bg = getBackgroundCSS(s.background);
         style.setProperty('--widget-bg-color', bg);
 
         // Border
-        style.setProperty('--widget-border-color', hexToRgba(s.borderColor, s.borderOpacity));
-        style.setProperty('--widget-border-width', (s.borderEnabled ? s.borderWidth : 0) + "px");
-        style.setProperty('--widget-border-style', s.borderStyle);
-        style.setProperty('--widget-border-radius', s.borderRadius + "px");
+        style.setProperty('--widget-border-color', hexToRgba(s.border.color, s.border.opacity));
+        style.setProperty('--widget-border-width', (s.border.enabled ? s.border.width : 0) + "px");
+        style.setProperty('--widget-border-style', s.border.style);
+        style.setProperty('--widget-border-radius', s.border.radius + "px");
 
         // Progress
-        style.setProperty('--progress-radius', s.progressRadius + "px");
+        style.setProperty('--progress-radius', s.progress.radius + "px");
 
-        const trackBg = getBackgroundCSS(
-            s.progTrackType,
-            s.progTrackSolidColor,
-            s.progTrackSolidOpacity,
-            s.progTrackGradientString
-        );
+        const trackBg = getBackgroundCSS(s.progress.track);
         style.setProperty('--progress-bg-color', trackBg);
 
-        const fillBg = getBackgroundCSS(
-            s.progFillType,
-            s.progFillSolidColor,
-            s.progFillSolidOpacity,
-            s.progFillGradientString
-        );
+        const fillBg = getBackgroundCSS(s.progress.fill);
         style.setProperty('--progress-gradient', fillBg);
 
         // Text
-        style.setProperty('--widget-text-color', s.textColor);
+        style.setProperty('--widget-text-color', s.text.color);
 
-        const textShadow = s.textShadowEnabled
-            ? `${s.textShadowX}px ${s.textShadowY}px ${s.textShadowBlur}px ${hexToRgba(s.textShadowColor, s.textShadowOpacity)}`
+        const shadow = s.text.shadow;
+        const textShadow = shadow.enabled
+            ? `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${hexToRgba(shadow.color, shadow.opacity)}`
             : 'none';
         style.setProperty('--widget-text-shadow', textShadow);
 
@@ -166,20 +144,18 @@ export class ShowcaseManager {
             style.setProperty("--qr-position", "absolute");
         }
 
-        // Additional variables for perfect replication
-        style.setProperty("--border-enabled", s.borderEnabled ? "solid" : "none");
+        style.setProperty("--border-enabled", s.border.enabled ? "solid" : "none");
 
-        // Ensure QR SVG inside widget (even if inside shadow DOM) is visible
         const root = el.shadowRoot || el;
         const qrPath = root.querySelector('.qr path');
-        if (qrPath) qrPath.setAttribute('fill', s.textColor || '#fff');
+        if (qrPath) qrPath.setAttribute('fill', s.text.color || '#fff');
     }
 
     open() {
         if (!this.overlay) this.create();
-        this.overlay.classList.add('active');
+        this.overlay?.classList.add('active');
         document.body.classList.add('modal-open');
-        this.populate(); // Refresh on open
+        this.populate();
     }
 
     close() {

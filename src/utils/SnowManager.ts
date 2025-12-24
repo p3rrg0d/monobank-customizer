@@ -1,19 +1,32 @@
+interface Snowflake {
+    x: number;
+    y: number;
+    radius: number;
+    speed: number;
+    wind: number;
+    opacity: number;
+}
+
 export class SnowManager {
+    private container: HTMLElement;
+    private canvas: HTMLCanvasElement;
+    private ctx: CanvasRenderingContext2D;
+    private snowflakeCount: number = 600;
+    private snowflakes: Snowflake[] = [];
+    private isRunning: boolean = false;
+
     constructor(containerId = 'snow-container') {
-        this.container = document.getElementById(containerId);
-        if (!this.container) {
-            this.container = document.createElement('div');
-            this.container.id = containerId;
-            document.body.prepend(this.container);
+        let container = document.getElementById(containerId);
+        if (!container) {
+            container = document.createElement('div');
+            container.id = containerId;
+            document.body.prepend(container);
         }
+        this.container = container;
 
         this.canvas = document.createElement('canvas');
-        this.ctx = this.canvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d')!;
         this.container.appendChild(this.canvas);
-
-        this.snowflakeCount = 600;
-        this.snowflakes = [];
-        this.isRunning = false;
 
         this.resize = this.resize.bind(this);
         window.addEventListener('resize', this.resize);

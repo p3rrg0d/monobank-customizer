@@ -1,30 +1,47 @@
-import { Randomizer } from './Randomizer.js';
+import { Randomizer } from "./Randomizer.ts";
+
+export interface StateChangeCallback {
+    (state: any): void;
+}
+
+export interface StateManagerCallbacks {
+    onStateChange?: StateChangeCallback;
+    onUndoAvailabilityChange?: (available: boolean) => void;
+    onRedoAvailabilityChange?: (available: boolean) => void;
+}
 
 export class StateManager {
-    constructor(initialState = {}, callbacks = {}) {
-        this.state = { ...initialState };
-        this.defaultState = JSON.parse(JSON.stringify(initialState));
-        this.history = [];
-        this.redoHistory = []; // Stack for redo operations
-        this.maxHistoryLength = 20;
-        this._preventSave = false;
+    private state: any;
+    private history: any[] = [];
+    private redoHistory: any[] = [];
+    private maxHistoryLength: number = 20;
+    private _preventSave: boolean = false;
+
+    private onStateChange: StateChangeCallback;
+    private onUndoAvailabilityChange: (available: boolean) => void;
+    private onRedoAvailabilityChange: (available: boolean) => void;
+
+    constructor(initialState: any = {}, callbacks: StateManagerCallbacks = {}) {
+        this.state = JSON.parse(JSON.stringify(initialState));
 
         this.onStateChange = callbacks.onStateChange || (() => { });
-        this.onUndoAvailabilityChange = callbacks.onUndoAvailabilityChange || (() => { });
-        this.onRedoAvailabilityChange = callbacks.onRedoAvailabilityChange || (() => { });
+        this.onUndoAvailabilityChange =
+            callbacks.onUndoAvailabilityChange || (() => { });
+        this.onRedoAvailabilityChange =
+            callbacks.onRedoAvailabilityChange || (() => { });
     }
 
-    get() {
+    get(): any {
         return this.state;
     }
 
-    set(partialState) {
+    set(partialState: any) {
+
         Object.assign(this.state, partialState);
         this.onStateChange(this.state);
     }
 
-    // Replace the entire state (used for Undo and Presets)
-    replace(newState, preventSave = false) {
+    replace(newState: any, preventSave: boolean = false) {
         if (preventSave) this._preventSave = true;
         this.state = JSON.parse(JSON.stringify(newState));
         this.onStateChange(this.state);
@@ -37,7 +54,6 @@ export class StateManager {
         const stateCopy = JSON.parse(JSON.stringify(this.state));
         this.history.push(stateCopy);
 
-        // Clear redo history on new change
         if (this.redoHistory.length > 0) {
             this.redoHistory = [];
             this.onRedoAvailabilityChange(false);
@@ -53,8 +69,6 @@ export class StateManager {
         if (this.history.length === 0) return;
 
         this._preventSave = true;
-
-        // Save current state to redo history
         this.redoHistory.push(JSON.parse(JSON.stringify(this.state)));
         this.onRedoAvailabilityChange(true);
 
@@ -69,8 +83,6 @@ export class StateManager {
         if (this.redoHistory.length === 0) return;
 
         this._preventSave = true;
-
-        // Save current state to normal history
         this.history.push(JSON.parse(JSON.stringify(this.state)));
         this.onUndoAvailabilityChange(true);
 
@@ -81,13 +93,12 @@ export class StateManager {
         this._preventSave = false;
     }
 
-    randomize() {
+    randomize(): any {
         this.save();
         this._preventSave = true;
 
         const overrides = Randomizer.generate();
 
-        // Apply everything
         Object.assign(this.state, overrides);
         this.onStateChange(this.state);
 

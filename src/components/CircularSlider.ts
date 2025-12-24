@@ -1,9 +1,42 @@
-// Circular Slider Component for Angle Selection (Clock-style)
+export interface CircularSliderOptions {
+    initialValue?: number;
+    min?: number;
+    max?: number;
+    onChange?: (value: number) => void;
+    onStart?: () => void;
+    onEnd?: () => void;
+    size?: number;
+    showValue?: boolean;
+}
+
 export class CircularSlider {
-    constructor(containerId, options = {}) {
+    private container: HTMLElement | null;
+    private value: number;
+    private min: number;
+    private max: number;
+    private onChange: (value: number) => void;
+    private onStart: () => void;
+    private onEnd: () => void;
+    private size: number;
+    private showValue: boolean;
+    private isDragging: boolean = false;
+
+    private svg: SVGSVGElement | null = null;
+    private needle: SVGLineElement | null = null;
+    private valueDisplay: HTMLElement | null = null;
+
+    constructor(containerId: string, options: CircularSliderOptions = {}) {
         this.container = document.getElementById(containerId);
         if (!this.container) {
             console.error(`CircularSlider: Container ${containerId} not found`);
+            this.value = 0;
+            this.min = 0;
+            this.max = 0;
+            this.onChange = () => { };
+            this.onStart = () => { };
+            this.onEnd = () => { };
+            this.size = 0;
+            this.showValue = false;
             return;
         }
 
@@ -15,7 +48,6 @@ export class CircularSlider {
         this.onEnd = options.onEnd || (() => { });
         this.size = options.size || 120;
         this.showValue = options.showValue !== false;
-        this.isDragging = false;
 
         this.render();
         this.bindEvents();
@@ -23,6 +55,7 @@ export class CircularSlider {
     }
 
     render() {
+        if (!this.container) return;
         const radius = 50;
         const strokeWidth = 3;
 
@@ -64,23 +97,23 @@ export class CircularSlider {
             </div>
         `;
 
-        this.svg = this.container.querySelector('.circular-slider-svg');
-        this.needle = this.container.querySelector('.slider-needle');
-        this.valueDisplay = this.container.querySelector('.slider-value');
+        this.svg = this.container.querySelector('.circular-slider-svg') as SVGSVGElement;
+        this.needle = this.container.querySelector('.slider-needle') as SVGLineElement;
+        this.valueDisplay = this.container.querySelector('.slider-value') as HTMLElement;
     }
 
     bindEvents() {
-        const startDrag = (e) => {
+        if (!this.svg) return;
+
+        const startDrag = (e: MouseEvent | Touch) => {
             this.isDragging = true;
             this.onStart();
             this.updateFromEvent(e);
-            e.preventDefault();
         };
 
-        const drag = (e) => {
+        const drag = (e: MouseEvent | Touch) => {
             if (!this.isDragging) return;
             this.updateFromEvent(e);
-            e.preventDefault();
         };
 
         const endDrag = () => {
@@ -90,37 +123,47 @@ export class CircularSlider {
             }
         };
 
-        // Mouse events
-        this.svg.addEventListener('mousedown', startDrag);
-        document.addEventListener('mousemove', drag);
+        this.svg.addEventListener('mousedown', (e) => {
+            startDrag(e);
+            e.preventDefault();
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (this.isDragging) {
+                drag(e);
+                e.preventDefault();
+            }
+        });
         document.addEventListener('mouseup', endDrag);
 
-        // Touch events for mobile
-        this.svg.addEventListener('touchstart', (e) => startDrag(e.touches[0]));
+        this.svg.addEventListener('touchstart', (e) => {
+            startDrag(e.touches[0]);
+            e.preventDefault();
+        }, { passive: false });
         document.addEventListener('touchmove', (e) => {
-            if (this.isDragging) drag(e.touches[0]);
-        });
+            if (this.isDragging) {
+                drag(e.touches[0]);
+                e.preventDefault();
+            }
+        }, { passive: false });
         document.addEventListener('touchend', endDrag);
     }
 
-    updateFromEvent(e) {
+    updateFromEvent(e: MouseEvent | Touch) {
+        if (!this.svg) return;
         const rect = this.svg.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
 
-        // Calculate angle from center
         const dx = e.clientX - centerX;
         const dy = e.clientY - centerY;
         let angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
-        // Normalize to 0-360
         angle = (angle + 90 + 360) % 360;
 
         this.setValue(Math.round(angle));
     }
 
-    setValue(value) {
-        // Clamp value
+    setValue(value: number) {
         value = Math.max(this.min, Math.min(this.max, value));
 
         if (this.value !== value) {
@@ -137,18 +180,15 @@ export class CircularSlider {
         const centerX = 60;
         const centerY = 60;
 
-        // Update value display if shown
         if (this.valueDisplay) {
             this.valueDisplay.textContent = `${this.value}°`;
         }
 
-        // Calculate needle end position (angle in radians, rotated by -90° to start at top)
         const angleRad = (this.value - 90) * (Math.PI / 180);
         const needleX = centerX + radius * Math.cos(angleRad);
         const needleY = centerY + radius * Math.sin(angleRad);
 
-        // Update needle position
-        this.needle.setAttribute('x2', needleX);
-        this.needle.setAttribute('y2', needleY);
+        this.needle.setAttribute('x2', needleX.toString());
+        this.needle.setAttribute('y2', needleY.toString());
     }
 }

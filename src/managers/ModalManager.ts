@@ -1,10 +1,11 @@
 export class ModalManager {
+    private modal: HTMLElement | null = null;
+    private overlay: HTMLElement | null = null;
+    private currentStep: number = 0;
+    private images: NodeListOf<HTMLImageElement> | null = null;
+    private indicators: NodeListOf<HTMLElement> | null = null;
+
     constructor() {
-        this.modal = null;
-        this.overlay = null;
-        this.currentStep = 0;
-        this.images = null;
-        this.indicators = null;
     }
 
     create() {
@@ -64,8 +65,10 @@ export class ModalManager {
 
         this.overlay = document.getElementById("modalOverlay");
         this.modal = document.getElementById("globalHelpModal");
-        this.images = this.modal.querySelectorAll(".carousel-image");
-        this.indicators = this.modal.querySelectorAll(".step-indicator");
+        if (this.modal) {
+            this.images = this.modal.querySelectorAll(".carousel-image");
+            this.indicators = this.modal.querySelectorAll(".step-indicator");
+        }
 
         this.initCloseHandlers();
         this.initCarousel();
@@ -75,38 +78,43 @@ export class ModalManager {
         const closeBtn = document.getElementById("modalCloseBtn");
         const closeModal = () => this.hide();
 
-        this.overlay.addEventListener("click", closeModal);
-        closeBtn.addEventListener("click", closeModal);
+        this.overlay?.addEventListener("click", closeModal);
+        closeBtn?.addEventListener("click", closeModal);
     }
 
     initCarousel() {
+        if (!this.modal) return;
         const prevBtn = this.modal.querySelector(".carousel-prev");
         const nextBtn = this.modal.querySelector(".carousel-next");
 
-        prevBtn.addEventListener("click", () => {
-            const newStep = (this.currentStep - 1 + this.images.length) % this.images.length;
-            this.showStep(newStep);
+        prevBtn?.addEventListener("click", () => {
+            if (this.images) {
+                const newStep = (this.currentStep - 1 + this.images.length) % this.images.length;
+                this.showStep(newStep);
+            }
         });
 
-        nextBtn.addEventListener("click", () => {
-            const newStep = (this.currentStep + 1) % this.images.length;
-            this.showStep(newStep);
+        nextBtn?.addEventListener("click", () => {
+            if (this.images) {
+                const newStep = (this.currentStep + 1) % this.images.length;
+                this.showStep(newStep);
+            }
         });
 
-        this.indicators.forEach((indicator) => {
+        this.indicators?.forEach((indicator) => {
             indicator.addEventListener("click", () => {
-                const step = parseInt(indicator.dataset.step);
+                const step = parseInt((indicator as HTMLElement).dataset.step || "0");
                 this.showStep(step);
             });
         });
     }
 
-    showStep(step) {
-        this.images.forEach((img, i) => {
+    showStep(step: number) {
+        this.images?.forEach((img, i) => {
             img.style.display = i === step ? "block" : "none";
             img.classList.toggle("active", i === step);
         });
-        this.indicators.forEach((ind, i) => {
+        this.indicators?.forEach((ind, i) => {
             ind.style.background = i === step ? "#ff5f57" : "#ccc";
             ind.classList.toggle("active", i === step);
         });
@@ -114,12 +122,12 @@ export class ModalManager {
     }
 
     show() {
-        this.overlay.classList.add("modal-open");
-        this.modal.classList.add("modal-open");
+        this.overlay?.classList.add("modal-open");
+        this.modal?.classList.add("modal-open");
     }
 
     hide() {
-        this.overlay.classList.remove("modal-open");
-        this.modal.classList.remove("modal-open");
+        this.overlay?.classList.remove("modal-open");
+        this.modal?.classList.remove("modal-open");
     }
 }
